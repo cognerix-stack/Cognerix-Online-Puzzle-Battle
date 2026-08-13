@@ -1,0 +1,434 @@
+[
+  {
+    "id": "101698362403",
+    "username": "admin",
+    "avatar": "👤",
+    "frame": "none",
+    "rank": "BRONZE",
+    "nameColor": "",
+    "coins": 13680,
+    "gems": 1324,
+    "level": 3,
+    "xp": 115,
+    "score": 150,
+    "status": "online",
+    "lobbyEntranceAnimation": "",
+    "badges": [],
+    "inventory": [],
+    "lastSeen": 1786607002075,
+    "email": "admin.cognerix@gmail.com",
+    "ipAddress": "::1",
+    "statistics": {
+      "gamesPlayed": 25,
+      "gamesWon": 11,
+      "totalSolveTime": 535,
+      "highestStreak": 1,
+      "puzzleSpecificStats": {
+        "SLIDING": {
+          "played": 17,
+          "solved": 10,
+          "bestTime": 17,
+          "timeSpent": 137
+        },
+        "SUDOKU": {
+          "played": 3,
+          "solved": 0
+        },
+        "WORD": {
+          "played": 3,
+          "solved": 1,
+          "bestTime": 60
+        },
+        "LOGIC": {
+          "played": 1,
+          "solved": 0
+        },
+        "JIGSAW": {
+          "played": 0,
+          "solved": 0
+        },
+        "PHYSICS": {
+          "played": 0,
+          "solved": 0
+        },
+        "EIGHT_BALL_QUIZ": {
+          "played": 0,
+          "solved": 0
+        },
+        "BLOCK_BLUSTER": {
+          "played": 0,
+          "solved": 0
+        },
+        "WORD_SEARCH": {
+          "played": 0,
+          "solved": 0
+        },
+        "TOWER_BLOXX": {
+          "played": 0,
+          "solved": 0
+        },
+        "MENTAL_MATH": {
+          "played": 1,
+          "solved": 0
+        }
+      }
+    },
+    "region": "Delhi",
+    "country": "India",
+    "sessionStart": 1786429864301
+  },
+  {
+    "id": "10107815246890408144380",
+    "username": "lic",
+    "avatar": "🦊",
+    "frame": "fr_forest_bloom",
+    "rank": "SILVER",
+    "nameColor": "#22d3ee",
+    "coins": 102240,
+    "gems": 570,
+    "level": 4,
+    "xp": 100,
+    "score": 300,
+    "status": "Ready to solve the universe.",
+    "lobbyEntranceAnimation": "",
+    "badges": [
+      "🏆"
+    ],
+    "inventory": [
+      "nc_gold",
+      "badge_trophy",
+      "av_phantom_spirit",
+      "fr_black_hole",
+      "fr_titan_core",
+      "fr_solar_nova",
+      "av_cyberfox",
+      "av_bot",
+      "av_cat",
+      "av_unicorn",
+      "av_lion",
+      "av_dragon",
+      "av_diamond",
+      "fr_forest_bloom",
+      "fr_arctic_glow",
+      "fr_moon_dust",
+      "fr_coral_wave",
+      "nc_violet",
+      "nc_amber",
+      "nc_cyan",
+      "nc_pink",
+      "nc_emerald",
+      "nc_crimson",
+      "av_owl",
+      "av_panda",
+      "av_alien",
+      "av_pv_legend",
+      "fr_pv_legend_frame"
+    ],
+    "lastSeen": 1786606999038,
+    "email": "lic45185@gmail.com",
+    "ipAddress": "::ffff:127.0.0.1",
+    "statistics": {
+      "gamesPlayed": 19,
+      "gamesWon": 14,
+      "totalSolveTime": 840,
+      "highestStreak": 1,
+      "puzzleSpecificStats": {
+        "SLIDING": {
+          "played": 15,
+          "solved": 12,
+          "bestTime": 60,
+          "timeSpent": 720
+        },
+        "SUDOKU": {
+          "played": 0,
+          "solved": 0
+        },
+        "WORD": {
+          "played": 0,
+          "solved": 0
+        },
+        "LOGIC": {
+          "played": 0,
+          "solved": 0
+        },
+        "JIGSAW": {
+          "played": 1,
+          "solved": 0
+        },
+        "PHYSICS": {
+          "played": 1,
+          "solved": 1,
+          "bestTime": 60,
+          "timeSpent": 60
+        },
+        "EIGHT_BALL_QUIZ": {
+          "played": 0,
+          "solved": 0
+        },
+        "BLOCK_BLUSTER": {
+          "played": 1,
+          "solved": 1,
+          "bestTime": 60,
+          "timeSpent": 60
+        },
+        "WORD_SEARCH": {
+          "played": 0,
+          "solved": 0
+        },
+        "TOWER_BLOXX": {
+          "played": 1,
+          "solved": 0
+        },
+        "MENTAL_MATH": {
+          "played": 0,
+          "solved": 0
+        }
+      }
+    },
+    "region": "Delhi",
+    "country": "India",
+    "sessionStart": 1786521491035
+  },
+  {
+    "id": "10110954696344722684552",
+    "username": "ccc",
+    "avatar": "🛸",
+    "frame": "fr_golden_leaf",
+    "rank": "BRONZE",
+    "nameColor": "",
+    "coins": 1106091,
+    "gems": 804,
+    "level": 1,
+    "xp": 0,
+    "score": 0,
+    "status": "Ready to solve the universe.",
+    "lobbyEntranceAnimation": "",
+    "badges": [],
+    "inventory": [
+      "av_cyberfox",
+      "av_cat",
+      "av_lion",
+      "av_panda",
+      "av_ufo",
+      "fr_pv_legend_frame",
+      "fr_forest_bloom",
+      "fr_aqua_ring",
+      "fr_arctic_glow",
+      "fr_coral_wave",
+      "fr_moon_dust",
+      "fr_golden_leaf"
+    ],
+    "lastSeen": 1786606999038,
+    "email": "tridevpal2@gmail.com",
+    "ipAddress": "::1",
+    "statistics": {
+      "gamesPlayed": 1,
+      "gamesWon": 0,
+      "totalSolveTime": 0,
+      "highestStreak": 0,
+      "puzzleSpecificStats": {
+        "SLIDING": {
+          "played": 1,
+          "solved": 0
+        },
+        "SUDOKU": {
+          "played": 0,
+          "solved": 0
+        },
+        "WORD": {
+          "played": 0,
+          "solved": 0
+        },
+        "LOGIC": {
+          "played": 0,
+          "solved": 0
+        },
+        "JIGSAW": {
+          "played": 0,
+          "solved": 0
+        },
+        "PHYSICS": {
+          "played": 0,
+          "solved": 0
+        },
+        "EIGHT_BALL_QUIZ": {
+          "played": 0,
+          "solved": 0
+        },
+        "BLOCK_BLUSTER": {
+          "played": 0,
+          "solved": 0
+        },
+        "WORD_SEARCH": {
+          "played": 0,
+          "solved": 0
+        },
+        "TOWER_BLOXX": {
+          "played": 0,
+          "solved": 0
+        },
+        "MENTAL_MATH": {
+          "played": 0,
+          "solved": 0
+        }
+      }
+    },
+    "region": "Delhi",
+    "country": "India",
+    "sessionStart": 1786604751509
+  },
+  {
+    "id": "208706189012",
+    "username": "PuzzleNovice_800",
+    "avatar": "👤",
+    "frame": "none",
+    "rank": "BRONZE",
+    "nameColor": "",
+    "coins": 350,
+    "gems": 27,
+    "level": 2,
+    "xp": 50,
+    "score": 300,
+    "status": "Ready to solve the universe.",
+    "lobbyEntranceAnimation": "",
+    "badges": [],
+    "inventory": [],
+    "lastSeen": 1786604751401,
+    "email": "",
+    "ipAddress": "::1",
+    "statistics": {
+      "gamesPlayed": 7,
+      "gamesWon": 3,
+      "totalSolveTime": 180,
+      "highestStreak": 1,
+      "puzzleSpecificStats": {
+        "SLIDING": {
+          "played": 7,
+          "solved": 3,
+          "bestTime": 60,
+          "timeSpent": 180
+        },
+        "SUDOKU": {
+          "played": 0,
+          "solved": 0
+        },
+        "WORD": {
+          "played": 0,
+          "solved": 0
+        },
+        "LOGIC": {
+          "played": 0,
+          "solved": 0
+        },
+        "JIGSAW": {
+          "played": 0,
+          "solved": 0
+        },
+        "PHYSICS": {
+          "played": 0,
+          "solved": 0
+        },
+        "EIGHT_BALL_QUIZ": {
+          "played": 0,
+          "solved": 0
+        },
+        "BLOCK_BLUSTER": {
+          "played": 0,
+          "solved": 0
+        },
+        "WORD_SEARCH": {
+          "played": 0,
+          "solved": 0
+        },
+        "TOWER_BLOXX": {
+          "played": 0,
+          "solved": 0
+        },
+        "MENTAL_MATH": {
+          "played": 0,
+          "solved": 0
+        }
+      }
+    },
+    "region": "Delhi",
+    "country": "India",
+    "sessionStart": 1786599385654
+  },
+  {
+    "id": "10112903269918911346933",
+    "username": "kov",
+    "avatar": "👤",
+    "frame": "none",
+    "rank": "BRONZE",
+    "nameColor": "",
+    "coins": 2050,
+    "gems": 217,
+    "level": 2,
+    "xp": 50,
+    "score": 0,
+    "status": "Ready to solve the universe.",
+    "lobbyEntranceAnimation": "",
+    "badges": [],
+    "inventory": [],
+    "lastSeen": 1786606999038,
+    "email": "kov65524@gmail.com",
+    "ipAddress": "::1",
+    "statistics": {
+      "gamesPlayed": 11,
+      "gamesWon": 3,
+      "totalSolveTime": 180,
+      "highestStreak": 1,
+      "puzzleSpecificStats": {
+        "SLIDING": {
+          "played": 11,
+          "solved": 3,
+          "bestTime": 60,
+          "timeSpent": 180
+        },
+        "SUDOKU": {
+          "played": 0,
+          "solved": 0
+        },
+        "WORD": {
+          "played": 0,
+          "solved": 0
+        },
+        "LOGIC": {
+          "played": 0,
+          "solved": 0
+        },
+        "JIGSAW": {
+          "played": 0,
+          "solved": 0
+        },
+        "PHYSICS": {
+          "played": 0,
+          "solved": 0
+        },
+        "EIGHT_BALL_QUIZ": {
+          "played": 0,
+          "solved": 0
+        },
+        "BLOCK_BLUSTER": {
+          "played": 0,
+          "solved": 0
+        },
+        "WORD_SEARCH": {
+          "played": 0,
+          "solved": 0
+        },
+        "TOWER_BLOXX": {
+          "played": 0,
+          "solved": 0
+        },
+        "MENTAL_MATH": {
+          "played": 0,
+          "solved": 0
+        }
+      }
+    },
+    "region": "Delhi",
+    "country": "India",
+    "sessionStart": 1786602962404
+  }
+]

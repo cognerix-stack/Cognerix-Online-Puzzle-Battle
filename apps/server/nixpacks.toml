@@ -1,0 +1,17 @@
+# Nixpacks configuration for NestJS Server inside Monorepo
+[phases.setup]
+nixPkgs = ["...", "nodejs-20_x"]
+
+[phases.install]
+cmds = [
+  "npm ci --workspace=@puzzle-verse/server --workspace=@puzzle-verse/shared"
+]
+
+[phases.build]
+cmds = [
+  "npm run build --workspace=@puzzle-verse/shared",
+  "npm run build --workspace=@puzzle-verse/server"
+]
+
+[start]
+cmd = "npm run start --workspace=@puzzle-verse/server"

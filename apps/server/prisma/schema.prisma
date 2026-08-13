@@ -1,0 +1,103 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum RankName {
+  BRONZE
+  SILVER
+  GOLD
+  PLATINUM
+  DIAMOND
+  MASTER
+  GRANDMASTER
+  LEGEND
+}
+
+enum PuzzleType {
+  SLIDING
+  SUDOKU
+  WORD
+  LOGIC
+  JIGSAW
+  PHYSICS
+  EIGHT_BALL_QUIZ
+  BLOCK_BLUSTER
+  WORD_SEARCH
+  TOWER_BLOXX
+  CHESS
+  MENTAL_MATH
+}
+
+enum GameMode {
+  PRACTICE
+  AI_OPPONENT
+  MATCH_1V1
+  MATCH_4PLAYER
+  TEAM_BATTLE
+  RANKED
+  CASUAL
+  TOURNAMENT
+  PRIVATE_ROOM
+}
+
+model User {
+  id           String        @id @default(uuid())
+  email        String?       @unique
+  // Stores the external identity provider ID. Originally for Firebase Auth,
+  // now also used to store Google OAuth "sub" (unique user ID from Google Sign-In).
+  // Do NOT rename without a database migration.
+  firebaseId   String?       @unique
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  profile      Profile?
+  gameSessions GameSession[] @relation("PlayerSessions")
+}
+
+model Profile {
+  id                     String    @id @default(uuid())
+  userId                 String    @unique
+  user                   User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  username               String    @unique
+  level                  Int       @default(1)
+  xp                     Int       @default(0)
+  coins                  Int       @default(100)
+  gems                   Int       @default(10)
+  rank                   RankName  @default(BRONZE)
+  nameColor              String?
+  status                 String?   @default("Ready to solve the universe.")
+  lobbyEntranceAnimation String?
+  badges                 String[]  // Array of badges owned
+  inventory              String[]  // Array of cosmetic item IDs owned
+  avatar                 String?   @default("👤")
+  frame                  String?   @default("none")
+  updatedAt              DateTime  @updatedAt
+}
+
+model GameSession {
+  id         String      @id @default(uuid())
+  puzzleType PuzzleType
+  gameMode   GameMode
+  seed       String
+  status     String      // "WAITING", "PLAYING", "FINISHED"
+  winnerId   String?
+  startTime  DateTime    @default(now())
+  endTime    DateTime?
+  players    User[]      @relation("PlayerSessions")
+}
+
+model LeaderboardEntry {
+  id         String      @id @default(uuid())
+  userId     String
+  username   String
+  rank       RankName
+  score      Int
+  puzzleType String      // "GLOBAL" or matching PuzzleType string
+  updatedAt  DateTime    @updatedAt
+
+  @@unique([userId, puzzleType])
+}

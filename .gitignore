@@ -1,0 +1,39 @@
+# Dependencies
+node_modules
+.pnp
+.pnp.js
+
+# Testing
+coverage
+
+# Next.js build output
+.next/
+out/
+
+# Production / Build output
+build/
+dist/
+.turbo
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Environments & credentials
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.pem
+
+# IDEs
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.gemini/
+.node/
