@@ -587,5 +587,116 @@ button, .btn {
   }
 }
 
+/* Comprehensive mobile layout adjustments (widths up to 480px) */
+@media (max-width: 480px) {
+  /* Limit maximum layout width on mobile to 420px and center it */
+  body {
+    max-width: 420px !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+    background-attachment: scroll !important;
+  }
 
+  .app-container {
+    padding: 8px !important;
+    max-width: 420px !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+  }
 
+  .main-content {
+    padding: 12px 8px !important;
+    gap: 16px !important;
+    max-width: 420px !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+  }
+
+  /* Make sure onboarding and login screen panels fit cleanly and shrink to fit width */
+  .app-container > .glass-panel {
+    padding: 20px 16px !important;
+    gap: 20px !important;
+    max-width: 420px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Header adjustments to prevent overflow and keep items on one line */
+  .header-hud {
+    padding: 10px 12px !important;
+    gap: 8px !important;
+  }
+
+  .header-profile {
+    gap: 8px !important;
+  }
+
+  .header-profile .avatar-wrapper {
+    transform: scale(0.75);
+    transform-origin: left center;
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  .header-profile-details {
+    display: none !important; /* Hide name/level to fit HUD on one line */
+  }
+
+  .header-right-hud {
+    gap: 6px !important;
+    margin-left: auto;
+  }
+
+  .reward-btn-text {
+    display: none !important; /* Hide reward text, only show gift icon */
+  }
+
+  .header-free-reward {
+    padding: 8px !important;
+    border-radius: 50% !important;
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+  }
+
+  .header-stat-label {
+    display: none !important; /* Hide Coins/Gems text labels */
+  }
+
+  .header-stat-add-btn {
+    display: none !important; /* Hide '+' buttons */
+  }
+
+  .header-stat-container {
+    padding: 6px 8px !important;
+    gap: 4px !important;
+    border-radius: 8px !important;
+  }
+
+  .header-stat-container h4 {
+    font-size: 13px !important;
+  }
+
+  .header-menu-btn {
+    padding: 8px !important;
+    border-radius: 50% !important;
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+  }
+
+  /* Force all grid options to stack and consume 100% of the parent width */
+  .login-grid,
+  .battle-arena-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+    width: 100% !important;
+  }
+
+  .login-grid .glass-panel,
+  .battle-arena-grid .glass-panel {
+    padding: 16px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+}

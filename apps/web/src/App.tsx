@@ -3631,7 +3631,7 @@ function App() {
           </div>
 
           {/* Grid Options */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '24px' }}>
+          <div className="login-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '24px' }}>
             
             {/* Column 1: Google Account Login */}
             <div className="glass-panel" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px', border: '1px solid var(--border-glass-active)' }}>
@@ -4235,9 +4235,9 @@ function App() {
       <main className="main-content" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
         
         {/* 🏆 TOP STATS HUD */}
-        <header className="glass-panel" style={{ padding: '16px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', zIndex: 10 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <div style={{ position: 'relative' }}>
+        <header className="glass-panel header-hud" style={{ padding: '16px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', zIndex: 10 }}>
+          <div className="header-profile" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <div className="avatar-wrapper" style={{ position: 'relative' }}>
               {renderAvatar(userProfile.avatar, userProfile.frame, 48)}
               {userProfile.lobbyEntranceAnimation && (
                 <span 
@@ -4246,7 +4246,7 @@ function App() {
                 />
               )}
             </div>
-            <div>
+            <div className="header-profile-details">
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <h2 
                   className={userProfile.nameColor?.startsWith('name-fx-') ? userProfile.nameColor : ''}
@@ -4276,11 +4276,11 @@ function App() {
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+          <div className="header-right-hud" style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
             {/* 🎁 FREE REWARD BUTTON */}
             <button
               onClick={() => { triggerSound('click'); setIsFreeRewardOpen(true); }}
-              className="btn"
+              className="btn header-free-reward"
               style={{
                 position: 'relative',
                 padding: '10px 16px',
@@ -4301,7 +4301,7 @@ function App() {
               }}
               title="Get Free Reward!"
             >
-              <span>🎁 Free Reward!</span>
+              <span>🎁<span className="reward-btn-text"> Free Reward!</span></span>
               {Date.now() - lastRewardClaimedTime > 60000 && (
                 <span style={{
                   position: 'absolute',
@@ -4324,14 +4324,15 @@ function App() {
               )}
             </button>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', background: 'rgba(245,158,11,0.08)', padding: '6px 10px 6px 14px', borderRadius: '12px', border: '1px solid rgba(245,158,11,0.15)' }}>
+            <div className="header-stat-container" style={{ display: 'flex', alignItems: 'center', gap: '10px', background: 'rgba(245,158,11,0.08)', padding: '6px 10px 6px 14px', borderRadius: '12px', border: '1px solid rgba(245,158,11,0.15)' }}>
               <Coins size={16} color="var(--color-warning)" />
               <div>
-                <p style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{t('coins_label')}</p>
+                <p className="header-stat-label" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{t('coins_label')}</p>
                 <h4 style={{ fontSize: '16px', fontFamily: 'var(--font-display)', color: 'var(--text-primary)' }}>{userProfile.coins}</h4>
               </div>
               <button 
                 onClick={() => { triggerSound('click'); setStorePopupTab('coins'); setIsStorePopupOpen(true); }}
+                className="header-stat-add-btn"
                 style={{
                   background: 'rgba(245,158,11,0.15)',
                   border: 'none',
@@ -4353,14 +4354,15 @@ function App() {
                 onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
               >+</button>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', background: 'rgba(6,182,212,0.08)', padding: '6px 10px 6px 14px', borderRadius: '12px', border: '1px solid rgba(6,182,212,0.15)' }}>
+            <div className="header-stat-container" style={{ display: 'flex', alignItems: 'center', gap: '10px', background: 'rgba(6,182,212,0.08)', padding: '6px 10px 6px 14px', borderRadius: '12px', border: '1px solid rgba(6,182,212,0.15)' }}>
               <Gem size={16} color="var(--color-secondary)" />
               <div>
-                <p style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{t('gems_label')}</p>
+                <p className="header-stat-label" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{t('gems_label')}</p>
                 <h4 style={{ fontSize: '16px', fontFamily: 'var(--font-display)', color: 'var(--text-primary)' }}>{userProfile.gems}</h4>
               </div>
               <button 
                 onClick={() => { triggerSound('click'); setStorePopupTab('gems'); setIsStorePopupOpen(true); }}
+                className="header-stat-add-btn"
                 style={{
                   background: 'rgba(6,182,212,0.15)',
                   border: 'none',
@@ -4386,7 +4388,7 @@ function App() {
             {/* ☰ Hamburger Button to open Menu Popup */}
             <button 
               onClick={() => { triggerSound('click'); setIsMenuPopupOpen(true); }}
-              className="btn btn-glass"
+              className="btn btn-glass header-menu-btn"
               style={{ padding: '12px', borderRadius: '12px', border: '1px solid var(--border-glass)', cursor: 'pointer', position: 'relative' }}
               title="Open Menu"
             >
@@ -5289,7 +5291,7 @@ function App() {
                 </p>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
+              <div className="battle-arena-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
                 {[
                   { 
                     type: PuzzleType.SLIDING, 
