@@ -3633,7 +3633,43 @@ function App() {
           {/* Grid Options */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '24px' }}>
             
-            {/* Column 1: Guest Login */}
+            {/* Column 1: Google Account Login */}
+            <div className="glass-panel" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px', border: '1px solid var(--border-glass-active)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div style={{ padding: '8px', borderRadius: '8px', background: 'rgba(34, 197, 94, 0.1)', color: 'var(--color-success)' }}>
+                  <Mail size={24} />
+                </div>
+                <div>
+                  <h3 style={{ fontSize: '18px', color: 'var(--text-primary)', fontFamily: 'var(--font-display)' }}>{t('google_linked_account')}</h3>
+                  <span style={{ fontSize: '11px', color: 'var(--color-success)', fontWeight: 'bold' }}>{t('preserved_progress')}</span>
+                </div>
+              </div>
+              
+              <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.5' }}>
+                {t('google_desc')}
+              </p>
+
+              {/* Real Google Sign-In Button */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'center' }}>
+                <div
+                  ref={googleButtonRef}
+                  style={{ width: '100%', display: 'flex', justifyContent: 'center', minHeight: '44px' }}
+                />
+                {!googleClientId && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}>
+                    <div className="processing-spinner" style={{ width: '16px', height: '16px', border: '2px solid rgba(34,197,94,0.2)', borderTopColor: '#22c55e', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+                    <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Connecting to Google...</span>
+                  </div>
+                )}
+                {googleLoginLoading && (
+                  <p style={{ fontSize: '12px', color: 'var(--text-muted)', textAlign: 'center' }}>
+                    Signing in...
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {/* Column 2: Guest Login */}
             <div className="glass-panel" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px', border: '1px solid var(--border-glass)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                 <div style={{ padding: '8px', borderRadius: '8px', background: 'rgba(139, 92, 246, 0.1)', color: 'var(--color-primary)' }}>
@@ -3675,42 +3711,6 @@ function App() {
               >
                 {t('continue_guest_btn')}
               </button>
-            </div>
-
-            {/* Column 2: Google Account Login */}
-            <div className="glass-panel" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px', border: '1px solid var(--border-glass-active)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <div style={{ padding: '8px', borderRadius: '8px', background: 'rgba(34, 197, 94, 0.1)', color: 'var(--color-success)' }}>
-                  <Mail size={24} />
-                </div>
-                <div>
-                  <h3 style={{ fontSize: '18px', color: 'var(--text-primary)', fontFamily: 'var(--font-display)' }}>{t('google_linked_account')}</h3>
-                  <span style={{ fontSize: '11px', color: 'var(--color-success)', fontWeight: 'bold' }}>{t('preserved_progress')}</span>
-                </div>
-              </div>
-              
-              <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.5' }}>
-                {t('google_desc')}
-              </p>
-
-              {/* Real Google Sign-In Button */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'center' }}>
-                <div
-                  ref={googleButtonRef}
-                  style={{ width: '100%', display: 'flex', justifyContent: 'center', minHeight: '44px' }}
-                />
-                {!googleClientId && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}>
-                    <div className="processing-spinner" style={{ width: '16px', height: '16px', border: '2px solid rgba(34,197,94,0.2)', borderTopColor: '#22c55e', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
-                    <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Connecting to Google...</span>
-                  </div>
-                )}
-                {googleLoginLoading && (
-                  <p style={{ fontSize: '12px', color: 'var(--text-muted)', textAlign: 'center' }}>
-                    Signing in...
-                  </p>
-                )}
-              </div>
             </div>
 
           </div>
