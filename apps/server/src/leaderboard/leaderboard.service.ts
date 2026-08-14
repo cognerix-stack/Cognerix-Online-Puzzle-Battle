@@ -64,7 +64,7 @@ export class LeaderboardService {
           userId: { in: userIds }
         }
       });
-      const profileMap = new Map<string, any>(profiles.map(p => [p.userId, p]));
+      const profileMap = new Map<string, any>(profiles.map((p: any) => [p.userId, p]));
       return entries.map((e: any) => {
         const p = profileMap.get(e.userId);
         return {
