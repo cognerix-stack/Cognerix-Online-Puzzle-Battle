@@ -578,4 +578,14 @@ button, .btn {
   }
 }
 
+/* Ensure the live duel hub does not obstruct the hamburger menu on mobile screens */
+@media (max-width: 768px) {
+  .live-duel-hub-panel {
+    left: 70px !important;
+    transform: none !important;
+    width: calc(100% - 90px) !important;
+  }
+}
+
+
 

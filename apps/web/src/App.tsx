@@ -4498,7 +4498,7 @@ function App() {
             {matchmakingState === 'playing' && opponentInfo && (
               isLiveDuelHubExpanded ? (
                 /* EXPANDED STATE (A button to collapse) */
-                <div style={{ position: 'absolute', top: '16px', left: '50%', transform: 'translateX(-50%)', width: '90%', maxWidth: '600px', display: 'flex', gap: '20px', background: isLightMode ? '#ffffff' : 'rgba(10, 6, 26, 0.95)', padding: '16px 20px', borderRadius: '16px', border: isLightMode ? '1px solid #cbd5e1' : '1px solid rgba(255,255,255,0.1)', boxShadow: isLightMode ? '0 4px 12px rgba(0, 0, 0, 0.05)' : 'none', zIndex: 1010 }}>
+                <div className="live-duel-hub-panel" style={{ position: 'absolute', top: '16px', left: '50%', transform: 'translateX(-50%)', width: '90%', maxWidth: '600px', display: 'flex', gap: '20px', background: isLightMode ? '#ffffff' : 'rgba(10, 6, 26, 0.95)', padding: '16px 20px', borderRadius: '16px', border: isLightMode ? '1px solid #cbd5e1' : '1px solid rgba(255,255,255,0.1)', boxShadow: isLightMode ? '0 4px 12px rgba(0, 0, 0, 0.05)' : 'none', zIndex: 1010 }}>
                   
                   {/* Left Side: Stats and Parallel Progress Bars */}
                   <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -4811,7 +4811,7 @@ function App() {
                 </div>
               ) : (
                 /* COLLAPSED STATE (V button to expand) */
-                <div style={{ position: 'absolute', top: '16px', left: '50%', transform: 'translateX(-50%)', width: '90%', maxWidth: '600px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: isLightMode ? '#ffffff' : 'rgba(10, 6, 26, 0.95)', padding: '10px 20px', borderRadius: '16px', border: isLightMode ? '1px solid #cbd5e1' : '1px solid rgba(255,255,255,0.1)', boxShadow: isLightMode ? '0 4px 12px rgba(0, 0, 0, 0.05)' : 'none', zIndex: 1010 }}>
+                <div className="live-duel-hub-panel" style={{ position: 'absolute', top: '16px', left: '50%', transform: 'translateX(-50%)', width: '90%', maxWidth: '600px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: isLightMode ? '#ffffff' : 'rgba(10, 6, 26, 0.95)', padding: '10px 20px', borderRadius: '16px', border: isLightMode ? '1px solid #cbd5e1' : '1px solid rgba(255,255,255,0.1)', boxShadow: isLightMode ? '0 4px 12px rgba(0, 0, 0, 0.05)' : 'none', zIndex: 1010 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 'bold' }}>LIVE DUEL HUB</span>
                     <button
