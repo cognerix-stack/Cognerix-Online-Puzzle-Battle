@@ -194,7 +194,7 @@ export class ProfileService {
       });
 
       // Sum scores of all specific puzzle categories
-      const globalScore = userEntries.reduce((sum: number, entry) => sum + entry.score, 0);
+      const globalScore = userEntries.reduce((sum: number, entry: any) => sum + entry.score, 0);
 
       await this.prisma.leaderboardEntry.upsert({
         where: {
