@@ -632,7 +632,7 @@ button, .btn {
   .header-hud {
     position: sticky !important;
     top: 8px !important;
-    padding: 8px 10px !important;
+    padding: 10px 12px !important;
     gap: 6px !important;
     z-index: 1000 !important;
   }
@@ -642,21 +642,21 @@ button, .btn {
   }
 
   .header-profile .avatar-wrapper {
-    transform: scale(0.65) !important; /* Scale avatar slightly down to fit username next to it */
-    transform-origin: left center !important;
-    width: 32px !important;
-    height: 32px !important;
+    transform: none !important;
+    width: 34px !important;
+    height: 34px !important;
   }
 
   .header-profile-details {
     display: flex !important;
     flex-direction: column !important;
-    max-width: 45px !important; /* Truncate name to make room for stats */
+    max-width: 15vw !important; /* Scale username dynamically with viewport width */
+    flex-shrink: 1 !important;
   }
 
   .header-profile-details h2 {
-    font-size: 11px !important;
-    max-width: 45px !important;
+    font-size: 12px !important;
+    max-width: 100% !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
     white-space: nowrap !important;
@@ -684,9 +684,10 @@ button, .btn {
   .header-free-reward {
     padding: 6px !important;
     border-radius: 50% !important;
-    width: 30px !important;
-    height: 30px !important;
-    min-width: 30px !important;
+    width: 34px !important;
+    height: 34px !important;
+    min-width: 34px !important;
+    font-size: 15px !important;
   }
 
   .header-stat-label {
@@ -695,10 +696,10 @@ button, .btn {
 
   .header-stat-add-btn {
     display: flex !important;
-    width: 12px !important;
-    height: 12px !important;
-    font-size: 8px !important;
-    margin-left: 2px !important;
+    width: 16px !important;
+    height: 16px !important;
+    font-size: 11px !important;
+    margin-left: 4px !important;
     padding: 0 !important;
     align-items: center !important;
     justify-content: center !important;
@@ -708,26 +709,26 @@ button, .btn {
   }
 
   .header-stat-container {
-    padding: 4px 4px 4px 6px !important;
-    gap: 2px !important;
-    border-radius: 6px !important;
+    padding: 6px 6px 6px 8px !important;
+    gap: 4px !important;
+    border-radius: 8px !important;
   }
 
   .header-stat-container svg {
-    width: 12px !important;
-    height: 12px !important;
+    width: 14px !important;
+    height: 14px !important;
   }
 
   .header-stat-container h4 {
-    font-size: 11px !important;
+    font-size: 13px !important;
   }
 
   .header-menu-btn {
     padding: 6px !important;
     border-radius: 50% !important;
-    width: 30px !important;
-    height: 30px !important;
-    min-width: 30px !important;
+    width: 34px !important;
+    height: 34px !important;
+    min-width: 34px !important;
   }
 
   /* Force all grid options to stack and consume 100% of the parent width */
