@@ -4260,9 +4260,11 @@ function App() {
                   }}
                 >
                   {userProfile.username}
-                  {userProfile.badges.map((badge, idx) => (
-                    <span key={idx} style={{ fontSize: '12px' }} title="Equipped Badge">{badge}</span>
-                  ))}
+                  <span className="header-profile-badge" style={{ display: 'inline-flex', gap: '3px' }}>
+                    {userProfile.badges.map((badge, idx) => (
+                      <span key={idx} style={{ fontSize: '12px' }} title="Equipped Badge">{badge}</span>
+                    ))}
+                  </span>
                 </h2>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>

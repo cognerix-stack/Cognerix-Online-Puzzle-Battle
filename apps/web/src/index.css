@@ -578,6 +578,13 @@ button, .btn {
   }
 }
 
+/* Sticky Header positioning for all viewports */
+.header-hud {
+  position: sticky !important;
+  top: 16px !important;
+  z-index: 1000 !important;
+}
+
 /* Ensure the live duel hub does not obstruct the hamburger menu on mobile screens */
 @media (max-width: 768px) {
   .live-duel-hub-panel {
@@ -623,27 +630,50 @@ button, .btn {
 
   /* Header adjustments to prevent overflow and keep items on one line */
   .header-hud {
-    padding: 10px 12px !important;
-    gap: 8px !important;
+    position: sticky !important;
+    top: 8px !important;
+    padding: 8px 10px !important;
+    gap: 6px !important;
+    z-index: 1000 !important;
   }
 
   .header-profile {
-    gap: 8px !important;
+    gap: 6px !important;
   }
 
   .header-profile .avatar-wrapper {
-    transform: scale(0.75);
-    transform-origin: left center;
-    width: 36px !important;
-    height: 36px !important;
+    transform: scale(0.65) !important; /* Scale avatar slightly down to fit username next to it */
+    transform-origin: left center !important;
+    width: 32px !important;
+    height: 32px !important;
   }
 
   .header-profile-details {
-    display: none !important; /* Hide name/level to fit HUD on one line */
+    display: flex !important;
+    flex-direction: column !important;
+    max-width: 45px !important; /* Truncate name to make room for stats */
+  }
+
+  .header-profile-details h2 {
+    font-size: 11px !important;
+    max-width: 45px !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    display: block !important;
+    margin: 0 !important;
+  }
+
+  .header-profile-details div:nth-child(2) {
+    display: none !important; /* Hide Level/Rank row on mobile HUD */
+  }
+
+  .header-profile-badge {
+    display: none !important; /* Hide badges on mobile HUD */
   }
 
   .header-right-hud {
-    gap: 6px !important;
+    gap: 4px !important;
     margin-left: auto;
   }
 
@@ -652,11 +682,11 @@ button, .btn {
   }
 
   .header-free-reward {
-    padding: 8px !important;
+    padding: 6px !important;
     border-radius: 50% !important;
-    width: 36px !important;
-    height: 36px !important;
-    min-width: 36px !important;
+    width: 30px !important;
+    height: 30px !important;
+    min-width: 30px !important;
   }
 
   .header-stat-label {
@@ -664,25 +694,40 @@ button, .btn {
   }
 
   .header-stat-add-btn {
-    display: none !important; /* Hide '+' buttons */
+    display: flex !important;
+    width: 12px !important;
+    height: 12px !important;
+    font-size: 8px !important;
+    margin-left: 2px !important;
+    padding: 0 !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 50% !important;
+    background: rgba(255, 255, 255, 0.15) !important;
+    line-height: 1 !important;
   }
 
   .header-stat-container {
-    padding: 6px 8px !important;
-    gap: 4px !important;
-    border-radius: 8px !important;
+    padding: 4px 4px 4px 6px !important;
+    gap: 2px !important;
+    border-radius: 6px !important;
+  }
+
+  .header-stat-container svg {
+    width: 12px !important;
+    height: 12px !important;
   }
 
   .header-stat-container h4 {
-    font-size: 13px !important;
+    font-size: 11px !important;
   }
 
   .header-menu-btn {
-    padding: 8px !important;
+    padding: 6px !important;
     border-radius: 50% !important;
-    width: 36px !important;
-    height: 36px !important;
-    min-width: 36px !important;
+    width: 30px !important;
+    height: 30px !important;
+    min-width: 30px !important;
   }
 
   /* Force all grid options to stack and consume 100% of the parent width */
