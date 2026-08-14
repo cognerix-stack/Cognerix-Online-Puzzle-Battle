@@ -4412,7 +4412,7 @@ function App() {
           <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: isLightMode ? 'rgba(240, 244, 248, 0.98)' : 'rgba(4, 2, 9, 0.95)', zIndex: 1000, display: isGameHidden ? 'none' : 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px', backdropFilter: 'blur(8px)' }}>
             
             {/* ☰ Floating Top Left Game Menu Button */}
-            <div style={{ position: 'absolute', top: '20px', left: '20px', zIndex: 1010 }}>
+            <div style={{ position: 'absolute', top: '20px', left: '20px', zIndex: 2000 }}>
               <button
                 onClick={() => { triggerSound('click'); setIsGameMenuOpen(!isGameMenuOpen); }}
                 className="btn btn-glass"
