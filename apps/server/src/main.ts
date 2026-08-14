@@ -11,7 +11,21 @@ async function bootstrap() {
   
   // Enable CORS for frontend API calls
   app.enableCors({
-    origin: '*',
+    origin: (origin, callback) => {
+      // Allow local development and Vercel production/preview deploys
+      if (
+        !origin || 
+        origin.startsWith('http://localhost') || 
+        origin.startsWith('http://127.0.0.1') ||
+        origin.startsWith('http://192.168.') ||
+        origin.startsWith('http://10.') ||
+        origin.endsWith('.vercel.app')
+      ) {
+        callback(null, true);
+      } else {
+        callback(null, false);
+      }
+    },
     credentials: true,
   });
 
