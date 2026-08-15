@@ -4415,8 +4415,11 @@ function App() {
         {activeGame && (
           <div className="active-game-modal" style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: isLightMode ? 'rgba(240, 244, 248, 0.98)' : 'rgba(4, 2, 9, 0.95)', zIndex: 1000, display: isGameHidden ? 'none' : 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px', backdropFilter: 'blur(8px)' }}>
             
-            {/* ☰ Floating Top Left Game Menu Button */}
-            <div className="active-game-menu-btn-wrapper" style={{ position: 'absolute', top: '20px', left: '20px', zIndex: 2000 }}>
+            {/* Sticky Header Bar containing Menu Button and Live Duel Hub */}
+            <div className="active-game-header" style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '100%', zIndex: 2000 }}>
+
+              {/* ☰ Floating Top Left Game Menu Button */}
+              <div className="active-game-menu-btn-wrapper" style={{ position: 'absolute', top: '20px', left: '20px', zIndex: 2000 }}>
               <button
                 onClick={() => { triggerSound('click'); setIsGameMenuOpen(!isGameMenuOpen); }}
                 className="btn btn-glass"
@@ -4866,6 +4869,8 @@ function App() {
               )
             )}
 
+            </div>
+
             <div className="active-game-body" style={{ width: '100%', maxWidth: '650px', background: 'transparent', margin: 'auto', position: 'relative' }}>
               {activeGame === PuzzleType.SLIDING && (
                 <SlidingPuzzle 
@@ -5221,11 +5226,6 @@ function App() {
                   </form>
                 </div>
               )}
-            </div>
-
-            {/* 📢 Bottom Banner Ad Space Placeholder */}
-            <div className="active-game-banner-ad" style={{ display: 'none' }}>
-              <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Advertisement Space</span>
             </div>
 
           </div>
