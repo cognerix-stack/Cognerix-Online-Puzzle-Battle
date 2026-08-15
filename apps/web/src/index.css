@@ -790,8 +790,16 @@ button, .btn {
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    z-index: 2010 !important;
+    z-index: 9999 !important; /* Set to highest z-index so dropdown appears on top of Live Duel Hub */
     flex-shrink: 0 !important;
+  }
+
+  .active-game-menu-dropdown {
+    position: absolute !important;
+    top: 50px !important;
+    left: 0 !important;
+    width: 180px !important;
+    z-index: 9999 !important; /* Overlay on top of everything without pushing content */
   }
 
   .active-game-modal .live-duel-hub-panel {

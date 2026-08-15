@@ -4444,7 +4444,7 @@ function App() {
               {/* Dropdown Menu Container */}
               {isGameMenuOpen && (
                 <div 
-                  className="glass-panel animate-fade-in"
+                  className="glass-panel animate-fade-in active-game-menu-dropdown"
                   style={{ 
                     position: 'absolute', 
                     top: '50px', 
