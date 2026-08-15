@@ -5449,7 +5449,7 @@ function App() {
             TAB 2: PLAYER PROFILE
             ======================================================== */}
         {activeTab === 'profile' && (
-          <section className={entranceClass} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          <section className={`${entranceClass} ${activeGame && isGameHidden ? 'active-game-overlay-tab' : ''}`} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             <div className="glass-panel" style={{ display: 'flex', gap: '24px', alignItems: 'flex-start' }}>
               {renderAvatar(userProfile.avatar, userProfile.frame, 90)}
 
@@ -6321,7 +6321,7 @@ function App() {
             TAB 7: ACCESSIBILITY & AUDIO SETTINGS
             ======================================================= */}
         {activeTab === 'settings' && (
-          <section className={entranceClass} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          <section className={`${entranceClass} ${activeGame && isGameHidden ? 'active-game-overlay-tab' : ''}`} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             <div className="glass-panel">
               <h3 style={{ fontSize: '20px', color: 'var(--text-primary)', marginBottom: '16px' }}>{t('accessibility_display')}</h3>
 
@@ -11289,7 +11289,7 @@ function App() {
       {/* Floating pulsing Return to Game widget */}
       {activeGame && isGameHidden && (
         <div 
-          onClick={() => { triggerSound('click'); setIsGameHidden(false); }}
+          onClick={() => { triggerSound('click'); setIsGameHidden(false); setActiveTab('home'); }}
           className="animate-pulse-scale"
           style={{
             position: 'fixed',
