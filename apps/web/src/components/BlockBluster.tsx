@@ -57,6 +57,7 @@ export const BlockBluster: React.FC<BlockBlusterProps> = ({ onGameWin, onClose, 
   const [blastingCells, setBlastingCells] = useState<number[]>([]);
 
   const containerRef = useRef<HTMLDivElement>(null);
+  const ghostRef = useRef<HTMLDivElement>(null);
 
   // Drag and drop state
   const [draggingTrayIdx, setDraggingTrayIdx] = useState<number | null>(null);
@@ -379,23 +380,29 @@ export const BlockBluster: React.FC<BlockBlusterProps> = ({ onGameWin, onClose, 
 
     const handlePointerMove = (e: PointerEvent) => {
       const rect = containerRef.current?.getBoundingClientRect() || { left: 0, top: 0 };
-      setDragPos({
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top,
-        isTouch: e.pointerType === 'touch'
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const isTouch = e.pointerType === 'touch';
+
+      // GPU Accelerated DOM position updates via requestAnimationFrame bypassing React re-renders
+      requestAnimationFrame(() => {
+        if (ghostRef.current) {
+          const offset = isTouch ? 0 : 40;
+          ghostRef.current.style.transform = `translate3d(${x}px, ${y - offset}px, 0) translate(-50%, -50%) scale(1.15)`;
+        }
       });
 
       // Check hover over grid
       if (gridRef.current) {
-        const rect = gridRef.current.getBoundingClientRect();
+        const rectGrid = gridRef.current.getBoundingClientRect();
         if (
-          e.clientX >= rect.left &&
-          e.clientX <= rect.right &&
-          e.clientY >= rect.top &&
-          e.clientY <= rect.bottom
+          e.clientX >= rectGrid.left &&
+          e.clientX <= rectGrid.right &&
+          e.clientY >= rectGrid.top &&
+          e.clientY <= rectGrid.bottom
         ) {
-          const col = Math.floor(((e.clientX - rect.left) / rect.width) * GRID_SIZE);
-          const row = Math.floor(((e.clientY - rect.top) / rect.height) * GRID_SIZE);
+          const col = Math.floor(((e.clientX - rectGrid.left) / rectGrid.width) * GRID_SIZE);
+          const row = Math.floor(((e.clientY - rectGrid.top) / rectGrid.height) * GRID_SIZE);
           const cellIdx = Math.min(63, Math.max(0, row * GRID_SIZE + col));
           setHoverCell(cellIdx);
         } else {
@@ -404,17 +411,22 @@ export const BlockBluster: React.FC<BlockBlusterProps> = ({ onGameWin, onClose, 
       }
     };
 
+    const handleTouchMove = (e: TouchEvent) => {
+      // Stop browser default scrolling behaviors during active drag
+      e.preventDefault();
+    };
+
     const handlePointerUp = (e: PointerEvent) => {
       if (gridRef.current) {
-        const rect = gridRef.current.getBoundingClientRect();
+        const rectGrid = gridRef.current.getBoundingClientRect();
         if (
-          e.clientX >= rect.left &&
-          e.clientX <= rect.right &&
-          e.clientY >= rect.top &&
-          e.clientY <= rect.bottom
+          e.clientX >= rectGrid.left &&
+          e.clientX <= rectGrid.right &&
+          e.clientY >= rectGrid.top &&
+          e.clientY <= rectGrid.bottom
         ) {
-          const col = Math.floor(((e.clientX - rect.left) / rect.width) * GRID_SIZE);
-          const row = Math.floor(((e.clientY - rect.top) / rect.height) * GRID_SIZE);
+          const col = Math.floor(((e.clientX - rectGrid.left) / rectGrid.width) * GRID_SIZE);
+          const row = Math.floor(((e.clientY - rectGrid.top) / rectGrid.height) * GRID_SIZE);
           const cellIdx = Math.min(63, Math.max(0, row * GRID_SIZE + col));
           placeShapeAtCell(draggingTrayIdx, cellIdx);
         }
@@ -428,11 +440,13 @@ export const BlockBluster: React.FC<BlockBlusterProps> = ({ onGameWin, onClose, 
     window.addEventListener('pointermove', handlePointerMove);
     window.addEventListener('pointerup', handlePointerUp);
     window.addEventListener('pointercancel', handlePointerUp);
+    window.addEventListener('touchmove', handleTouchMove, { passive: false });
 
     return () => {
       window.removeEventListener('pointermove', handlePointerMove);
       window.removeEventListener('pointerup', handlePointerUp);
       window.removeEventListener('pointercancel', handlePointerUp);
+      window.removeEventListener('touchmove', handleTouchMove);
     };
   }, [draggingTrayIdx, grid, tray, score, linesCleared, isGameOver]);
 
@@ -680,11 +694,14 @@ export const BlockBluster: React.FC<BlockBlusterProps> = ({ onGameWin, onClose, 
       {/* Floating Ghost Overlay Following Mouse/Finger During Drag */}
       {draggingTrayIdx !== null && dragPos && draggedShape && (
         <div
+          ref={ghostRef}
           style={{
             position: 'absolute',
-            left: `${dragPos.x}px`,
-            top: `${dragPos.isTouch ? dragPos.y : dragPos.y - 40}px`, // Slight offset for mouse so pointer doesn't block view, exact match for touch
-            transform: 'translate(-50%, -50%) scale(1.15)',
+            left: 0,
+            top: 0,
+            transform: `translate3d(${dragPos.x}px, ${dragPos.isTouch ? dragPos.y : dragPos.y - 40}px, 0) translate(-50%, -50%) scale(1.15)`,
+            willChange: 'transform',
+            touchAction: 'none',
             pointerEvents: 'none',
             zIndex: 9999,
             display: 'grid',
