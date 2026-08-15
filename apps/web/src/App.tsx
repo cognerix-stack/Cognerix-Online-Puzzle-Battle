@@ -4505,13 +4505,13 @@ function App() {
             {matchmakingState === 'playing' && opponentInfo && (
               isLiveDuelHubExpanded ? (
                 /* EXPANDED STATE (A button to collapse) */
-                <div className="live-duel-hub-panel" style={{ position: 'absolute', top: '16px', left: '50%', transform: 'translateX(-50%)', width: '90%', maxWidth: '600px', display: 'flex', gap: '20px', background: isLightMode ? '#ffffff' : 'rgba(10, 6, 26, 0.95)', padding: '16px 20px', borderRadius: '16px', border: isLightMode ? '1px solid #cbd5e1' : '1px solid rgba(255,255,255,0.1)', boxShadow: isLightMode ? '0 4px 12px rgba(0, 0, 0, 0.05)' : 'none', zIndex: 1010 }}>
+                <div className="live-duel-hub-panel live-duel-hub-expanded" style={{ position: 'absolute', top: '16px', left: '50%', transform: 'translateX(-50%)', width: '90%', maxWidth: '600px', display: 'flex', gap: '20px', background: isLightMode ? '#ffffff' : 'rgba(10, 6, 26, 0.95)', padding: '16px 20px', borderRadius: '16px', border: isLightMode ? '1px solid #cbd5e1' : '1px solid rgba(255,255,255,0.1)', boxShadow: isLightMode ? '0 4px 12px rgba(0, 0, 0, 0.05)' : 'none', zIndex: 1010 }}>
                   
                   {/* Left Side: Stats and Parallel Progress Bars */}
                   <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 'bold' }}>LIVE DUEL HUB</span>
+                        <span className="ldh-title" style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 'bold' }}>LIVE DUEL HUB</span>
                         <button
                           onClick={() => {
                             triggerSound('click');
@@ -4550,7 +4550,7 @@ function App() {
                           Round {currentRound} of 3 ({playerRoundWins} - {opponentRoundWins})
                         </span>
                       )}
-                      <span style={{ fontSize: '10px', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', padding: '2px 6px', borderRadius: '10px', color: 'var(--color-danger)', fontWeight: 'bold' }}>COMPETITIVE</span>
+                      <span className="ldh-badge-competitive" style={{ fontSize: '10px', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', padding: '2px 6px', borderRadius: '10px', color: 'var(--color-danger)', fontWeight: 'bold' }}>COMPETITIVE</span>
                     </div>
 
                     {/* Player Progress */}
@@ -4615,8 +4615,8 @@ function App() {
                         </div>
                         <span style={{ color: 'var(--color-primary)', fontWeight: 'bold' }}>{playerProgress}%</span>
                       </div>
-                      <div style={{ width: '100%', height: '8px', background: isLightMode ? '#e2e8f0' : 'rgba(255,255,255,0.05)', borderRadius: '4px', overflow: 'hidden' }}>
-                        <div style={{ width: `${playerProgress}%`, height: '100%', background: 'linear-gradient(to right, var(--color-primary), var(--color-secondary))' }} />
+                      <div className="ldh-progress-bar-container" style={{ width: '100%', height: '8px', background: isLightMode ? '#e2e8f0' : 'rgba(255,255,255,0.05)', borderRadius: '4px', overflow: 'hidden' }}>
+                        <div className="ldh-progress-bar-fill" style={{ width: `${playerProgress}%`, height: '100%', background: 'linear-gradient(to right, var(--color-primary), var(--color-secondary))' }} />
                       </div>
                     </div>
 
@@ -4624,7 +4624,7 @@ function App() {
                     <div>
                       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', marginBottom: '2px', alignItems: 'center' }}>
                         <div style={{ display: 'flex', gap: '8px', alignItems: 'center', position: 'relative' }}>
-                          <span className={opponentInfo.nameColor?.startsWith('name-fx-') ? opponentInfo.nameColor : ''} style={{ color: opponentInfo.nameColor?.startsWith('name-fx-') ? undefined : (opponentInfo.nameColor || 'var(--color-accent)'), fontWeight: 'bold' }}>
+                          <span className={(opponentInfo.nameColor?.startsWith('name-fx-') ? opponentInfo.nameColor : '') + " ldh-player-name"} style={{ color: opponentInfo.nameColor?.startsWith('name-fx-') ? undefined : (opponentInfo.nameColor || 'var(--color-accent)'), fontWeight: 'bold' }}>
                             {opponentInfo.username} ({opponentInfo.rank})
                             {opponentInfo.aiMode && ` [${opponentInfo.aiMode}]`}
                           </span>
@@ -4640,6 +4640,7 @@ function App() {
                           )}
                           {!opponentInfo.aiMode && (
                             <button
+                              className="ldh-block-btn"
                               onClick={() => {
                                 triggerSound('click');
                                 const oppId = opponentInfo.id || '';
@@ -4717,14 +4718,14 @@ function App() {
                         </div>
                         <span style={{ color: 'var(--color-accent)', fontWeight: 'bold' }}>{opponentInfo.progress}%</span>
                       </div>
-                      <div style={{ width: '100%', height: '8px', background: isLightMode ? '#e2e8f0' : 'rgba(255,255,255,0.05)', borderRadius: '4px', overflow: 'hidden' }}>
-                        <div style={{ width: `${opponentInfo.progress}%`, height: '100%', background: 'var(--color-accent)' }} />
+                      <div className="ldh-progress-bar-container" style={{ width: '100%', height: '8px', background: isLightMode ? '#e2e8f0' : 'rgba(255,255,255,0.05)', borderRadius: '4px', overflow: 'hidden' }}>
+                        <div className="ldh-progress-bar-fill" style={{ width: `${opponentInfo.progress}%`, height: '100%', background: 'var(--color-accent)' }} />
                       </div>
                     </div>
                   </div>
 
                   {/* Right Side: Visual Miniature Board Spec Cam */}
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderLeft: '1px solid var(--border-glass)', paddingLeft: '16px', minWidth: '90px' }}>
+                  <div className="ldh-rival-board-wrapper" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderLeft: '1px solid var(--border-glass)', paddingLeft: '16px', minWidth: '90px' }}>
                     <span style={{ fontSize: '9px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '4px' }}>
                       Rival Board {opponentInfo.aiMode ? `(${opponentInfo.aiMode})` : ''}
                     </span>
@@ -4818,7 +4819,7 @@ function App() {
                 </div>
               ) : (
                 /* COLLAPSED STATE (V button to expand) */
-                <div className="live-duel-hub-panel" style={{ position: 'absolute', top: '16px', left: '50%', transform: 'translateX(-50%)', width: '90%', maxWidth: '600px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: isLightMode ? '#ffffff' : 'rgba(10, 6, 26, 0.95)', padding: '10px 20px', borderRadius: '16px', border: isLightMode ? '1px solid #cbd5e1' : '1px solid rgba(255,255,255,0.1)', boxShadow: isLightMode ? '0 4px 12px rgba(0, 0, 0, 0.05)' : 'none', zIndex: 1010 }}>
+                <div className="live-duel-hub-panel live-duel-hub-collapsed" style={{ position: 'absolute', top: '16px', left: '50%', transform: 'translateX(-50%)', width: '90%', maxWidth: '600px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: isLightMode ? '#ffffff' : 'rgba(10, 6, 26, 0.95)', padding: '10px 20px', borderRadius: '16px', border: isLightMode ? '1px solid #cbd5e1' : '1px solid rgba(255,255,255,0.1)', boxShadow: isLightMode ? '0 4px 12px rgba(0, 0, 0, 0.05)' : 'none', zIndex: 1010 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 'bold' }}>LIVE DUEL HUB</span>
                     <button

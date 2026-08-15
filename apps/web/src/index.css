@@ -898,4 +898,93 @@ button, .btn {
     padding: 24px 16px 88px 16px !important; /* Ensure space at bottom so contents are not blocked by the floating button */
     box-sizing: border-box !important;
   }
+  /* Live Duel Hub Mobile Redesign Styling */
+  .live-duel-hub-panel {
+    border-radius: 12px !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15) !important;
+  }
+
+  .live-duel-hub-expanded {
+    padding: 8px 10px !important;
+    gap: 8px !important;
+  }
+
+  .live-duel-hub-expanded .ldh-title {
+    font-size: 9px !important;
+    letter-spacing: 0.5px !important;
+  }
+
+  .live-duel-hub-expanded button {
+    width: 20px !important;
+    height: 20px !important;
+    font-size: 9px !important;
+  }
+
+  .live-duel-hub-expanded .ldh-badge-competitive {
+    font-size: 8px !important;
+    padding: 1px 4px !important;
+    border-radius: 6px !important;
+  }
+
+  .live-duel-hub-expanded .ldh-player-name {
+    font-size: 10px !important;
+    font-weight: bold !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
+    overflow: hidden !important;
+    max-width: 75px !important;
+    display: inline-block !important;
+    vertical-align: middle !important;
+  }
+
+  .live-duel-hub-expanded .ldh-block-btn {
+    font-size: 8px !important;
+    padding: 1px 4px !important;
+    margin-left: 4px !important;
+    border-radius: 4px !important;
+    width: auto !important;
+    height: auto !important;
+  }
+
+  .live-duel-hub-expanded .ldh-progress-bar-container {
+    height: 4px !important;
+    border-radius: 2px !important;
+    margin: 2px 0 6px 0 !important;
+  }
+
+  .live-duel-hub-expanded .ldh-rival-board-wrapper {
+    padding-left: 8px !important;
+    min-width: 70px !important;
+  }
+
+  .live-duel-hub-expanded .ldh-rival-board-wrapper > span {
+    font-size: 8px !important;
+    margin-bottom: 2px !important;
+  }
+
+  .live-duel-hub-expanded .ldh-rival-board-wrapper span[style*="LIVE STREAM"] {
+    font-size: 7px !important;
+    margin-top: 2px !important;
+  }
+
+  .live-duel-hub-collapsed {
+    padding: 6px 10px !important;
+    height: 36px !important;
+    box-sizing: border-box !important;
+  }
+
+  .live-duel-hub-collapsed .ldh-title {
+    font-size: 9px !important;
+  }
+
+  .live-duel-hub-collapsed button {
+    width: 20px !important;
+    height: 20px !important;
+    font-size: 9px !important;
+  }
+
+  .live-duel-hub-collapsed div[style*="display: 'flex'"][style*="gap: '12px'"] {
+    font-size: 9px !important;
+    gap: 8px !important;
+  }
 }
