@@ -34,7 +34,7 @@ interface Particle {
   alpha: number;
 }
 
-const TARGET_FLOORS = 25;
+const TARGET_FLOORS = 15;
 const BLOCK_WIDTH = 118;
 const BLOCK_HEIGHT = 56;
 const CANVAS_WIDTH = 420;
@@ -108,7 +108,8 @@ export const TowerBloxx: React.FC<TowerBloxxProps> = ({ onGameWin, onClose, onPr
     towerWobble: 0,
     windGustEndTime: 0,
     isProcessingWin: false,
-    isGameOver: false
+    isGameOver: false,
+    lastTime: Date.now()
   });
 
   // Spawn next house block hanging on swinging crane
@@ -138,6 +139,7 @@ export const TowerBloxx: React.FC<TowerBloxxProps> = ({ onGameWin, onClose, onPr
     stateRef.current.windGustEndTime = 0;
     stateRef.current.isProcessingWin = false;
     stateRef.current.isGameOver = false;
+    stateRef.current.lastTime = Date.now();
 
     setScore(0);
     setFloors(0);
@@ -532,12 +534,21 @@ export const TowerBloxx: React.FC<TowerBloxxProps> = ({ onGameWin, onClose, onPr
 
       const state = stateRef.current;
       const now = Date.now();
+      const deltaTime = Math.min(100, now - state.lastTime);
+      state.lastTime = now;
+      const frameFactor = deltaTime / 16.666;
 
       // Smooth camera interpolation
-      state.cameraY += (state.targetCameraY - state.cameraY) * 0.08;
+      state.cameraY += (state.targetCameraY - state.cameraY) * 0.08 * frameFactor;
+
+      // Calculate dynamic swinging speed (progressive difficulty increase for floors 10 to 15)
+      const floorsCount = state.stackedBlocks.length;
+      const currentSpeed = floorsCount >= 10
+        ? state.craneSpeed * (1 + (floorsCount - 10) * 0.15)
+        : state.craneSpeed;
 
       // Update swinging crane angle
-      state.craneAngle += state.craneSpeed;
+      state.craneAngle += currentSpeed * frameFactor;
       const swingX = CANVAS_WIDTH / 2 + Math.sin(state.craneAngle) * state.craneAmplitude;
 
       // Crane Hook World Coordinates (Locked relative to viewport top)
@@ -550,8 +561,8 @@ export const TowerBloxx: React.FC<TowerBloxxProps> = ({ onGameWin, onClose, onPr
           state.currentBlock.y = hookY + 15;
         } else {
           // Accelerate downwards under gravity
-          state.currentBlock.vy += 0.5;
-          state.currentBlock.y += state.currentBlock.vy;
+          state.currentBlock.vy += 0.5 * frameFactor;
+          state.currentBlock.y += state.currentBlock.vy * frameFactor;
 
           // Target resting Y level
           const targetY = state.stackedBlocks.length === 0
@@ -681,7 +692,7 @@ export const TowerBloxx: React.FC<TowerBloxxProps> = ({ onGameWin, onClose, onPr
         }
       } else {
         // Normal wobble decay
-        state.towerWobble *= 0.90;
+        state.towerWobble *= Math.pow(0.90, frameFactor);
       }
 
       // --- RENDER CANVAS GRAPHICS ---
