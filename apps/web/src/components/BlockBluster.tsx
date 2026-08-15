@@ -56,9 +56,11 @@ export const BlockBluster: React.FC<BlockBlusterProps> = ({ onGameWin, onClose, 
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [blastingCells, setBlastingCells] = useState<number[]>([]);
 
+  const containerRef = useRef<HTMLDivElement>(null);
+
   // Drag and drop state
   const [draggingTrayIdx, setDraggingTrayIdx] = useState<number | null>(null);
-  const [dragPos, setDragPos] = useState<{ x: number; y: number } | null>(null);
+  const [dragPos, setDragPos] = useState<{ x: number; y: number; isTouch?: boolean } | null>(null);
 
   // Generate 3 random shapes for tray
   const generateTray = useCallback(() => {
@@ -363,7 +365,12 @@ export const BlockBluster: React.FC<BlockBlusterProps> = ({ onGameWin, onClose, 
     e.preventDefault();
     setDraggingTrayIdx(trayIdx);
     setSelectedTrayIdx(trayIdx);
-    setDragPos({ x: e.clientX, y: e.clientY });
+    const rect = containerRef.current?.getBoundingClientRect() || { left: 0, top: 0 };
+    setDragPos({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+      isTouch: e.pointerType === 'touch'
+    });
   };
 
   // Global pointer move & up listeners for drag and release
@@ -371,7 +378,12 @@ export const BlockBluster: React.FC<BlockBlusterProps> = ({ onGameWin, onClose, 
     if (draggingTrayIdx === null) return;
 
     const handlePointerMove = (e: PointerEvent) => {
-      setDragPos({ x: e.clientX, y: e.clientY });
+      const rect = containerRef.current?.getBoundingClientRect() || { left: 0, top: 0 };
+      setDragPos({
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top,
+        isTouch: e.pointerType === 'touch'
+      });
 
       // Check hover over grid
       if (gridRef.current) {
@@ -465,7 +477,7 @@ export const BlockBluster: React.FC<BlockBlusterProps> = ({ onGameWin, onClose, 
   const draggedShape = activeTrayIdx !== null ? tray[activeTrayIdx] : null;
 
   return (
-    <div className="glass-panel animate-fade-in" style={{ maxWidth: '540px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '16px', position: 'relative', padding: '20px', userSelect: 'none', touchAction: 'none' }}>
+    <div ref={containerRef} className="glass-panel animate-fade-in" style={{ maxWidth: '540px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '16px', position: 'relative', padding: '20px', userSelect: 'none', touchAction: 'none' }}>
       {/* Header Bar */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
@@ -669,9 +681,9 @@ export const BlockBluster: React.FC<BlockBlusterProps> = ({ onGameWin, onClose, 
       {draggingTrayIdx !== null && dragPos && draggedShape && (
         <div
           style={{
-            position: 'fixed',
+            position: 'absolute',
             left: `${dragPos.x}px`,
-            top: `${dragPos.y - 40}px`, // Slight offset so finger doesn't block view
+            top: `${dragPos.isTouch ? dragPos.y : dragPos.y - 40}px`, // Slight offset for mouse so pointer doesn't block view, exact match for touch
             transform: 'translate(-50%, -50%) scale(1.15)',
             pointerEvents: 'none',
             zIndex: 9999,
