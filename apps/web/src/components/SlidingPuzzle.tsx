@@ -329,9 +329,9 @@ export const SlidingPuzzle: React.FC<SlidingPuzzleProps> = ({ onGameWin, onClose
   const isLight = document.documentElement.classList.contains('light-theme');
 
   return (
-    <div className="glass-panel animate-fade-in" style={{ maxWidth: '600px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '20px', position: 'relative' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div>
+    <div className="glass-panel animate-fade-in sliding-puzzle-card" style={{ maxWidth: '600px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '20px', position: 'relative' }}>
+      <div className="sliding-puzzle-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className="sliding-puzzle-title-block">
           <h2 style={{ fontSize: '24px', color: 'var(--text-primary)', display: 'flex', alignItems: 'center' }}>
             {t('sliding_name')}
             {headerActions}
@@ -340,7 +340,7 @@ export const SlidingPuzzle: React.FC<SlidingPuzzleProps> = ({ onGameWin, onClose
             {t('sliding_desc')}
           </p>
         </div>
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+        <div className="sliding-puzzle-size-buttons" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
           {room && (proposalSent || proposalAccepted || proposalDeclined) && (
             <span style={{ fontSize: '11px', color: proposalDeclined ? 'var(--color-danger)' : 'var(--color-secondary)', marginRight: '4px' }}>
               {proposalAccepted ? t('accept') : proposalDeclined ? t('declined') : 'Proposing...'}
@@ -391,7 +391,7 @@ export const SlidingPuzzle: React.FC<SlidingPuzzleProps> = ({ onGameWin, onClose
         </div>
       </div>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', background: isLight ? '#f1f5f9' : 'rgba(255,255,255,0.03)', padding: '12px 18px', borderRadius: '12px', border: '1px solid var(--border-glass)', fontSize: '15px' }}>
+      <div className="sliding-puzzle-stats-row" style={{ display: 'flex', justifyContent: 'space-between', background: isLight ? '#f1f5f9' : 'rgba(255,255,255,0.03)', padding: '12px 18px', borderRadius: '12px', border: '1px solid var(--border-glass)', fontSize: '15px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
           <Clock size={16} color="var(--color-secondary)" />
           <span style={{ color: 'var(--text-secondary)' }}>{t('time')}:</span>
