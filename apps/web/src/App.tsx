@@ -6077,19 +6077,18 @@ function App() {
                             triggerSound('click');
                             updateAvatarAndFrame(av.char, userProfile.frame || 'none');
                           } else {
-                            const currentFrame = userProfile.frame || 'none';
                             setShopConfirm({
                               itemName: av.label,
                               costCoins: av.costCoins,
                               costGems: av.costGems,
                               onConfirm: () => {
-                                const res = buyAvatarOrFrame(av.id, av.costCoins, av.costGems, av.char, currentFrame);
+                                const res = buyAvatarOrFrame(av.id, av.costCoins, av.costGems, av.char, userProfile?.frame || '');
                                 if (res.success) {
                                   triggerSound('success');
                                   showToast("Item purchased successfully!", 'success');
                                 } else {
                                   triggerSound('fail');
-                                  showToast(res.error, 'error');
+                                  showToast(res.error || '', 'error');
                                 }
                               }
                             });
@@ -6179,19 +6178,18 @@ function App() {
                             triggerSound('click');
                             updateAvatarAndFrame(userProfile.avatar || '👤', fr.id);
                           } else {
-                            const currentAvatar = userProfile.avatar || '👤';
                             setShopConfirm({
                               itemName: fr.label,
                               costCoins: fr.costCoins,
                               costGems: fr.costGems,
                               onConfirm: () => {
-                                const res = buyAvatarOrFrame(fr.id, fr.costCoins, fr.costGems, currentAvatar, fr.id);
+                                const res = buyAvatarOrFrame(fr.id, fr.costCoins, fr.costGems, userProfile?.avatar || '', fr.id);
                                 if (res.success) {
                                   triggerSound('success');
                                   showToast("Item purchased successfully!", 'success');
                                 } else {
                                   triggerSound('fail');
-                                  showToast(res.error, 'error');
+                                  showToast(res.error || '', 'error');
                                 }
                               }
                             });
