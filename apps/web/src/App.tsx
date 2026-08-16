@@ -5337,13 +5337,6 @@ function App() {
                     color: '#4f46e5' 
                   },
                   { 
-                    type: PuzzleType.JIGSAW, 
-                    name: t('jigsaw_name'), 
-                    desc: t('jigsaw_desc'), 
-                    badge: 'SPATIAL & FOCUS', 
-                    color: '#ef4444' 
-                  },
-                  { 
                     type: PuzzleType.PHYSICS, 
                     name: t('physics_name'), 
                     desc: t('physics_desc'), 
@@ -7217,7 +7210,6 @@ function App() {
                 { type: PuzzleType.EIGHT_BALL_QUIZ, label: 'Trivia Logic Duel', desc: 'Multi-category speed quiz' },
                 { type: PuzzleType.SUDOKU, label: 'Sudoku Battle Arena', desc: 'Classic grid number clash' },
                 { type: PuzzleType.LOGIC, label: 'Logic Grid Duel', desc: 'Mind-bending grid logic' },
-                { type: PuzzleType.JIGSAW, label: 'Jigsaw Grid Snapper', desc: 'Align matching image pieces' },
                 { type: PuzzleType.PHYSICS, label: t('physics_name'), desc: t('physics_desc') },
                 { type: PuzzleType.BLOCK_BLUSTER, label: t('block_bluster_name'), desc: t('block_bluster_desc') },
                 { type: PuzzleType.WORD_SEARCH, label: t('word_search_name'), desc: t('word_search_desc') },
