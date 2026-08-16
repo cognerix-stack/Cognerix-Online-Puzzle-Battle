@@ -10576,7 +10576,11 @@ function App() {
                         return next;
                       });
                     } else {
-                      sendFriendRequestToServer(undefined, matchResult.opponentId);
+                      sendFriendRequestToServer(undefined, matchResult.opponentId).then((res) => {
+                        if (res && res.success) {
+                          showToast(`Friend request successfully sent to ${matchResult.opponentUsername || 'Opponent'}!`, 'success');
+                        }
+                      });
                     }
                   }}
                   style={{
