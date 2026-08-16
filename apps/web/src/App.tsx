@@ -6187,7 +6187,7 @@ function App() {
                               costCoins: fr.costCoins,
                               costGems: fr.costGems,
                               onConfirm: () => {
-                                const res = buyAvatarOrFrame(fr.id, fr.costCoins, fr.costGems, userProfile?.avatar || '', fr.id);
+                                const res = buyAvatarOrFrame(fr.id, fr.costCoins, fr.costGems, userProfile?.avatar ?? '', fr.id);
                                 if (res.success) {
                                   triggerSound('success');
                                   showToast("Item purchased successfully!", 'success');
