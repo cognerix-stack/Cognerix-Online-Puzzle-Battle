@@ -874,6 +874,27 @@ function App() {
   };
 
   const [activeTab, setActiveTab] = useState<'home' | 'profile' | 'store' | 'leaderboard' | 'avatars' | 'battlepass' | 'settings' | 'friends'>('home');
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'info' | 'error' } | null>(null);
+  const [shopConfirm, setShopConfirm] = useState<{
+    itemName: string;
+    costCoins: number;
+    costGems: number;
+    onConfirm: () => void;
+  } | null>(null);
+
+  const showToast = (message: string, type: 'success' | 'info' | 'error' = 'success') => {
+    setToast({ message, type });
+  };
+
+  useEffect(() => {
+    if (toast) {
+      const timer = setTimeout(() => {
+        setToast(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [toast]);
+
   const { activeEntranceAnimation } = useGame();
   const [appliedEntranceClass, setAppliedEntranceClass] = useState<string>('');
 
@@ -5746,10 +5767,10 @@ function App() {
                               const res = buyStoreItem(item.id);
                               if (res.success) {
                                 triggerSound('success');
-                                alert("🎉 Item purchased successfully!");
+                                showToast("Item purchased successfully!", 'success');
                               } else {
                                 triggerSound('fail');
-                                alert(`❌ Buy Failed: ${res.error}`);
+                                showToast(`Buy Failed: ${res.error}`, 'error');
                               }
                             }}
                           >
@@ -6056,16 +6077,21 @@ function App() {
                             triggerSound('click');
                             updateAvatarAndFrame(av.char, userProfile.frame || 'none');
                           } else {
-                            const confirmBuy = window.confirm(`Unlock "${av.label}" for ${av.costCoins} Coins and ${av.costGems} Diamonds?`);
-                            if (confirmBuy) {
-                              const res = buyAvatarOrFrame(av.id, av.costCoins, av.costGems, av.char, userProfile.frame || 'none');
-                              if (res.success) {
-                                triggerSound('success');
-                              } else {
-                                triggerSound('fail');
-                                alert(res.error);
+                            setShopConfirm({
+                              itemName: av.label,
+                              costCoins: av.costCoins,
+                              costGems: av.costGems,
+                              onConfirm: () => {
+                                const res = buyAvatarOrFrame(av.id, av.costCoins, av.costGems, av.char, userProfile.frame || 'none');
+                                if (res.success) {
+                                  triggerSound('success');
+                                  showToast("Item purchased successfully!", 'success');
+                                } else {
+                                  triggerSound('fail');
+                                  showToast(res.error, 'error');
+                                }
                               }
-                            }
+                            });
                           }
                         }}
                         style={{
@@ -6152,16 +6178,21 @@ function App() {
                             triggerSound('click');
                             updateAvatarAndFrame(userProfile.avatar || '👤', fr.id);
                           } else {
-                            const confirmBuy = window.confirm(`Unlock "${fr.label}" for ${fr.costCoins} Coins and ${fr.costGems} Diamonds?`);
-                            if (confirmBuy) {
-                              const res = buyAvatarOrFrame(fr.id, fr.costCoins, fr.costGems, userProfile.avatar || '👤', fr.id);
-                              if (res.success) {
-                                triggerSound('success');
-                              } else {
-                                triggerSound('fail');
-                                alert(res.error);
+                            setShopConfirm({
+                              itemName: fr.label,
+                              costCoins: fr.costCoins,
+                              costGems: fr.costGems,
+                              onConfirm: () => {
+                                const res = buyAvatarOrFrame(fr.id, fr.costCoins, fr.costGems, userProfile.avatar || '👤', fr.id);
+                                if (res.success) {
+                                  triggerSound('success');
+                                  showToast("Item purchased successfully!", 'success');
+                                } else {
+                                  triggerSound('fail');
+                                  showToast(res.error, 'error');
+                                }
                               }
-                            }
+                            });
                           }
                         }}
                         style={{
@@ -6873,7 +6904,7 @@ function App() {
                   
                   sendFriendRequestToServer(targetName).then((res) => {
                     if (res && res.success) {
-                      alert(t('friend_request_sent_success').replace('{name}', targetName));
+                      showToast(t('friend_request_sent_success').replace('{name}', targetName), 'success');
                     }
                   });
                   setFriendSearchInput('');
@@ -7525,7 +7556,7 @@ function App() {
                       setFriendsList(updatedFriends);
                       setFriendRequests(prev => prev.filter(r => r.senderId !== request.senderId));
                       triggerSound('success');
-                      alert(t('now_friends_with').replace('{name}', request.senderUsername));
+                      showToast(t('now_friends_with').replace('{name}', request.senderUsername), 'success');
                     }
                   } catch (e) {
                     console.error('[Friends] Accept friend request failed:', e);
@@ -8971,7 +9002,7 @@ function App() {
                                 setUnreadMailCount(unclaimedCount);
                                 return updated;
                               });
-                              alert(`Claimed rewards successfully!`);
+                              showToast(`Claimed rewards successfully!`, 'success');
                             }}
                             className={`btn ${item.claimed ? 'btn-glass' : 'btn-primary'}`}
                             style={{ padding: '6px 14px', borderRadius: '8px', fontSize: '12px' }}
@@ -11304,6 +11335,99 @@ function App() {
         >
           <Gamepad2 size={18} />
           Back to Active Game
+        </div>
+      )}
+
+      {/* Custom Toast Notification System */}
+      {toast && (
+        <div 
+          style={{
+            position: 'fixed',
+            bottom: '24px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            background: toast.type === 'error' ? 'var(--color-danger)' : 'var(--color-success)',
+            color: '#ffffff',
+            padding: '12px 24px',
+            borderRadius: '8px',
+            boxShadow: '0 4px 16px rgba(0, 0, 0, 0.25)',
+            zIndex: 10000,
+            fontSize: '14px',
+            fontWeight: 'bold',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            animation: 'fadeInUp 0.2s ease-out'
+          }}
+        >
+          {toast.type === 'success' ? '✅' : 'ℹ️'} {toast.message}
+        </div>
+      )}
+
+      {/* Custom Shop Unlock Confirm Modal */}
+      {shopConfirm && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          background: 'rgba(0, 0, 0, 0.7)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 10010,
+          backdropFilter: 'blur(4px)'
+        }}>
+          <div className="glass-panel" style={{
+            width: '90%',
+            maxWidth: '400px',
+            padding: '24px',
+            borderRadius: '16px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '16px',
+            color: 'var(--text-primary)',
+            boxShadow: '0 20px 40px rgba(0,0,0,0.5)',
+            animation: 'scaleIn 0.2s ease-out'
+          }}>
+            <h3 style={{ fontSize: '20px', fontWeight: '800', textAlign: 'center', fontFamily: 'var(--font-display)' }}>
+              Confirm Unlock
+            </h3>
+            <p style={{ fontSize: '14px', color: 'var(--text-secondary)', textAlign: 'center', lineHeight: '1.5' }}>
+              Unlock <strong style={{ color: 'var(--color-primary)' }}>{shopConfirm.itemName}</strong>?
+            </p>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', margin: '8px 0' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span style={{ fontSize: '18px' }}>🪙</span>
+                <span style={{ fontWeight: 'bold' }}>{shopConfirm.costCoins}</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span style={{ fontSize: '18px' }}>💎</span>
+                <span style={{ fontWeight: 'bold' }}>{shopConfirm.costGems}</span>
+              </div>
+            </div>
+            <div style={{ display: 'flex', gap: '12px', marginTop: '8px' }}>
+              <button 
+                className="btn btn-secondary" 
+                style={{ flex: 1 }} 
+                onClick={() => { triggerSound('click'); setShopConfirm(null); }}
+              >
+                Cancel
+              </button>
+              <button 
+                className="btn btn-primary" 
+                style={{ flex: 1 }} 
+                onClick={() => {
+                  triggerSound('click');
+                  shopConfirm.onConfirm();
+                  setShopConfirm(null);
+                }}
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
