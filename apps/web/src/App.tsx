@@ -6086,7 +6086,8 @@ function App() {
                               costCoins: av.costCoins,
                               costGems: av.costGems,
                               onConfirm: () => {
-                                const res = buyAvatarOrFrame(av.id, av.costCoins, av.costGems, av.char, userProfile?.frame || '');
+                                const currentFrame = userProfile ? (userProfile.frame || '') : '';
+                                const res = buyAvatarOrFrame(av.id, av.costCoins, av.costGems, av.char, currentFrame);
                                 if (res.success) {
                                   triggerSound('success');
                                   showToast("Item purchased successfully!", 'success');
@@ -6187,7 +6188,8 @@ function App() {
                               costCoins: fr.costCoins,
                               costGems: fr.costGems,
                               onConfirm: () => {
-                                const res = buyAvatarOrFrame(fr.id, fr.costCoins, fr.costGems, userProfile?.avatar ?? '', fr.id);
+                                const currentAvatar = userProfile ? (userProfile.avatar || '') : '';
+                                const res = buyAvatarOrFrame(fr.id, fr.costCoins, fr.costGems, currentAvatar, fr.id);
                                 if (res.success) {
                                   triggerSound('success');
                                   showToast("Item purchased successfully!", 'success');
