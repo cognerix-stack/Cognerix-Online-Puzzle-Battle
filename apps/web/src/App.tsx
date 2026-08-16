@@ -881,6 +881,10 @@ function App() {
     costGems: number;
     onConfirm: () => void;
   } | null>(null);
+  const [genericConfirm, setGenericConfirm] = useState<{
+    message: string;
+    onConfirm: () => void;
+  } | null>(null);
 
   const showToast = (message: string, type: 'success' | 'info' | 'error' = 'success') => {
     setToast({ message, type });
@@ -1226,12 +1230,12 @@ function App() {
         setAdminPlayerHistory(data);
       } else {
         setAdminPlayerHistory([]);
-        alert('Failed to load player history.');
+        showToast('Failed to load player history.', 'error');
       }
     } catch (e) {
       console.error('Error loading history:', e);
       setAdminPlayerHistory([]);
-      alert('Error connecting to backend for player history.');
+      showToast('Error connecting to backend for player history.', 'error');
     } finally {
       setAdminHistoryLoading(false);
     }
@@ -1462,7 +1466,7 @@ function App() {
         if (res.status === 401) {
           const errData = await res.json().catch(() => ({}));
           if (errData.message && errData.message.includes('deleted')) {
-            alert("⚠️ Your account has been deleted by an administrator.");
+            showToast("⚠️ Your account has been deleted by an administrator.", 'error');
             localStorage.removeItem('pv_logged_in');
             localStorage.removeItem('pv_terms_accepted');
             setIsLoggedIn(false);
@@ -1598,7 +1602,7 @@ function App() {
 
   const handleGuestLogin = () => {
     if (!guestUser.trim()) {
-      alert(t('error_username_empty'));
+      showToast(t('error_username_empty'), 'error');
       return;
     }
     triggerSound('success');
@@ -1665,7 +1669,7 @@ function App() {
 
   const handleGoogleCredentialResponse = async (response: any) => {
     if (!response.credential) {
-      alert('Google Sign-In failed. Please try again.');
+      showToast('Google Sign-In failed. Please try again.', 'error');
       return;
     }
     setGoogleLoginLoading(true);
@@ -1689,11 +1693,11 @@ function App() {
         }
       } else {
         const errData = await res.json().catch(() => ({}));
-        alert(errData.message || 'Google Sign-In failed. Please try again.');
+        showToast(errData.message || 'Google Sign-In failed. Please try again.', 'error');
       }
     } catch (e: any) {
       console.error('[GoogleLogin] Real Google Sign-In failed:', e);
-      alert(t('error_network_backend'));
+      showToast(t('error_network_backend'), 'error');
     } finally {
       setGoogleLoginLoading(false);
     }
@@ -1703,11 +1707,11 @@ function App() {
   const handleReportSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!reportNickname.trim()) {
-      alert("❌ Nickname is required.");
+      showToast("Nickname is required.", 'error');
       return;
     }
     if (reportReason === 'Other' && !reportDescription.trim()) {
-      alert("❌ Detailed description is required when 'Other' is selected.");
+      showToast("Detailed description is required when 'Other' is selected.", 'error');
       return;
     }
 
@@ -1736,17 +1740,17 @@ function App() {
       });
 
       if (res.ok) {
-        alert("Report Submitted\n\nThank you for helping keep Cognerix safe. Our team will review your report.");
+        showToast("Report Submitted. Thank you for helping keep Cognerix safe.", 'success');
         setIsReportModalOpen(false);
         setReportDescription('');
         setReportReason('Violence in Chat');
       } else {
         const errData = await res.json().catch(() => ({}));
-        alert(`❌ Failed to submit report: ${errData.message || 'Server error'}`);
+        showToast(`Failed to submit report: ${errData.message || 'Server error'}`, 'error');
       }
     } catch (err) {
       console.error('Error submitting report:', err);
-      alert("❌ Failed to submit report. Please check your network connection and try again.");
+      showToast("Failed to submit report. Please check your network connection and try again.", 'error');
     } finally {
       setIsSubmittingReport(false);
     }
@@ -1766,7 +1770,7 @@ function App() {
         (roomBlocksRef.current[oppId] || []).includes(userProfile.id)
       );
       if (isBlocked) {
-        alert("⚠️ Emojis are disabled because one of you has blocked the other.");
+        showToast("Emojis are disabled because one of you has blocked the other.", 'error');
         return;
       }
     }
@@ -1974,7 +1978,7 @@ function App() {
       }
     } catch (e: any) {
       console.error('[Friends] Send request failed:', e);
-      alert(e.message || 'Server error sending friend request.');
+      showToast(e.message || 'Server error sending friend request.', 'error');
       return { success: false, error: e.message };
     }
   };
@@ -2482,7 +2486,7 @@ function App() {
         if (res.status === 401) {
           const errData = await res.json().catch(() => ({}));
           if (errData.message && errData.message.includes('deleted')) {
-            alert("⚠️ Your account has been deleted by an administrator.");
+            showToast("⚠️ Your account has been deleted by an administrator.", 'error');
             localStorage.removeItem('pv_logged_in');
             localStorage.removeItem('pv_terms_accepted');
             setIsLoggedIn(false);
@@ -2494,7 +2498,7 @@ function App() {
         if (res.ok) {
           const data = await res.json();
           if (data.deleted) {
-            alert("⚠️ Your account has been deleted by an administrator.");
+            showToast("⚠️ Your account has been deleted by an administrator.", 'error');
             localStorage.removeItem('pv_logged_in');
             localStorage.removeItem('pv_terms_accepted');
             setIsLoggedIn(false);
@@ -2650,7 +2654,7 @@ function App() {
         if (res.ok) {
           const data = await res.json();
           if (data && data.status === 'declined') {
-            alert('Your duel challenge was declined by the opponent.');
+            showToast('Your duel challenge was declined by the opponent.', 'error');
             
             // Clean/delete backend challenge record
             fetch(`${BACKEND_HTTP_URL}/profile/friends/challenge/clear`, {
@@ -5201,7 +5205,7 @@ function App() {
                           (roomBlocksRef.current[oppId] || []).includes(userProfile.id)
                         );
                         if (isBlocked) {
-                          alert("⚠️ Chat is disabled because one of you has blocked the other.");
+                          showToast("Chat is disabled because one of you has blocked the other.", 'error');
                           return;
                         }
                       }
@@ -5492,7 +5496,7 @@ function App() {
                             setIsEditingName(false);
                           } else {
                             triggerSound('fail');
-                            alert(res.error);
+                            showToast(res.error || '', 'error');
                           }
                         }}
                       >
@@ -5508,7 +5512,7 @@ function App() {
                             setIsEditingName(false);
                           } else {
                             triggerSound('fail');
-                            alert(res.error);
+                            showToast(res.error || '', 'error');
                           }
                         }}
                       >
@@ -6718,12 +6722,15 @@ function App() {
                     <button
                       onClick={() => {
                         triggerSound('click');
-                        if (confirm('Are you sure you want to sign out? You will be taken back to the login screen.')) {
-                          logoutUser();
-                          localStorage.removeItem('pv_logged_in');
-                          localStorage.removeItem('pv_terms_accepted');
-                          setIsLoggedIn(false);
-                        }
+                        setGenericConfirm({
+                          message: 'Are you sure you want to sign out? You will be taken back to the login screen.',
+                          onConfirm: () => {
+                            logoutUser();
+                            localStorage.removeItem('pv_logged_in');
+                            localStorage.removeItem('pv_terms_accepted');
+                            setIsLoggedIn(false);
+                          }
+                        });
                       }}
                       className="btn btn-glass"
                       style={{ fontSize: '13px', padding: '10px 16px', color: 'var(--text-primary)', border: '1px solid var(--border-glass)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
@@ -6894,11 +6901,11 @@ function App() {
                   const targetName = friendSearchInput.trim();
                   if (!targetName) return;
                   if (targetName.toLowerCase() === userProfile.username.toLowerCase()) {
-                    alert(t('error_self_add'));
+                    showToast(t('error_self_add'), 'error');
                     return;
                   }
                   if (friendsList.some(f => f.username.toLowerCase() === targetName.toLowerCase())) {
-                    alert(t('error_already_friends'));
+                    showToast(t('error_already_friends'), 'error');
                     return;
                   }
                   
@@ -7030,12 +7037,6 @@ function App() {
                         <button
                           onClick={() => {
                             triggerSound('click');
-                            if (confirm(`Remove ${friend.username} from your friends list?`)) {
-                              const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
-                              const token = btoa(JSON.stringify(payload));
-                              fetch(`${BACKEND_HTTP_URL}/profile/friends/remove`, {
-                                method: 'POST',
-                                headers: {
                                   'Content-Type': 'application/json',
                                   'Authorization': `Bearer ${token}`
                                 },
@@ -7264,7 +7265,7 @@ function App() {
                       if (checkRes.ok) {
                         const check = await checkRes.json();
                         if (check.blocked) {
-                          alert(`❌ ${challengeTargetFriend.username} is currently declining challenges. Try again in ${check.remainingSec} seconds.`);
+                          showToast(`❌ ${challengeTargetFriend.username} is currently declining challenges. Try again in ${check.remainingSec} seconds.`, 'error');
                           setChallengeTargetFriend(null);
                           return;
                         }
@@ -7427,7 +7428,7 @@ function App() {
                     body: JSON.stringify({ senderId: incomingChallenge.senderId })
                   });
 
-                  alert(`Challenges from ${incomingChallenge.sender} will be declined for 5 minutes.`);
+                  showToast(`Challenges from ${incomingChallenge.sender} will be declined for 5 minutes.`, 'info');
                 } catch (e) {
                   console.error('[Friends] Block/Decline challenge failed:', e);
                 }
@@ -8089,7 +8090,7 @@ function App() {
                       const content = adminMailContent.trim();
                       const targetId = adminMailTargetId.trim();
                       if (!title || !content) {
-                        alert("Please specify a title and content message!");
+                        showToast("Please specify a title and content message!", 'error');
                         return;
                       }
                       triggerSound('success');
@@ -8181,7 +8182,7 @@ function App() {
                           setUnreadMailCount(c => c + 1);
                         }
                         
-                        alert(`Message & Gifts sent to user "${targetId}" successfully!`);
+                        showToast(`Message & Gifts sent to user "${targetId}" successfully!`, 'success');
                       } else {
                         // Send to ALL players: save in global mailbox
                         const savedGlobal = localStorage.getItem('puzzle_verse_global_mailbox');
@@ -8207,7 +8208,7 @@ function App() {
                           localStorage.setItem(adminKey, JSON.stringify(adminMailbox));
                         }
 
-                        alert("Global announcement & gift shared successfully to ALL players!");
+                        showToast("Global announcement & gift shared successfully to ALL players!", 'success');
                       }
 
                       setAdminMailTitle('');
@@ -8263,38 +8264,41 @@ function App() {
                           onClick={async () => {
                             const targetId = adminBanPlayerId.trim();
                             if (!targetId) return;
-                            if (confirm(`Are you sure you want to ban profile/user ID: ${targetId}?`)) {
-                              try {
-                                const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
-                                const token = btoa(JSON.stringify(payload));
-                                const res = await fetch(`${BACKEND_HTTP_URL}/profile/ban`, {
-                                  method: 'POST',
-                                  headers: {
-                                    'Content-Type': 'application/json',
-                                    'Authorization': `Bearer ${token}`
-                                  },
-                                  body: JSON.stringify({ profileId: targetId, reason: adminBanReason.trim() })
-                                });
-                                if (res.ok) {
-                                  const data = await res.json();
-                                  alert(`Successfully banned player: ${data.username || targetId}`);
-                                  setAdminBanPlayerId('');
-                                  setAdminBanReason('');
-                                  // Refresh list
-                                  const listRes = await fetch(`${BACKEND_HTTP_URL}/profile/banned`, {
-                                    headers: { 'Authorization': `Bearer ${token}` }
+                            setGenericConfirm({
+                              message: `Are you sure you want to ban profile/user ID: ${targetId}?`,
+                              onConfirm: async () => {
+                                try {
+                                  const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
+                                  const token = btoa(JSON.stringify(payload));
+                                  const res = await fetch(`${BACKEND_HTTP_URL}/profile/ban`, {
+                                    method: 'POST',
+                                    headers: {
+                                      'Content-Type': 'application/json',
+                                      'Authorization': `Bearer ${token}`
+                                    },
+                                    body: JSON.stringify({ profileId: targetId, reason: adminBanReason.trim() })
                                   });
-                                  if (listRes.ok) {
-                                    setBannedPlayersList(await listRes.json());
+                                  if (res.ok) {
+                                    const data = await res.json();
+                                    showToast(`Successfully banned player: ${data.username || targetId}`, 'success');
+                                    setAdminBanPlayerId('');
+                                    setAdminBanReason('');
+                                    // Refresh list
+                                    const listRes = await fetch(`${BACKEND_HTTP_URL}/profile/banned`, {
+                                      headers: { 'Authorization': `Bearer ${token}` }
+                                    });
+                                    if (listRes.ok) {
+                                      setBannedPlayersList(await listRes.json());
+                                    }
+                                  } else {
+                                    const err = await res.json();
+                                    showToast(`Error: ${err.message || 'Failed to ban user'}`, 'error');
                                   }
-                                } else {
-                                  const err = await res.json();
-                                  alert(`Error: ${err.message || 'Failed to ban user'}`);
+                                } catch (e) {
+                                  showToast('Failed to connect to server', 'error');
                                 }
-                              } catch (e) {
-                                alert('Failed to connect to server');
                               }
-                            }
+                            });
                           }}
                           style={{
                             background: '#ef4444',
@@ -8325,7 +8329,7 @@ function App() {
                                 body: JSON.stringify({ profileId: targetId })
                               });
                               if (res.ok) {
-                                alert(`Successfully unbanned profile ID: ${targetId}`);
+                                showToast(`Successfully unbanned profile ID: ${targetId}`, 'success');
                                 setAdminBanPlayerId('');
                                 // Refresh list
                                 const listRes = await fetch(`${BACKEND_HTTP_URL}/profile/banned`, {
@@ -8336,7 +8340,7 @@ function App() {
                                 }
                               }
                             } catch (e) {
-                              alert('Failed to connect to server');
+                              showToast('Failed to connect to server', 'error');
                             }
                           }}
                           style={{
@@ -8469,7 +8473,7 @@ function App() {
                             setIsUserViewBoxOpen(true);
                             triggerSound('click');
                           } else {
-                            alert(`Profile ID or Nickname "${inputId}" not found in currently registered profiles.`);
+                            showToast(`Profile ID or Nickname "${inputId}" not found in currently registered profiles.`, 'error');
                           }
                         }}
                         style={{
@@ -8644,7 +8648,7 @@ function App() {
                         onClick={async () => {
                           const text = adminPopupText.trim();
                           if (!text) {
-                            alert("Please enter message text for the popup!");
+                            showToast("Please enter message text for the popup!", 'error');
                             return;
                           }
                           triggerSound('success');
@@ -8666,7 +8670,7 @@ function App() {
                             
                             if (res.ok) {
                               const result = await res.json();
-                              alert("Popup announcement sent successfully!");
+                              showToast("Popup announcement sent successfully!", 'success');
                               setAdminPopupText('');
                               setAdminPopupTargets('');
                               // Refresh history
@@ -8675,11 +8679,11 @@ function App() {
                               }
                             } else {
                               const err = await res.json();
-                              alert(`Failed to send: ${err.message || 'Error occurred'}`);
+                              showToast(`Failed to send: ${err.message || 'Error occurred'}`, 'error');
                             }
                           } catch (e) {
                             console.error('[PopupAnnouncements] Post failed:', e);
-                            alert("Failed to connect to the server.");
+                            showToast("Failed to connect to the server.", 'error');
                           }
                         }}
                         style={{
@@ -8725,25 +8729,29 @@ function App() {
                                 </p>
                                 <button
                                   onClick={async () => {
-                                    if (!confirm('Delete this announcement? It will be removed for all players.')) return;
                                     triggerSound('click');
-                                    try {
-                                      const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
-                                      const token = btoa(JSON.stringify(payload));
-                                      const res = await fetch(`${BACKEND_HTTP_URL}/profile/popup-announcements/${ann.id}`, {
-                                        method: 'DELETE',
-                                        headers: { 'Authorization': `Bearer ${token}` }
-                                      });
-                                      if (res.ok) {
-                                        setAdminAnnouncementHistory(prev => prev.filter(a => a.id !== ann.id));
-                                      } else {
-                                        const err = await res.json();
-                                        alert(`Delete failed: ${err.message || 'Error'}`);
+                                    setGenericConfirm({
+                                      message: 'Delete this announcement? It will be removed for all players.',
+                                      onConfirm: async () => {
+                                        try {
+                                          const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
+                                          const token = btoa(JSON.stringify(payload));
+                                          const res = await fetch(`${BACKEND_HTTP_URL}/profile/popup-announcements/${ann.id}`, {
+                                            method: 'DELETE',
+                                            headers: { 'Authorization': `Bearer ${token}` }
+                                          });
+                                          if (res.ok) {
+                                            setAdminAnnouncementHistory(prev => prev.filter(a => a.id !== ann.id));
+                                          } else {
+                                            const err = await res.json();
+                                            showToast(`Delete failed: ${err.message || 'Error'}`, 'error');
+                                          }
+                                        } catch (e) {
+                                          console.error('[PopupAnnouncements] Delete failed:', e);
+                                          showToast('Failed to connect to the server.', 'error');
+                                        }
                                       }
-                                    } catch (e) {
-                                      console.error('[PopupAnnouncements] Delete failed:', e);
-                                      alert('Failed to connect to the server.');
-                                    }
+                                    });
                                   }}
                                   style={{
                                     background: 'rgba(239, 68, 68, 0.1)',
@@ -9416,29 +9424,33 @@ function App() {
               <button
                 onClick={async () => {
                   triggerSound('click');
-                  if (!confirm(`⚠️ Are you sure you want to permanently delete "${selectedAdminUser.username}" (${selectedAdminUser.id})?\n\nThis action cannot be undone.`)) return;
-                  try {
-                    const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
-                    const token = btoa(JSON.stringify(payload));
-                    const res = await fetch(`${BACKEND_HTTP_URL}/profile/delete`, {
-                      method: 'POST',
-                      headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                      },
-                      body: JSON.stringify({ userId: selectedAdminUser.id })
-                    });
-                    if (res.ok) {
-                      alert(`✅ Player "${selectedAdminUser.username}" has been deleted.`);
-                      setAdminUsersList((prev: any[]) => prev.filter((u: any) => u.id !== selectedAdminUser.id));
-                      setIsUserViewBoxOpen(false);
-                    } else {
-                      alert('❌ Failed to delete player record.');
+                  setGenericConfirm({
+                    message: `⚠️ Are you sure you want to permanently delete "${selectedAdminUser.username}" (${selectedAdminUser.id})?\n\nThis action cannot be undone.`,
+                    onConfirm: async () => {
+                      try {
+                        const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
+                        const token = btoa(JSON.stringify(payload));
+                        const res = await fetch(`${BACKEND_HTTP_URL}/profile/delete`, {
+                          method: 'POST',
+                          headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                          },
+                          body: JSON.stringify({ userId: selectedAdminUser.id })
+                        });
+                        if (res.ok) {
+                          showToast(`Player "${selectedAdminUser.username}" has been deleted.`, 'success');
+                          setAdminUsersList((prev: any[]) => prev.filter((u: any) => u.id !== selectedAdminUser.id));
+                          setIsUserViewBoxOpen(false);
+                        } else {
+                          showToast('Failed to delete player record.', 'error');
+                        }
+                      } catch (e) {
+                        console.error('[Admin] Delete profile failed:', e);
+                        showToast('Network error while deleting profile.', 'error');
+                      }
                     }
-                  } catch (e) {
-                    console.error('[Admin] Delete profile failed:', e);
-                    alert('❌ Network error while deleting profile.');
-                  }
+                  });
                 }}
                 style={{
                   background: 'rgba(239, 68, 68, 0.1)',
@@ -9651,11 +9663,11 @@ function App() {
               onSubmit={async (e) => {
                 e.preventDefault();
                 if (!supportName.trim() || !supportEmail.trim() || !supportSubject.trim() || !supportDescription.trim()) {
-                  alert("❌ Please fill out all fields.");
+                  showToast("Please fill out all fields.", 'error');
                   return;
                 }
                 if (!supportCaptchaChecked) {
-                  alert("❌ Please complete the 'I am human' verification check.");
+                  showToast("Please complete the 'I am human' verification check.", 'error');
                   return;
                 }
                 setIsSubmittingSupport(true);
@@ -9680,15 +9692,15 @@ function App() {
 
                   if (res.ok) {
                     triggerSound('success');
-                    alert("✅ Support Ticket Submitted successfully! We will get back to you at " + supportEmail.trim() + " as soon as possible!");
+                    showToast("Support Ticket Submitted successfully! We will get back to you soon.", 'success');
                     setIsSupportOpen(false);
                   } else {
                     const err = await res.json().catch(() => ({}));
-                    alert(`❌ Failed to submit support request: ${err.message || 'Server error'}`);
+                    showToast(`Failed to submit support request: ${err.message || 'Server error'}`, 'error');
                   }
                 } catch (err) {
                   console.error('Support ticket error:', err);
-                  alert("❌ Connection error. Support ticket simulation logged.");
+                  showToast("Connection error. Support ticket simulation logged.", 'error');
                 } finally {
                   setIsSubmittingSupport(false);
                 }
@@ -10172,12 +10184,12 @@ function App() {
 
                 const words = text.split(/\s+/).filter(w => w.length > 0);
                 if (words.length > 30) {
-                  alert("⚠️ Chat limit: Messages are limited to 30 words maximum.");
+                  showToast("Chat limit: Messages are limited to 30 words maximum.", 'error');
                   return;
                 }
                 for (let i = 0; i < words.length; i++) {
                   if (words[i].length > 20) {
-                    alert(`⚠️ Word limit: Each word can be a maximum of 20 characters ("${words[i].substring(0, 10)}...").`);
+                    showToast(`Word limit: Each word can be a maximum of 20 characters ("${words[i].substring(0, 10)}...").`, 'error');
                     return;
                   }
                 }
@@ -11046,7 +11058,7 @@ function App() {
                     onClick={() => {
                       if (userProfile.gems < 10) {
                         triggerSound('fail');
-                        alert("❌ You need at least 10 Gems to host a private friend duel room!");
+                        showToast("You need at least 10 Gems to host a private friend duel room!", 'error');
                         return;
                       }
                       spendGems(10);
@@ -11103,7 +11115,7 @@ function App() {
                           const pin = inputEl?.value?.trim();
                           if (!pin || pin.length !== 4 || isNaN(Number(pin))) {
                             triggerSound('fail');
-                            alert("❌ Please enter a valid 4-digit room PIN.");
+                            showToast("Please enter a valid 4-digit room PIN.", 'error');
                             return;
                           }
                           startMatchmaking(difficultyModal.puzzleType, 'private_join', pin);
@@ -11426,6 +11438,69 @@ function App() {
                   triggerSound('click');
                   shopConfirm.onConfirm();
                   setShopConfirm(null);
+                }}
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Generic Confirmation Modal */}
+      {genericConfirm && (
+        <div 
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            background: 'rgba(0, 0, 0, 0.6)',
+            backdropFilter: 'blur(4px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 10010,
+            padding: '16px'
+          }}
+        >
+          <div 
+            className="glass-panel" 
+            style={{
+              width: '100%',
+              maxWidth: '400px',
+              padding: '24px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '16px',
+              boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.3)',
+              borderRadius: '16px',
+              border: '1px solid var(--border-glass)',
+              animation: 'fade-in 0.2s ease-out'
+            }}
+          >
+            <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: 'var(--text-primary)', textAlign: 'center', fontFamily: 'var(--font-display)' }}>
+              Confirm Action
+            </h3>
+            <p style={{ fontSize: '14px', color: 'var(--text-secondary)', textAlign: 'center', lineHeight: '1.5' }}>
+              {genericConfirm.message}
+            </p>
+            <div style={{ display: 'flex', gap: '12px', marginTop: '8px' }}>
+              <button 
+                className="btn btn-secondary" 
+                style={{ flex: 1 }} 
+                onClick={() => { triggerSound('click'); setGenericConfirm(null); }}
+              >
+                Cancel
+              </button>
+              <button 
+                className="btn btn-primary" 
+                style={{ flex: 1 }} 
+                onClick={() => {
+                  triggerSound('click');
+                  genericConfirm.onConfirm();
+                  setGenericConfirm(null);
                 }}
               >
                 Confirm
