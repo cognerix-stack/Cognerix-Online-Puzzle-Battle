@@ -1587,7 +1587,7 @@ export class ProfileService {
     return { success: true, report: newReport, emailResult };
   }
 
-  private async sendEmailReport(report: any) {
+  private sendEmailReport(report: any) {
     try {
       console.log(`[Email] Attempting to send report to cognerixissue@gmail.com...`);
       const gmailUser = process.env.GMAIL_USER;
@@ -1611,7 +1611,7 @@ export class ProfileService {
         },
       });
 
-      const info = await transporter.sendMail({
+      const mailOptions = {
         from: `"Cognerix Report System" <${gmailUser}>`,
         to: 'cognerixissue@gmail.com',
         subject: `⚠️ [USER REPORT] Player ${report.nickname} reported opponent ${report.opponentNickname || report.opponentProfileId}`,
@@ -1629,12 +1629,18 @@ Session / Match ID:          ${report.sessionId || 'N/A'}
 ----------------------------
 Reported on:                 ${report.timestamp}
 `
+      };
+
+      // Send email without awaiting it
+      transporter.sendMail(mailOptions).then(info => {
+        console.log(`[Email] Sent successfully: messageId=${info.messageId}`);
+      }).catch(err => {
+        console.error('[Report] Email send failed:', err.message);
       });
 
-      console.log(`[Email] Sent successfully: messageId=${info.messageId}`);
-      return { success: true, messageId: info.messageId };
+      return { success: true };
     } catch (e) {
-      console.error('[Email] Failed to send email report via SMTP:', e);
+      console.error('[Email] Failed to initiate email report:', e);
       return { success: false, error: (e as any).message };
     }
   }
