@@ -3357,24 +3357,27 @@ function App() {
         )}
 
         {isEmojiPickerOpen && (
-          <div style={{
-            position: 'absolute',
-            top: '40px',
-            left: 0,
-            background: isLightMode ? '#ffffff' : 'rgba(15, 10, 36, 0.98)',
-            border: isLightMode ? '1px solid #cbd5e1' : '1px solid rgba(255,255,255,0.15)',
-            padding: '10px',
-            borderRadius: '16px',
-            display: 'grid',
-            gridTemplateColumns: 'repeat(6, 1fr)',
-            gap: '4px',
-            boxShadow: '0 12px 40px rgba(0,0,0,0.4)',
-            zIndex: 9999,
-            width: '240px',
-            maxHeight: '160px',
-            overflowY: 'auto',
-            scrollbarWidth: 'none'
-          }}>
+          <div 
+            className="emoji-picker-container"
+            style={{
+              position: 'absolute',
+              top: '40px',
+              left: 0,
+              background: isLightMode ? '#ffffff' : 'rgba(15, 10, 36, 0.98)',
+              border: isLightMode ? '1px solid #cbd5e1' : '1px solid rgba(255,255,255,0.15)',
+              padding: '10px',
+              borderRadius: '16px',
+              display: 'grid',
+              gridTemplateColumns: 'repeat(6, 1fr)',
+              gap: '4px',
+              boxShadow: '0 12px 40px rgba(0,0,0,0.4)',
+              zIndex: 9999,
+              width: '240px',
+              maxHeight: '160px',
+              overflowY: 'auto',
+              scrollbarWidth: 'none'
+            }}
+          >
             {EMOJI_LIST.map((emoji) => (
               <button
                 key={emoji}
