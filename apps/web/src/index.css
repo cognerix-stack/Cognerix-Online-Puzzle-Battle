@@ -1025,3 +1025,33 @@ button, .btn {
     white-space: nowrap !important;
   }
 }
+
+/* Responsive Profile Header Card styling for mobile viewports */
+@media (max-width: 600px) {
+  .profile-header-card {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    gap: 16px !important;
+    padding: 24px 16px !important;
+  }
+
+  .profile-header-card .profile-badges-row {
+    justify-content: center !important;
+    flex-wrap: wrap !important;
+  }
+
+  .profile-header-card .profile-stats-row {
+    justify-content: center !important;
+    gap: 12px !important;
+    flex-wrap: wrap !important;
+  }
+  
+  .profile-header-card h3 {
+    justify-content: center !important;
+  }
+  
+  .profile-header-card p {
+    justify-content: center !important;
+  }
+}

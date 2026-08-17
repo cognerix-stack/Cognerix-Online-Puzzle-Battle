@@ -5473,10 +5473,10 @@ function App() {
             ======================================================== */}
         {activeTab === 'profile' && (
           <section className={`${entranceClass} ${activeGame && isGameHidden ? 'active-game-overlay-tab' : ''}`} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            <div className="glass-panel" style={{ display: 'flex', gap: '24px', alignItems: 'flex-start' }}>
+            <div className="glass-panel profile-header-card" style={{ display: 'flex', gap: '24px', alignItems: 'flex-start' }}>
               {renderAvatar(userProfile.avatar, userProfile.frame, 90)}
 
-              <div style={{ flex: 1 }}>
+              <div style={{ flex: 1, width: '100%' }}>
                 {isEditingName ? (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '6px', background: 'var(--bg-glass)', padding: '14px', borderRadius: '12px', border: '1px solid var(--border-glass)', maxWidth: '400px' }}>
                     <label style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{t('enter_new_username')}:</label>
@@ -5585,7 +5585,10 @@ function App() {
                   )}
                 </div>
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '8px' }}>
+                <div className="profile-badges-row" style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '8px' }}>
+                  <span style={{ fontSize: '11px', color: 'var(--text-muted)', background: 'var(--bg-glass)', padding: '3px 8px', borderRadius: '8px', border: '1px solid var(--border-glass)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                    🏆 Rank: <strong style={{ color: 'var(--color-secondary)', fontWeight: 'bold' }}>{userProfile.rank || 'BRONZE'}</strong>
+                  </span>
                   <span style={{ fontSize: '11px', color: 'var(--text-muted)', background: 'var(--bg-glass)', padding: '3px 8px', borderRadius: '8px', border: '1px solid var(--border-glass)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                     🆔 ID: <span style={{ fontFamily: 'monospace', fontWeight: 'bold', color: 'var(--text-primary)' }}>{userProfile.id}</span>
                   </span>
@@ -5616,7 +5619,7 @@ function App() {
                   </button>
                 </div>
 
-                <div style={{ display: 'flex', gap: '20px', marginTop: '16px', fontSize: '13px', color: 'var(--text-muted)' }}>
+                <div className="profile-stats-row" style={{ display: 'flex', gap: '20px', marginTop: '16px', fontSize: '13px', color: 'var(--text-muted)' }}>
                   <span>{t('games_played')}: <strong style={{ color: 'var(--text-primary)' }}>{userProfile.statistics.gamesPlayed}</strong></span>
                   <span>{t('games_won')}: <strong style={{ color: 'var(--text-primary)' }}>{userProfile.statistics.gamesWon}</strong></span>
                   <span>{t('level_progress')}: <strong style={{ color: 'var(--text-primary)' }}>{Math.floor((userProfile.xp / (userProfile.level * 100)) * 100)}%</strong></span>
