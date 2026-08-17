@@ -873,6 +873,12 @@ function App() {
     return 'Puzzle Arena';
   };
 
+  const [playerEmojiBubble, setPlayerEmojiBubble] = useState<string | null>(null);
+  const [opponentEmojiBubble, setOpponentEmojiBubble] = useState<string | null>(null);
+  const playerEmojiTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const opponentEmojiTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const botReactedThresholds = useRef<Record<number, boolean>>({});
+
   const [activeTab, setActiveTab] = useState<'home' | 'profile' | 'store' | 'leaderboard' | 'avatars' | 'battlepass' | 'settings' | 'friends'>('home');
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'info' | 'error' } | null>(null);
   const [shopConfirm, setShopConfirm] = useState<{
@@ -1755,12 +1761,6 @@ function App() {
       setIsSubmittingReport(false);
     }
   };
-
-  const [playerEmojiBubble, setPlayerEmojiBubble] = useState<string | null>(null);
-  const [opponentEmojiBubble, setOpponentEmojiBubble] = useState<string | null>(null);
-  const playerEmojiTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const opponentEmojiTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const botReactedThresholds = useRef<Record<number, boolean>>({});
 
   const triggerPlayerEmoji = (emoji: string) => {
     if (opponentInfo) {
