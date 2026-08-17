@@ -1590,8 +1590,11 @@ export class ProfileService {
   private async sendEmailReport(report: any) {
     try {
       console.log(`[Email] Attempting to send report to cognerixissue@gmail.com...`);
-      if (!process.env.SMTP_HOST || !process.env.SMTP_USER) {
-        console.log(`[Email] [SIMULATION] SMTP not configured. Email report simulated successfully.`);
+      const gmailUser = process.env.GMAIL_USER;
+      const gmailAppPassword = process.env.GMAIL_APP_PASSWORD;
+
+      if (!gmailUser || !gmailAppPassword) {
+        console.log(`[Email] [SIMULATION] GMAIL_USER or GMAIL_APP_PASSWORD not configured. Email report simulated successfully.`);
         console.log(`[Email] [SIMULATION] Sent to: cognerixissue@gmail.com`);
         console.log(`[Email] [SIMULATION] Subject: [Report] Opponent reported: ${report.opponentProfileId}`);
         console.log(`[Email] [SIMULATION] Content:\n`, JSON.stringify(report, null, 2));
@@ -1599,27 +1602,27 @@ export class ProfileService {
       }
 
       const transporter = nodemailer.createTransport({
-        host: process.env.SMTP_HOST,
-        port: Number(process.env.SMTP_PORT) || 587,
-        secure: process.env.SMTP_SECURE === 'true',
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false,
         auth: {
-          user: process.env.SMTP_USER,
-          pass: process.env.SMTP_PASS,
+          user: gmailUser,
+          pass: gmailAppPassword,
         },
       });
 
       const info = await transporter.sendMail({
-        from: `"Cognerix Report System" <${process.env.SMTP_USER}>`,
+        from: `"Cognerix Report System" <${gmailUser}>`,
         to: 'cognerixissue@gmail.com',
-        subject: `⚠️ [USER REPORT] Player ${report.nickname} reported opponent ${report.opponentProfileId}`,
+        subject: `⚠️ [USER REPORT] Player ${report.nickname} reported opponent ${report.opponentNickname || report.opponentProfileId}`,
         text: `
 User Report Received:
 ----------------------------
 Report ID:                   ${report.id}
 Reporting Player Profile ID: ${report.reportingProfileId}
-Reporter Nickname:           ${report.nickname}
+Reporter Username:           ${report.nickname}
 Opponent Profile ID:         ${report.opponentProfileId}
-Opponent Nickname:           ${report.opponentNickname || 'N/A'}
+Reported Player Nickname:    ${report.opponentNickname || 'N/A'}
 Selected Reason:             ${report.reason}
 Detailed Description:        ${report.description || 'N/A'}
 Session / Match ID:          ${report.sessionId || 'N/A'}
@@ -1632,7 +1635,7 @@ Reported on:                 ${report.timestamp}
       return { success: true, messageId: info.messageId };
     } catch (e) {
       console.error('[Email] Failed to send email report via SMTP:', e);
-      return { success: true, error: (e as any).message };
+      return { success: false, error: (e as any).message };
     }
   }
 
