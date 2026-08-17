@@ -1000,3 +1000,28 @@ button, .btn {
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6) !important;
   }
 }
+
+/* Responsive Friends List layout for mobile viewports */
+@media (max-width: 768px) {
+  .friend-row {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 14px !important;
+    padding: 16px !important;
+  }
+  
+  .friend-actions {
+    width: 100% !important;
+    justify-content: flex-start !important;
+    gap: 8px !important;
+  }
+
+  .friend-actions button {
+    flex: 1 !important;
+    text-align: center !important;
+    justify-content: center !important;
+    padding: 8px 6px !important;
+    font-size: 11px !important;
+    white-space: nowrap !important;
+  }
+}

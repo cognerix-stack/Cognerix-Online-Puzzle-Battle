@@ -6960,6 +6960,7 @@ function App() {
                   {friendsList.map((friend) => (
                     <div 
                       key={friend.id}
+                      className="friend-row"
                       style={{
                         display: 'flex',
                         alignItems: 'center',
@@ -6994,7 +6995,7 @@ function App() {
                       </div>
 
                       {/* Right: Actions */}
-                      <div style={{ display: 'flex', gap: '8px' }}>
+                      <div className="friend-actions" style={{ display: 'flex', gap: '8px' }}>
                         <button
                           onClick={() => {
                             triggerSound('click');
