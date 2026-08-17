@@ -1667,11 +1667,18 @@ Reported on:                 ${report.timestamp}
     return { success: true, ticket: newTicket, emailResult };
   }
 
-  private async sendSupportEmail(ticket: any) {
+  private sendSupportEmail(ticket: any) {
     try {
       console.log(`[Email] Attempting to send support ticket to cognerix.support@gmail.com...`);
-      if (!process.env.SMTP_HOST || !process.env.SMTP_USER) {
-        console.log(`[Email] [SIMULATION] SMTP not configured. Support email simulated successfully.`);
+      const smtpHost = process.env.SMTP_HOST || 'smtp.gmail.com';
+      const smtpPort = Number(process.env.SMTP_PORT) || 587;
+      const smtpSecure = process.env.SMTP_SECURE === 'true';
+
+      const mailUser = process.env.GMAIL_USER || process.env.SMTP_USER;
+      const mailPass = process.env.GMAIL_APP_PASSWORD || process.env.SMTP_PASS;
+
+      if (!mailUser || !mailPass) {
+        console.log(`[Email] [SIMULATION] SMTP/GMAIL credentials not configured. Support email simulated successfully.`);
         console.log(`[Email] [SIMULATION] Sent to: cognerix.support@gmail.com`);
         console.log(`[Email] [SIMULATION] Subject: [Support Ticket] ${ticket.subject}`);
         console.log(`[Email] [SIMULATION] Content:\n`, JSON.stringify(ticket, null, 2));
@@ -1679,17 +1686,17 @@ Reported on:                 ${report.timestamp}
       }
 
       const transporter = nodemailer.createTransport({
-        host: process.env.SMTP_HOST,
-        port: Number(process.env.SMTP_PORT) || 587,
-        secure: process.env.SMTP_SECURE === 'true',
+        host: smtpHost,
+        port: smtpPort,
+        secure: smtpSecure,
         auth: {
-          user: process.env.SMTP_USER,
-          pass: process.env.SMTP_PASS,
+          user: mailUser,
+          pass: mailPass,
         },
       });
 
-      const info = await transporter.sendMail({
-        from: `"Cognerix Help & Support" <${process.env.SMTP_USER}>`,
+      const mailOptions = {
+        from: `"Cognerix Help & Support" <${mailUser}>`,
         to: 'cognerix.support@gmail.com',
         replyTo: ticket.email,
         subject: `📬 [Help & Support] Ticket: ${ticket.subject} (From: ${ticket.name})`,
@@ -1707,13 +1714,19 @@ ${ticket.description}
 ----------------------------
 Submitted on:        ${ticket.timestamp}
 `
+      };
+
+      // Send email without awaiting it to prevent blocking
+      transporter.sendMail(mailOptions).then(info => {
+        console.log(`[Email] Support email sent successfully: messageId=${info.messageId}`);
+      }).catch(err => {
+        console.error('[Support] Email send failed:', err.message);
       });
 
-      console.log(`[Email] Support email sent successfully: messageId=${info.messageId}`);
-      return { success: true, messageId: info.messageId };
+      return { success: true };
     } catch (e) {
-      console.error('[Email] Failed to send support email via SMTP:', e);
-      return { success: true, error: (e as any).message };
+      console.error('[Email] Failed to initiate support email:', e);
+      return { success: false, error: (e as any).message };
     }
   }
 
