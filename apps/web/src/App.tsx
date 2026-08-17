@@ -6086,7 +6086,7 @@ function App() {
                               costCoins: av.costCoins,
                               costGems: av.costGems,
                               onConfirm: () => {
-                                const res = buyAvatarOrFrame(av.id, av.costCoins, av.costGems, av.char, userProfile?.frame || '');
+                                const res = buyAvatarOrFrame(av.id, av.costCoins, av.costGems, av.char, String(userProfile.frame || ''));
                                 if (res.success) {
                                   triggerSound('success');
                                   showToast("Item purchased successfully!", 'success');
@@ -6187,7 +6187,7 @@ function App() {
                               costCoins: fr.costCoins,
                               costGems: fr.costGems,
                               onConfirm: () => {
-                                const res = buyAvatarOrFrame(fr.id, fr.costCoins, fr.costGems, userProfile?.avatar || '', fr.id);
+                                const res = buyAvatarOrFrame(fr.id, fr.costCoins, fr.costGems, String(userProfile.avatar || ''), fr.id);
                                 if (res.success) {
                                   triggerSound('success');
                                   showToast("Item purchased successfully!", 'success');
@@ -7037,16 +7037,26 @@ function App() {
                         <button
                           onClick={() => {
                             triggerSound('click');
-                                  'Content-Type': 'application/json',
-                                  'Authorization': `Bearer ${token}`
-                                },
-                                body: JSON.stringify({ friendId: friend.id })
-                              }).then(res => {
-                                if (res.ok) return res.json();
-                              }).then(data => {
-                                if (data) setFriendsList(data);
-                              });
-                            }
+                            setGenericConfirm({
+                              message: `Remove ${friend.username} from your friends list?`,
+                              onConfirm: () => {
+                                const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
+                                const token = btoa(JSON.stringify(payload));
+                                fetch(`${BACKEND_HTTP_URL}/profile/friends/remove`, {
+                                  method: 'POST',
+                                  headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': `Bearer ${token}`
+                                  },
+                                  body: JSON.stringify({ friendId: friend.id })
+                                }).then((res) => {
+                                  if (res.ok) {
+                                    triggerSound('success');
+                                    setFriendsList(prev => prev.filter(f => f.id !== friend.id));
+                                  }
+                                });
+                              }
+                            });
                           }}
                           className="btn btn-glass"
                           style={{ padding: '8px 12px', borderRadius: '10px', fontSize: '12px', color: 'var(--color-danger)', border: '1px solid rgba(239, 68, 68, 0.2)' }}
