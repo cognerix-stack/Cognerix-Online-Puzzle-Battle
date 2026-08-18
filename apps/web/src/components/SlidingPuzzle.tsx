@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Play, RotateCcw, Award, Clock, Move, Image as ImageIcon, HelpCircle } from 'lucide-react';
 import { PuzzleType } from '@puzzle-verse/shared';
 import { useGame } from '../context/GameContext';
@@ -36,6 +36,29 @@ export const SlidingPuzzle: React.FC<SlidingPuzzleProps> = ({ onGameWin, onClose
   const [proposalAccepted, setProposalAccepted] = useState<boolean>(false);
   const [proposalDeclined, setProposalDeclined] = useState<boolean>(false);
 
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const soundPlayedRef = useRef<boolean>(false);
+
+  useEffect(() => {
+    const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+    if (AudioContextClass) {
+      audioContextRef.current = new AudioContextClass();
+    }
+    return () => {
+      if (audioContextRef.current) {
+        audioContextRef.current.close().catch(() => {});
+      }
+    };
+  }, []);
+
+  const resumeAudio = useCallback(() => {
+    if (audioContextRef.current && audioContextRef.current.state === 'suspended') {
+      audioContextRef.current.resume().catch(err => {
+        console.error('[Audio] Failed to resume AudioContext:', err);
+      });
+    }
+  }, []);
+
   useEffect(() => {
     onGridSizeChange?.(gridSize);
   }, [gridSize, onGridSizeChange]);
@@ -59,6 +82,7 @@ export const SlidingPuzzle: React.FC<SlidingPuzzleProps> = ({ onGameWin, onClose
 
   // Make a move: Swap blank and targeted tile if valid
   const moveTile = useCallback((tileIndex: number) => {
+    resumeAudio();
     if (!isStarted || hasWon) return;
 
     const row = Math.floor(tileIndex / gridSize);
@@ -72,7 +96,11 @@ export const SlidingPuzzle: React.FC<SlidingPuzzleProps> = ({ onGameWin, onClose
       (Math.abs(col - blankCol) === 1 && row === blankRow);
 
     if (isAdjacent) {
-      onPlaySound?.('slide');
+      if (!soundPlayedRef.current) {
+        onPlaySound?.('slide');
+      } else {
+        soundPlayedRef.current = false;
+      }
       setBoard(prev => {
         const next = [...prev];
         next[blankIndex] = next[tileIndex];
@@ -99,7 +127,28 @@ export const SlidingPuzzle: React.FC<SlidingPuzzleProps> = ({ onGameWin, onClose
       setBlankIndex(tileIndex);
       setMoves(prev => prev + 1);
     }
-  }, [isStarted, hasWon, blankIndex, gridSize, checkWin, moves, timer, onGameWin, onProgress, generateSolvedBoard]);
+  }, [isStarted, hasWon, blankIndex, gridSize, checkWin, moves, timer, onGameWin, onProgress, generateSolvedBoard, resumeAudio, onPlaySound]);
+
+  const handleTouchStart = useCallback((tileIndex: number) => {
+    if (!isStarted || hasWon) return;
+
+    resumeAudio();
+
+    const row = Math.floor(tileIndex / gridSize);
+    const col = tileIndex % gridSize;
+    const blankRow = Math.floor(blankIndex / gridSize);
+    const blankCol = blankIndex % gridSize;
+
+    // Check if adjacent (up, down, left, right)
+    const isAdjacent = 
+      (Math.abs(row - blankRow) === 1 && col === blankCol) ||
+      (Math.abs(col - blankCol) === 1 && row === blankRow);
+
+    if (isAdjacent) {
+      onPlaySound?.('slide');
+      soundPlayedRef.current = true;
+    }
+  }, [isStarted, hasWon, blankIndex, gridSize, onPlaySound, resumeAudio]);
 
   // Shuffle board using random legal moves to guarantee it remains solvable
   const shuffleBoard = useCallback((forcedSize?: number) => {
@@ -440,6 +489,7 @@ export const SlidingPuzzle: React.FC<SlidingPuzzleProps> = ({ onGameWin, onClose
             <div
               key={index}
               onClick={() => moveTile(index)}
+              onTouchStart={() => handleTouchStart(index)}
               style={{
                 display: 'flex',
                 alignItems: 'center',
