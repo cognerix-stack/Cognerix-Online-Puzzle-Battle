@@ -4,6 +4,29 @@ import { Edit3, Trash2 } from 'lucide-react';
 import { useGame } from '../context/GameContext';
 import { translate } from '../utils/translations';
 
+let globalAudioContext: AudioContext | null = null;
+const getAudioContext = () => {
+  if (!globalAudioContext) {
+    globalAudioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+  }
+  return globalAudioContext;
+};
+
+const playInstantCellSound = () => {
+  const ctx = getAudioContext();
+  if (ctx.state === 'suspended') ctx.resume();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = 'sine';
+  osc.frequency.value = 1046;
+  gain.gain.setValueAtTime(0.06, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.start();
+  osc.stop(ctx.currentTime + 0.15);
+};
+
 interface SudokuPuzzleProps {
   onGameWin: (puzzleType: PuzzleType, timeInSec: number, score: number) => void;
   onClose?: (isQuit?: boolean) => void;
@@ -296,6 +319,7 @@ export const SudokuPuzzle: React.FC<SudokuPuzzleProps> = ({ onGameWin, onClose, 
             <div
               key={idx}
               onClick={() => handleCellSelect(idx)}
+              onTouchStart={() => playInstantCellSound()}
               style={{
                 background: isSelected 
                   ? 'rgba(139, 92, 246, 0.25)' 
@@ -353,6 +377,7 @@ export const SudokuPuzzle: React.FC<SudokuPuzzleProps> = ({ onGameWin, onClose, 
           className={`btn ${isNoteMode ? 'btn-primary' : 'btn-glass'}`} 
           style={{ padding: '10px 16px', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '6px' }}
           onClick={() => setIsNoteMode(!isNoteMode)}
+          onTouchStart={() => playInstantCellSound()}
         >
           <Edit3 size={16} />
           {isNoteMode ? t('notes_on') : t('pencil_notes')}
@@ -362,6 +387,7 @@ export const SudokuPuzzle: React.FC<SudokuPuzzleProps> = ({ onGameWin, onClose, 
           className="btn btn-glass" 
           style={{ padding: '10px 16px', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '6px' }}
           onClick={handleClearCell}
+          onTouchStart={() => playInstantCellSound()}
           disabled={selectedIndex === null || initialCells[selectedIndex]}
         >
           <Trash2 size={16} />
@@ -501,6 +527,7 @@ export const SudokuPuzzle: React.FC<SudokuPuzzleProps> = ({ onGameWin, onClose, 
             className="btn btn-glass"
             style={{ padding: '12px 0', fontSize: '16px', borderRadius: '8px' }}
             onClick={() => handleInputNumber(num)}
+            onTouchStart={() => playInstantCellSound()}
             disabled={selectedIndex === null || initialCells[selectedIndex]}
           >
             {num}
