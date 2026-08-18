@@ -4,6 +4,30 @@ import { Info } from 'lucide-react';
 import { useGame } from '../context/GameContext';
 import { translate } from '../utils/translations';
 
+let globalAudioContext: AudioContext | null = null;
+const getAudioContext = () => {
+  if (!globalAudioContext) {
+    globalAudioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+  }
+  return globalAudioContext;
+};
+
+const playInstantLogicSound = () => {
+  const ctx = getAudioContext();
+  if (ctx.state === 'suspended') ctx.resume();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = 'sine';
+  osc.frequency.value = 400;
+  osc.frequency.exponentialRampToValueAtTime(600, ctx.currentTime + 0.05);
+  gain.gain.setValueAtTime(0.08, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.start();
+  osc.stop(ctx.currentTime + 0.06);
+};
+
 interface LogicQuestion {
   names: string[];
   category1Label: { en: string; hi: string };
@@ -513,6 +537,7 @@ export const LogicPuzzle: React.FC<LogicPuzzleProps> = ({
                   style={{ width: '100%', padding: '8px 12px', fontSize: '13px', background: 'var(--bg-primary)', color: 'var(--text-primary)', border: '1px solid var(--border-glass)' }}
                   value={selections[name]?.category1 || ''}
                   onChange={(e) => handleSelect(name, 'category1', e.target.value)}
+                  onTouchStart={() => playInstantLogicSound()}
                 >
                   <option value="">{getTranslation(q.category1Placeholder)}</option>
                   {q.category1Options.map(opt => (
@@ -530,6 +555,7 @@ export const LogicPuzzle: React.FC<LogicPuzzleProps> = ({
                   style={{ width: '100%', padding: '8px 12px', fontSize: '13px', background: 'var(--bg-primary)', color: 'var(--text-primary)', border: '1px solid var(--border-glass)' }}
                   value={selections[name]?.category2 || ''}
                   onChange={(e) => handleSelect(name, 'category2', e.target.value)}
+                  onTouchStart={() => playInstantLogicSound()}
                 >
                   <option value="">{getTranslation(q.category2Placeholder)}</option>
                   {q.category2Options.map(opt => (
@@ -549,11 +575,11 @@ export const LogicPuzzle: React.FC<LogicPuzzleProps> = ({
       )}
 
       <div style={{ display: 'flex', gap: '12px' }}>
-        <button className="btn btn-primary" style={{ flex: 1, padding: '12px' }} onClick={handleVerify}>
+        <button className="btn btn-primary" style={{ flex: 1, padding: '12px' }} onClick={handleVerify} onTouchStart={() => playInstantLogicSound()}>
           {t('submit_deduction')}
         </button>
         {onClose && !isOnline && (
-          <button className="btn btn-glass" style={{ flex: 1, padding: '12px' }} onClick={() => onClose(true)}>
+          <button className="btn btn-glass" style={{ flex: 1, padding: '12px' }} onClick={() => onClose(true)} onTouchStart={() => playInstantLogicSound()}>
             {t('close_board')}
           </button>
         )}
