@@ -4,6 +4,31 @@ import { PuzzleType } from '@puzzle-verse/shared';
 import { useGame } from '../context/GameContext';
 import { translate } from '../utils/translations';
 
+let globalAudioContext: AudioContext | null = null;
+const getAudioContext = () => {
+  if (!globalAudioContext) {
+    globalAudioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+  }
+  return globalAudioContext;
+};
+
+const playInstantSound = () => {
+  const ctx = getAudioContext();
+  if (ctx.state === 'suspended') {
+    ctx.resume().catch(() => {});
+  }
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = 'sine';
+  osc.frequency.value = 320;
+  gain.gain.setValueAtTime(0.3, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.start();
+  osc.stop(ctx.currentTime + 0.06);
+};
+
 interface SlidingPuzzleProps {
   onGameWin: (puzzleType: PuzzleType, timeInSec: number, score: number) => void;
   onClose?: (isQuit?: boolean) => void;
@@ -15,7 +40,7 @@ interface SlidingPuzzleProps {
   onPlaySound?: (type: 'click' | 'success' | 'fail' | 'slide') => void;
 }
 
-export const SlidingPuzzle: React.FC<SlidingPuzzleProps> = ({ onGameWin, onClose, onProgress, onGridSizeChange, room, username, headerActions, onPlaySound }) => {
+export const SlidingPuzzle: React.FC<SlidingPuzzleProps> = ({ onGameWin, onClose, onProgress, onGridSizeChange, room, username, headerActions }) => {
   const { language } = useGame();
   const t = (key: string) => translate(key, language);
 
@@ -36,28 +61,7 @@ export const SlidingPuzzle: React.FC<SlidingPuzzleProps> = ({ onGameWin, onClose
   const [proposalAccepted, setProposalAccepted] = useState<boolean>(false);
   const [proposalDeclined, setProposalDeclined] = useState<boolean>(false);
 
-  const audioContextRef = useRef<AudioContext | null>(null);
   const soundPlayedRef = useRef<boolean>(false);
-
-  useEffect(() => {
-    const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
-    if (AudioContextClass) {
-      audioContextRef.current = new AudioContextClass();
-    }
-    return () => {
-      if (audioContextRef.current) {
-        audioContextRef.current.close().catch(() => {});
-      }
-    };
-  }, []);
-
-  const resumeAudio = useCallback(() => {
-    if (audioContextRef.current && audioContextRef.current.state === 'suspended') {
-      audioContextRef.current.resume().catch(err => {
-        console.error('[Audio] Failed to resume AudioContext:', err);
-      });
-    }
-  }, []);
 
   useEffect(() => {
     onGridSizeChange?.(gridSize);
@@ -82,7 +86,6 @@ export const SlidingPuzzle: React.FC<SlidingPuzzleProps> = ({ onGameWin, onClose
 
   // Make a move: Swap blank and targeted tile if valid
   const moveTile = useCallback((tileIndex: number) => {
-    resumeAudio();
     if (!isStarted || hasWon) return;
 
     const row = Math.floor(tileIndex / gridSize);
@@ -97,7 +100,7 @@ export const SlidingPuzzle: React.FC<SlidingPuzzleProps> = ({ onGameWin, onClose
 
     if (isAdjacent) {
       if (!soundPlayedRef.current) {
-        onPlaySound?.('slide');
+        playInstantSound();
       } else {
         soundPlayedRef.current = false;
       }
@@ -127,12 +130,10 @@ export const SlidingPuzzle: React.FC<SlidingPuzzleProps> = ({ onGameWin, onClose
       setBlankIndex(tileIndex);
       setMoves(prev => prev + 1);
     }
-  }, [isStarted, hasWon, blankIndex, gridSize, checkWin, moves, timer, onGameWin, onProgress, generateSolvedBoard, resumeAudio, onPlaySound]);
+  }, [isStarted, hasWon, blankIndex, gridSize, checkWin, moves, timer, onGameWin, onProgress, generateSolvedBoard]);
 
   const handleTouchStart = useCallback((tileIndex: number) => {
     if (!isStarted || hasWon) return;
-
-    resumeAudio();
 
     const row = Math.floor(tileIndex / gridSize);
     const col = tileIndex % gridSize;
@@ -145,10 +146,10 @@ export const SlidingPuzzle: React.FC<SlidingPuzzleProps> = ({ onGameWin, onClose
       (Math.abs(col - blankCol) === 1 && row === blankRow);
 
     if (isAdjacent) {
-      onPlaySound?.('slide');
+      playInstantSound();
       soundPlayedRef.current = true;
     }
-  }, [isStarted, hasWon, blankIndex, gridSize, onPlaySound, resumeAudio]);
+  }, [isStarted, hasWon, blankIndex, gridSize]);
 
   // Shuffle board using random legal moves to guarantee it remains solvable
   const shuffleBoard = useCallback((forcedSize?: number) => {
