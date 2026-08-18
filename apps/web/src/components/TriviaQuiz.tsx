@@ -4,6 +4,31 @@ import { PuzzleType } from '@puzzle-verse/shared';
 import { useGame } from '../context/GameContext';
 import { translate } from '../utils/translations';
 
+let globalAudioContext: AudioContext | null = null;
+const getAudioContext = () => {
+  if (!globalAudioContext) {
+    globalAudioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+  }
+  return globalAudioContext;
+};
+
+const playInstantAnswerSound = () => {
+  const ctx = getAudioContext();
+  if (ctx.state === 'suspended') {
+    ctx.resume().catch(() => {});
+  }
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = 'sine';
+  osc.frequency.value = 500;
+  gain.gain.setValueAtTime(0.15, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.04);
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.start();
+  osc.stop(ctx.currentTime + 0.05);
+};
+
 interface TriviaQuizProps {
   onClose?: (isQuit?: boolean) => void;
   onProgress?: (progress: number, correctAnswers?: number) => void;
@@ -637,6 +662,7 @@ export const TriviaQuiz: React.FC<TriviaQuizProps> = ({ onClose, onProgress, onG
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [showResults, setShowResults] = useState<boolean>(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const soundPlayedRef = useRef<boolean>(false);
   const [selectedCategory, setSelectedCategory] = useState<string>('mixed');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [pauseTimer, setPauseTimer] = useState<number>(-1);
@@ -791,6 +817,12 @@ export const TriviaQuiz: React.FC<TriviaQuizProps> = ({ onClose, onProgress, onG
     if (isAnswered) return;
     if (timerRef.current) clearInterval(timerRef.current);
     
+    if (!soundPlayedRef.current) {
+      playInstantAnswerSound();
+    } else {
+      soundPlayedRef.current = false;
+    }
+
     setSelectedOption(optIndex);
     setIsAnswered(true);
     
@@ -953,6 +985,12 @@ export const TriviaQuiz: React.FC<TriviaQuizProps> = ({ onClose, onProgress, onG
                   ...getOptionStyle(optIdx)
                 }}
                 onClick={() => selectOption(optIdx)}
+                onTouchStart={() => {
+                  if (!isAnswered) {
+                    playInstantAnswerSound();
+                    soundPlayedRef.current = true;
+                  }
+                }}
               >
                 <span style={{ 
                   marginRight: '12px', 
