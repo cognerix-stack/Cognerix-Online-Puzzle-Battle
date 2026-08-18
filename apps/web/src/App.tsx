@@ -1911,7 +1911,7 @@ function App() {
   }, [matchResult]);
 
   // Accessibility States
-  const [colorBlindMode, setColorBlindMode] = useState<'none' | 'protanopia' | 'deuteranopia' | 'tritanopia'>('none');
+  const [colorBlindMode] = useState<'none' | 'protanopia' | 'deuteranopia' | 'tritanopia'>('none');
 
   // Watch profile changes for leveling up sounds and notification modal
   const prevLevelRef = useRef<number | null>(null);
@@ -6605,28 +6605,6 @@ function App() {
                 </div>
 
                 <div style={{ width: '100%', height: '1px', background: 'var(--border-glass)' }} />
-                
-                
-                <div>
-                  <h4 style={{ fontSize: '15px', color: 'var(--text-secondary)', marginBottom: '8px' }}>{t('color_blind')}</h4>
-                  <div style={{ display: 'flex', gap: '8px' }}>
-                    {[
-                      { id: 'none', label: 'Default Theme (Normal)' },
-                      { id: 'protanopia', label: 'Protanopia (Red-Green Shift)' },
-                      { id: 'deuteranopia', label: 'Deuteranopia (Green Weakness)' },
-                      { id: 'tritanopia', label: 'Tritanopia (Blue-Yellow Shift)' }
-                    ].map(mode => (
-                      <button
-                        key={mode.id}
-                        onClick={() => { triggerSound('click'); setColorBlindMode(mode.id as any); }}
-                        className={`btn ${colorBlindMode === mode.id ? 'btn-primary' : 'btn-glass'}`}
-                        style={{ fontSize: '13px', padding: '8px 12px' }}
-                      >
-                        {mode.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
 
                 {/* 🙋 Help & Support */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
