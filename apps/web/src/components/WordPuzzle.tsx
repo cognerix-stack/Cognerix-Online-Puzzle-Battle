@@ -1,8 +1,33 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { RefreshCcw, Award } from 'lucide-react';
 import { PuzzleType } from '@puzzle-verse/shared';
 import { useGame } from '../context/GameContext';
 import { translate } from '../utils/translations';
+
+let globalAudioContext: AudioContext | null = null;
+const getAudioContext = () => {
+  if (!globalAudioContext) {
+    globalAudioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+  }
+  return globalAudioContext;
+};
+
+const playInstantKeySound = () => {
+  const ctx = getAudioContext();
+  if (ctx.state === 'suspended') {
+    ctx.resume().catch(() => {});
+  }
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = 'sine';
+  osc.frequency.value = 400;
+  gain.gain.setValueAtTime(0.15, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.04);
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.start();
+  osc.stop(ctx.currentTime + 0.05);
+};
 
 interface WordPuzzleProps {
   onClose?: (isQuit?: boolean) => void;
@@ -32,6 +57,8 @@ export const WordPuzzle: React.FC<WordPuzzleProps> = ({ onClose, onProgress, onG
   const [gameStatus, setGameStatus] = useState<'PLAYING' | 'WON' | 'LOST'>('PLAYING');
   const [shakeRow, setShakeRow] = useState<number | null>(null);
   const [letterStatuses, setLetterStatuses] = useState<Record<string, KeyStatus>>({});
+
+  const soundPlayedRef = useRef<boolean>(false);
 
   const startNewGame = useCallback(() => {
     const word = WORDS[Math.floor(Math.random() * WORDS.length)];
@@ -101,11 +128,19 @@ export const WordPuzzle: React.FC<WordPuzzleProps> = ({ onClose, onProgress, onG
       setCurrentGuess('');
     } else if (key === 'BACKSPACE') {
       setCurrentGuess(prev => prev.slice(0, -1));
-      onPlaySound?.('click');
+      if (!soundPlayedRef.current) {
+        playInstantKeySound();
+      } else {
+        soundPlayedRef.current = false;
+      }
     } else if (/^[A-Z]$/.test(key)) {
       if (currentGuess.length < 5) {
         setCurrentGuess(prev => prev + key);
-        onPlaySound?.('click');
+        if (!soundPlayedRef.current) {
+          playInstantKeySound();
+        } else {
+          soundPlayedRef.current = false;
+        }
       }
     }
   }, [currentGuess, guesses, gameStatus, targetWord, letterStatuses, recordGameWin, onProgress, onGameWin, onPlaySound]);
@@ -243,6 +278,10 @@ export const WordPuzzle: React.FC<WordPuzzleProps> = ({ onClose, onProgress, onG
                 <button
                   key={key}
                   onClick={() => handleKeyPress(key)}
+                  onTouchStart={() => {
+                    playInstantKeySound();
+                    soundPlayedRef.current = true;
+                  }}
                   style={{
                     padding: isSpecial ? '12px 8px' : '12px 0',
                     flex: isSpecial ? '1.5' : '1',
