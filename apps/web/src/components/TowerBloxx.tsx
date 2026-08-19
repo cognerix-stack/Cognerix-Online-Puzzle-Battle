@@ -5,31 +5,21 @@ import { useGame } from '../context/GameContext';
 import { translate } from '../utils/translations';
 import { MultiplayerService } from '../services/multiplayer';
 
-let globalAudioContext: AudioContext | null = null;
-const getAudioContext = () => {
-  if (!globalAudioContext) {
-    globalAudioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-  }
-  if (globalAudioContext.state === 'suspended') {
-    globalAudioContext.resume();
-  }
-  return globalAudioContext;
-};
-
-const playInstantDropSound = () => {
-  const ctx = getAudioContext();
-  if (ctx.state === 'suspended') ctx.resume();
-  const osc1 = ctx.createOscillator();
-  const gain1 = ctx.createGain();
-  osc1.type = 'sine';
-  osc1.frequency.setValueAtTime(350, ctx.currentTime);
-  osc1.frequency.exponentialRampToValueAtTime(90, ctx.currentTime + 0.06);
-  gain1.gain.setValueAtTime(0.3, ctx.currentTime);
-  gain1.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.06);
-  osc1.connect(gain1);
-  gain1.connect(ctx.destination);
-  osc1.start();
-  osc1.stop(ctx.currentTime + 0.07);
+const playMobileSound = (frequency: number, duration: number, volume: number = 0.3) => {
+  try {
+    const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = frequency;
+    gain.gain.setValueAtTime(volume, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + duration);
+    osc.onended = () => ctx.close();
+  } catch (e) {}
 };
 
 interface TowerBloxxProps {
@@ -305,7 +295,7 @@ export const TowerBloxx: React.FC<TowerBloxxProps> = ({ onGameWin, onClose, onPr
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.code === 'Space' || e.code === 'Enter') {
         e.preventDefault();
-        playInstantDropSound();
+        playMobileSound(350, 0.06);
         handleDropBlock();
       }
     };
@@ -840,13 +830,8 @@ export const TowerBloxx: React.FC<TowerBloxxProps> = ({ onGameWin, onClose, onPr
 
   const isLight = document.documentElement.classList.contains('light-theme');
 
-  const unlockAudio = () => {
-    const ctx = getAudioContext();
-    ctx.resume();
-  };
-
   return (
-    <div onTouchStart={unlockAudio} className="glass-panel animate-fade-in" style={{ maxWidth: '460px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '16px', position: 'relative', padding: '20px', userSelect: 'none', touchAction: 'none' }}>
+    <div className="glass-panel animate-fade-in" style={{ maxWidth: '460px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '16px', position: 'relative', padding: '20px', userSelect: 'none', touchAction: 'none' }}>
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
@@ -950,14 +935,14 @@ export const TowerBloxx: React.FC<TowerBloxxProps> = ({ onGameWin, onClose, onPr
           height={canvasHeight}
           onClick={() => {
             if (!dropSoundPlayedRef.current) {
-              playInstantDropSound();
+              playMobileSound(350, 0.06);
             } else {
               dropSoundPlayedRef.current = false;
             }
             handleDropBlock();
           }}
           onTouchStart={() => {
-            playInstantDropSound();
+            playMobileSound(350, 0.06);
             dropSoundPlayedRef.current = true;
           }}
           style={{ width: '100%', height: 'auto', display: 'block', cursor: 'pointer' }}
@@ -971,14 +956,14 @@ export const TowerBloxx: React.FC<TowerBloxxProps> = ({ onGameWin, onClose, onPr
           style={{ padding: '14px', fontSize: '15px', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
           onClick={() => {
             if (!dropSoundPlayedRef.current) {
-              playInstantDropSound();
+              playMobileSound(350, 0.06);
             } else {
               dropSoundPlayedRef.current = false;
             }
             handleDropBlock();
           }}
           onTouchStart={() => {
-            playInstantDropSound();
+            playMobileSound(350, 0.06);
             dropSoundPlayedRef.current = true;
           }}
           disabled={isGameOver}

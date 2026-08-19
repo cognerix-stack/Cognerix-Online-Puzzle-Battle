@@ -4,30 +4,21 @@ import { RefreshCcw, Award, Check, Search, Zap, Clock } from 'lucide-react';
 import { useGame } from '../context/GameContext';
 import { translate } from '../utils/translations';
 
-let globalAudioContext: AudioContext | null = null;
-const getAudioContext = () => {
-  if (!globalAudioContext) {
-    globalAudioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-  }
-  if (globalAudioContext.state === 'suspended') {
-    globalAudioContext.resume();
-  }
-  return globalAudioContext;
-};
-
-const playInstantSelectSound = () => {
-  const ctx = getAudioContext();
-  if (ctx.state === 'suspended') ctx.resume();
-  const osc = ctx.createOscillator();
-  const gain = ctx.createGain();
-  osc.type = 'sine';
-  osc.frequency.value = 440;
-  gain.gain.setValueAtTime(0.06, ctx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
-  osc.connect(gain);
-  gain.connect(ctx.destination);
-  osc.start();
-  osc.stop(ctx.currentTime + 0.09);
+const playMobileSound = (frequency: number, duration: number, volume: number = 0.3) => {
+  try {
+    const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = frequency;
+    gain.gain.setValueAtTime(volume, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + duration);
+    osc.onended = () => ctx.close();
+  } catch (e) {}
 };
 
 interface WordSearchProps {
@@ -281,7 +272,7 @@ export const WordSearch: React.FC<WordSearchProps> = ({ onGameWin, onClose, onPr
   const handlePointerDown = (cellIdx: number, e: React.PointerEvent) => {
     e.preventDefault();
     if (hasWon) return;
-    playInstantSelectSound();
+    playMobileSound(440, 0.08, 0.06);
     setIsSelecting(true);
     setStartIdx(cellIdx);
     setCurrentIdx(cellIdx);
@@ -340,13 +331,8 @@ export const WordSearch: React.FC<WordSearchProps> = ({ onGameWin, onClose, onPr
 
   const isLight = document.documentElement.classList.contains('light-theme');
 
-  const unlockAudio = () => {
-    const ctx = getAudioContext();
-    ctx.resume();
-  };
-
   return (
-    <div onTouchStart={unlockAudio} className="glass-panel animate-fade-in" style={{ maxWidth: '540px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '16px', position: 'relative', padding: '20px', userSelect: 'none', touchAction: 'none' }}>
+    <div className="glass-panel animate-fade-in" style={{ maxWidth: '540px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '16px', position: 'relative', padding: '20px', userSelect: 'none', touchAction: 'none' }}>
       {/* Header Bar */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>

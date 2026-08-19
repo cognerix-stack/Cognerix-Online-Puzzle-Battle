@@ -4,31 +4,21 @@ import { RefreshCcw, Award, Zap, Grid } from 'lucide-react';
 import { useGame } from '../context/GameContext';
 import { translate } from '../utils/translations';
 
-let globalAudioContext: AudioContext | null = null;
-const getAudioContext = () => {
-  if (!globalAudioContext) {
-    globalAudioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-  }
-  if (globalAudioContext.state === 'suspended') {
-    globalAudioContext.resume();
-  }
-  return globalAudioContext;
-};
-
-const playInstantBlockSound = () => {
-  const ctx = getAudioContext();
-  if (ctx.state === 'suspended') ctx.resume();
-  const osc1 = ctx.createOscillator();
-  const gain1 = ctx.createGain();
-  osc1.type = 'sine';
-  osc1.frequency.setValueAtTime(450, ctx.currentTime);
-  osc1.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + 0.06);
-  gain1.gain.setValueAtTime(0.3, ctx.currentTime);
-  gain1.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.06);
-  osc1.connect(gain1);
-  gain1.connect(ctx.destination);
-  osc1.start();
-  osc1.stop(ctx.currentTime + 0.07);
+const playMobileSound = (frequency: number, duration: number, volume: number = 0.3) => {
+  try {
+    const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = frequency;
+    gain.gain.setValueAtTime(volume, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + duration);
+    osc.onended = () => ctx.close();
+  } catch (e) {}
 };
 
 interface BlockBlusterProps {
@@ -518,13 +508,8 @@ export const BlockBluster: React.FC<BlockBlusterProps> = ({ onGameWin, onClose, 
   const isLight = document.documentElement.classList.contains('light-theme');
   const draggedShape = activeTrayIdx !== null ? tray[activeTrayIdx] : null;
 
-  const unlockAudio = () => {
-    const ctx = getAudioContext();
-    ctx.resume();
-  };
-
   return (
-    <div onTouchStart={unlockAudio} ref={containerRef} className="glass-panel animate-fade-in" style={{ maxWidth: '540px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '16px', position: 'relative', padding: '20px', userSelect: 'none', touchAction: 'none' }}>
+    <div ref={containerRef} className="glass-panel animate-fade-in" style={{ maxWidth: '540px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '16px', position: 'relative', padding: '20px', userSelect: 'none', touchAction: 'none' }}>
       {/* Header Bar */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
@@ -680,12 +665,12 @@ export const BlockBluster: React.FC<BlockBlusterProps> = ({ onGameWin, onClose, 
                   setSelectedTrayIdx(isSelected ? null : trayIdx);
                 }}
                 onTouchStart={() => {
-                  playInstantBlockSound();
+                  playMobileSound(450, 0.06);
                   blockSoundPlayedRef.current = true;
                 }}
                 onMouseDown={() => {
                   if (!blockSoundPlayedRef.current) {
-                    playInstantBlockSound();
+                    playMobileSound(450, 0.06);
                   } else {
                     blockSoundPlayedRef.current = false;
                   }
