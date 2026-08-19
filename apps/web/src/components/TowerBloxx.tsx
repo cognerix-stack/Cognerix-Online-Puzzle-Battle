@@ -167,7 +167,7 @@ export const TowerBloxx: React.FC<TowerBloxxProps> = ({ onGameWin, onClose, onPr
     setIsGameOver(false);
     setComboText(null);
 
-    if (onPlaySoundRef.current) onPlaySoundRef.current('click');
+    playMobileSound(450, 0.05, 0.06);
     spawnNextBlock();
     if (onProgressRef.current) onProgressRef.current(0);
   }, [spawnNextBlock]);
@@ -216,12 +216,13 @@ export const TowerBloxx: React.FC<TowerBloxxProps> = ({ onGameWin, onClose, onPr
         text: `NEED 750 🪙 & 150 💎 FOR WIND GUST!`, 
         color: '#ef4444' 
       });
-      if (onPlaySoundRef.current) onPlaySoundRef.current('fail');
+      playMobileSound(370, 0.08, 0.15);
+      setTimeout(() => playMobileSound(370, 0.08, 0.15), 100);
       setTimeout(() => setComboText(null), 2200);
       return;
     }
 
-    if (onPlaySoundRef.current) onPlaySoundRef.current('wind');
+    playMobileSound(180, 0.8, 0.08);
 
     // Deduct coins & gems
     saveProfile({
@@ -260,9 +261,8 @@ export const TowerBloxx: React.FC<TowerBloxxProps> = ({ onGameWin, onClose, onPr
         const attacker = data?.attackerName || 'Opponent';
 
         // Play incoming wind gust alert sound
-        if (onPlaySoundRef.current) {
-          onPlaySoundRef.current('wind_alert');
-        }
+        playMobileSound(659, 0.25, 0.1);
+        playMobileSound(987, 0.25, 0.08);
 
         // Set 3-second wind gust wobble
         stateRef.current.windGustEndTime = Date.now() + 3000;
@@ -655,14 +655,17 @@ export const TowerBloxx: React.FC<TowerBloxxProps> = ({ onGameWin, onClose, onPr
               // Check win
               if (newFloors >= TARGET_FLOORS && !state.isProcessingWin) {
                 state.isProcessingWin = true;
-                if (onPlaySoundRef.current) onPlaySoundRef.current('success');
+                playMobileSound(523, 0.25, 0.15);
+                setTimeout(() => playMobileSound(659, 0.25, 0.15), 60);
+                setTimeout(() => playMobileSound(784, 0.25, 0.15), 120);
                 const finalScore = scoreRef.current + points;
                 onGameWinRef.current(PuzzleType.TOWER_BLOXX, timerRef.current, finalScore);
               } else {
                 if (isPerfect || isGreat) {
-                  if (onPlaySoundRef.current) onPlaySoundRef.current('correct');
+                  playMobileSound(784, 0.15, 0.15);
+                  setTimeout(() => playMobileSound(1046, 0.15, 0.15), 50);
                 } else {
-                  if (onPlaySoundRef.current) onPlaySoundRef.current('click');
+                  playMobileSound(450, 0.05, 0.06);
                 }
                 spawnNextBlock();
               }
@@ -675,7 +678,8 @@ export const TowerBloxx: React.FC<TowerBloxxProps> = ({ onGameWin, onClose, onPr
 
               setLives(l => {
                 const nextLives = l - 1;
-                if (onPlaySoundRef.current) onPlaySoundRef.current('fail');
+                playMobileSound(370, 0.08, 0.15);
+                setTimeout(() => playMobileSound(370, 0.08, 0.15), 100);
                 if (nextLives <= 0) {
                   state.isGameOver = true;
                   setIsGameOver(true);
@@ -848,7 +852,7 @@ export const TowerBloxx: React.FC<TowerBloxxProps> = ({ onGameWin, onClose, onPr
           <button 
             className="btn btn-glass" 
             onClick={() => {
-              if (onPlaySoundRef.current) onPlaySoundRef.current('click');
+              playMobileSound(450, 0.05, 0.06);
               startNewGame();
             }} 
             style={{ padding: '6px 10px', fontSize: '13px' }}
@@ -1043,7 +1047,7 @@ export const TowerBloxx: React.FC<TowerBloxxProps> = ({ onGameWin, onClose, onPr
               className="btn btn-primary" 
               style={{ flex: 1 }} 
               onClick={() => {
-                if (onPlaySoundRef.current) onPlaySoundRef.current('click');
+                playMobileSound(450, 0.05, 0.06);
                 startNewGame();
               }}
             >
@@ -1053,7 +1057,7 @@ export const TowerBloxx: React.FC<TowerBloxxProps> = ({ onGameWin, onClose, onPr
               className="btn btn-glass" 
               style={{ flex: 1 }} 
               onClick={() => {
-                if (onPlaySoundRef.current) onPlaySoundRef.current('click');
+                playMobileSound(450, 0.05, 0.06);
                 if (onClose) {
                   onClose();
                 } else {
