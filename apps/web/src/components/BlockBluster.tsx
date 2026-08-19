@@ -4,6 +4,30 @@ import { RefreshCcw, Award, Zap, Grid } from 'lucide-react';
 import { useGame } from '../context/GameContext';
 import { translate } from '../utils/translations';
 
+let globalAudioContext: AudioContext | null = null;
+const getAudioContext = () => {
+  if (!globalAudioContext) {
+    globalAudioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+  }
+  return globalAudioContext;
+};
+
+const playInstantBlockSound = () => {
+  const ctx = getAudioContext();
+  if (ctx.state === 'suspended') ctx.resume();
+  const osc1 = ctx.createOscillator();
+  const gain1 = ctx.createGain();
+  osc1.type = 'sine';
+  osc1.frequency.setValueAtTime(450, ctx.currentTime);
+  osc1.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + 0.06);
+  gain1.gain.setValueAtTime(0.3, ctx.currentTime);
+  gain1.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.06);
+  osc1.connect(gain1);
+  gain1.connect(ctx.destination);
+  osc1.start();
+  osc1.stop(ctx.currentTime + 0.07);
+};
+
 interface BlockBlusterProps {
   onGameWin: (puzzleType: PuzzleType, timeInSec: number, score: number) => void;
   onClose?: (isQuit?: boolean) => void;
@@ -58,6 +82,7 @@ export const BlockBluster: React.FC<BlockBlusterProps> = ({ onGameWin, onClose, 
 
   const containerRef = useRef<HTMLDivElement>(null);
   const ghostRef = useRef<HTMLDivElement>(null);
+  const blockSoundPlayedRef = useRef<boolean>(false);
 
   // Drag and drop state
   const [draggingTrayIdx, setDraggingTrayIdx] = useState<number | null>(null);
@@ -645,6 +670,17 @@ export const BlockBluster: React.FC<BlockBlusterProps> = ({ onGameWin, onClose, 
                 onClick={() => {
                   if (onPlaySound) onPlaySound('click');
                   setSelectedTrayIdx(isSelected ? null : trayIdx);
+                }}
+                onTouchStart={() => {
+                  playInstantBlockSound();
+                  blockSoundPlayedRef.current = true;
+                }}
+                onMouseDown={() => {
+                  if (!blockSoundPlayedRef.current) {
+                    playInstantBlockSound();
+                  } else {
+                    blockSoundPlayedRef.current = false;
+                  }
                 }}
                 style={{
                   background: isSelected ? 'rgba(139, 92, 246, 0.2)' : isLight ? '#f8fafc' : 'rgba(255,255,255,0.03)',
