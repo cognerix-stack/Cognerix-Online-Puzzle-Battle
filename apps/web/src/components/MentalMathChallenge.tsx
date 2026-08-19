@@ -60,7 +60,7 @@ export const MentalMathChallenge: React.FC<MentalMathChallengeProps> = ({
   // States
   const [gameState, setGameState] = useState<'SETUP' | 'MEMORIZE' | 'ANSWER' | 'RESULTS'>('SETUP');
   const [numberCount, setNumberCount] = useState<number>(5);
-  const [digitsPerNumber, setDigitsPerNumber] = useState<number>(2);
+  const [digitsPerNumber, setDigitsPerNumber] = useState<number>(1);
   const [numbers, setNumbers] = useState<number[]>([]);
   const [correctSum, setCorrectSum] = useState<number>(0);
   const [currentNumberIndex, setCurrentNumberIndex] = useState<number>(0);
@@ -196,7 +196,7 @@ export const MentalMathChallenge: React.FC<MentalMathChallengeProps> = ({
       setIsWaitingForDigitsProposal(false);
       setProposedDigits(null);
 
-      const finalDigits = data.accepted ? data.digits : 2;
+      const finalDigits = data.accepted ? data.digits : 1;
       setDigitsPerNumber(finalDigits);
 
       if (isHost) {
@@ -370,7 +370,7 @@ export const MentalMathChallenge: React.FC<MentalMathChallengeProps> = ({
   // Trigger setup configuration sync to multiplayer room
   const handleConfigChange = (cnt: number, dgts: number) => {
     if (onPlaySoundRef.current) onPlaySoundRef.current('click');
-    if (room && dgts !== 2) {
+    if (room && dgts !== 1) {
       setIsWaitingForDigitsProposal(true);
       setProposedDigits(dgts);
       try {
@@ -493,7 +493,7 @@ export const MentalMathChallenge: React.FC<MentalMathChallengeProps> = ({
                   className={`btn ${digitsPerNumber === dgts ? 'btn-primary' : 'btn-glass'}`}
                   style={{ padding: '12px 4px', fontSize: '14px', opacity: (room && !isHost && digitsPerNumber !== dgts) ? 0.5 : 1 }}
                 >
-                  {dgts} Digit{dgts > 1 ? 's' : ''} {dgts === 2 ? '★' : ''}
+                  {dgts} Digit{dgts > 1 ? 's' : ''} {dgts === 1 ? '★' : ''}
                 </button>
               ))}
             </div>
