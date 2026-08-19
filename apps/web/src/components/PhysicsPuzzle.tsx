@@ -580,7 +580,6 @@ export const PhysicsPuzzle: React.FC<PhysicsPuzzleProps> = ({ onGameWin, onClose
 
     const dist = Math.sqrt((x - ball.x) ** 2 + (y - ball.y) ** 2);
     if (dist < ball.radius * 2 && !ball.isLaunched) {
-      playInstantSlingshotSound();
       ball.isDragging = true;
       ball.x = x;
       ball.y = y;
@@ -610,6 +609,7 @@ export const PhysicsPuzzle: React.FC<PhysicsPuzzleProps> = ({ onGameWin, onClose
     const ball = ballRef.current;
     if (!ball.isDragging) return;
 
+    playInstantSlingshotSound();
     ball.isDragging = false;
     ball.isLaunched = true;
     ball.vx = (currentLevel.originX - ball.x) * 0.28;
@@ -638,7 +638,6 @@ export const PhysicsPuzzle: React.FC<PhysicsPuzzleProps> = ({ onGameWin, onClose
     const dist = Math.sqrt((x - ball.x) ** 2 + (y - ball.y) ** 2);
     if (dist < ball.radius * 2 && !ball.isLaunched) {
       if (e.cancelable) e.preventDefault();
-      playInstantSlingshotSound();
       ball.isDragging = true;
       ball.x = x;
       ball.y = y;
@@ -670,6 +669,7 @@ export const PhysicsPuzzle: React.FC<PhysicsPuzzleProps> = ({ onGameWin, onClose
     if (!ball.isDragging) return;
     if (e.cancelable) e.preventDefault();
 
+    playInstantSlingshotSound();
     ball.isDragging = false;
     ball.isLaunched = true;
     ball.vx = (currentLevel.originX - ball.x) * 0.28;
