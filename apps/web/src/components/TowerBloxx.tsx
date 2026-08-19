@@ -5,6 +5,30 @@ import { useGame } from '../context/GameContext';
 import { translate } from '../utils/translations';
 import { MultiplayerService } from '../services/multiplayer';
 
+let globalAudioContext: AudioContext | null = null;
+const getAudioContext = () => {
+  if (!globalAudioContext) {
+    globalAudioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+  }
+  return globalAudioContext;
+};
+
+const playInstantDropSound = () => {
+  const ctx = getAudioContext();
+  if (ctx.state === 'suspended') ctx.resume();
+  const osc1 = ctx.createOscillator();
+  const gain1 = ctx.createGain();
+  osc1.type = 'sine';
+  osc1.frequency.setValueAtTime(350, ctx.currentTime);
+  osc1.frequency.exponentialRampToValueAtTime(90, ctx.currentTime + 0.06);
+  gain1.gain.setValueAtTime(0.3, ctx.currentTime);
+  gain1.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.06);
+  osc1.connect(gain1);
+  gain1.connect(ctx.destination);
+  osc1.start();
+  osc1.stop(ctx.currentTime + 0.07);
+};
+
 interface TowerBloxxProps {
   onGameWin: (puzzleType: PuzzleType, timeInSec: number, score: number) => void;
   onClose?: (isQuit?: boolean) => void;
@@ -51,6 +75,7 @@ export const TowerBloxx: React.FC<TowerBloxxProps> = ({ onGameWin, onClose, onPr
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const dropSoundPlayedRef = useRef<boolean>(false);
   const [canvasWidth, setCanvasWidth] = useState(420);
   const canvasHeight = Math.round(canvasWidth * (560 / 420));
   const dimensionsRef = useRef({ width: 420, height: 560 });
@@ -183,7 +208,7 @@ export const TowerBloxx: React.FC<TowerBloxxProps> = ({ onGameWin, onClose, onPr
   const handleDropBlock = useCallback(() => {
     if (stateRef.current.isGameOver || !stateRef.current.currentBlock || stateRef.current.currentBlock.isFalling) return;
 
-    if (onPlaySoundRef.current) onPlaySoundRef.current('slide');
+    // if (onPlaySoundRef.current) onPlaySoundRef.current('slide');
     stateRef.current.currentBlock.isFalling = true;
     stateRef.current.currentBlock.vy = 8; // Initial drop velocity
   }, []);
@@ -277,6 +302,7 @@ export const TowerBloxx: React.FC<TowerBloxxProps> = ({ onGameWin, onClose, onPr
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.code === 'Space' || e.code === 'Enter') {
         e.preventDefault();
+        playInstantDropSound();
         handleDropBlock();
       }
     };
@@ -914,7 +940,18 @@ export const TowerBloxx: React.FC<TowerBloxxProps> = ({ onGameWin, onClose, onPr
           ref={canvasRef}
           width={canvasWidth}
           height={canvasHeight}
-          onClick={handleDropBlock}
+          onClick={() => {
+            if (!dropSoundPlayedRef.current) {
+              playInstantDropSound();
+            } else {
+              dropSoundPlayedRef.current = false;
+            }
+            handleDropBlock();
+          }}
+          onTouchStart={() => {
+            playInstantDropSound();
+            dropSoundPlayedRef.current = true;
+          }}
           style={{ width: '100%', height: 'auto', display: 'block', cursor: 'pointer' }}
         />
       </div>
@@ -924,7 +961,18 @@ export const TowerBloxx: React.FC<TowerBloxxProps> = ({ onGameWin, onClose, onPr
         <button 
           className="btn btn-primary" 
           style={{ padding: '14px', fontSize: '15px', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
-          onClick={handleDropBlock}
+          onClick={() => {
+            if (!dropSoundPlayedRef.current) {
+              playInstantDropSound();
+            } else {
+              dropSoundPlayedRef.current = false;
+            }
+            handleDropBlock();
+          }}
+          onTouchStart={() => {
+            playInstantDropSound();
+            dropSoundPlayedRef.current = true;
+          }}
           disabled={isGameOver}
         >
           <Building2 size={18} />
