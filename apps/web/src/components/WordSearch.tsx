@@ -250,15 +250,22 @@ export const WordSearch: React.FC<WordSearchProps> = ({ onGameWin, onClose, onPr
       // Check win
       if (updatedFound.length === targetWords.length) {
         setHasWon(true);
+        playMobileSound(523, 0.25, 0.15);
+        setTimeout(() => playMobileSound(659, 0.25, 0.15), 60);
+        setTimeout(() => playMobileSound(784, 0.25, 0.15), 120);
         if (onPlaySound) onPlaySound('success');
         if (onGameWin) {
           onGameWin(PuzzleType.WORD_SEARCH, timer, nextScore);
         }
       } else {
+        playMobileSound(784, 0.15, 0.15);
+        setTimeout(() => playMobileSound(1046, 0.15, 0.15), 50);
         if (onPlaySound) onPlaySound('correct');
       }
     } else {
       if (cells.length > 1) {
+        playMobileSound(370, 0.08, 0.15);
+        setTimeout(() => playMobileSound(370, 0.08, 0.15), 100);
         if (onPlaySound) onPlaySound('fail');
       }
     }
@@ -299,8 +306,9 @@ export const WordSearch: React.FC<WordSearchProps> = ({ onGameWin, onClose, onPr
           // Play tick/search sound on size change
           const cells = getLineCells(startIdx, cellIdx);
           if (cells.length !== prevSelectedLengthRef.current) {
-            if (onPlaySound && cells.length > 0) {
-              onPlaySound('search');
+            if (cells.length > 0) {
+              playMobileSound(500, 0.04, 0.1);
+              if (onPlaySound) onPlaySound('search');
             }
             prevSelectedLengthRef.current = cells.length;
           }
