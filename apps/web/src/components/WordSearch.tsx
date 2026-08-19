@@ -9,6 +9,9 @@ const getAudioContext = () => {
   if (!globalAudioContext) {
     globalAudioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
   }
+  if (globalAudioContext.state === 'suspended') {
+    globalAudioContext.resume();
+  }
   return globalAudioContext;
 };
 
@@ -337,8 +340,13 @@ export const WordSearch: React.FC<WordSearchProps> = ({ onGameWin, onClose, onPr
 
   const isLight = document.documentElement.classList.contains('light-theme');
 
+  const unlockAudio = () => {
+    const ctx = getAudioContext();
+    ctx.resume();
+  };
+
   return (
-    <div className="glass-panel animate-fade-in" style={{ maxWidth: '540px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '16px', position: 'relative', padding: '20px', userSelect: 'none', touchAction: 'none' }}>
+    <div onTouchStart={unlockAudio} className="glass-panel animate-fade-in" style={{ maxWidth: '540px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '16px', position: 'relative', padding: '20px', userSelect: 'none', touchAction: 'none' }}>
       {/* Header Bar */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>

@@ -9,6 +9,9 @@ const getAudioContext = () => {
   if (!globalAudioContext) {
     globalAudioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
   }
+  if (globalAudioContext.state === 'suspended') {
+    globalAudioContext.resume();
+  }
   return globalAudioContext;
 };
 
@@ -515,8 +518,13 @@ export const BlockBluster: React.FC<BlockBlusterProps> = ({ onGameWin, onClose, 
   const isLight = document.documentElement.classList.contains('light-theme');
   const draggedShape = activeTrayIdx !== null ? tray[activeTrayIdx] : null;
 
+  const unlockAudio = () => {
+    const ctx = getAudioContext();
+    ctx.resume();
+  };
+
   return (
-    <div ref={containerRef} className="glass-panel animate-fade-in" style={{ maxWidth: '540px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '16px', position: 'relative', padding: '20px', userSelect: 'none', touchAction: 'none' }}>
+    <div onTouchStart={unlockAudio} ref={containerRef} className="glass-panel animate-fade-in" style={{ maxWidth: '540px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '16px', position: 'relative', padding: '20px', userSelect: 'none', touchAction: 'none' }}>
       {/* Header Bar */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
