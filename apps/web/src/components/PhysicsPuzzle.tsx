@@ -4,6 +4,31 @@ import { RotateCcw } from 'lucide-react';
 import { useGame } from '../context/GameContext';
 import { translate } from '../utils/translations';
 
+let globalAudioContext: AudioContext | null = null;
+const getAudioContext = () => {
+  if (!globalAudioContext) {
+    globalAudioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+  }
+  return globalAudioContext;
+};
+
+const playInstantSlingshotSound = () => {
+  const ctx = getAudioContext();
+  if (ctx.state === 'suspended') ctx.resume();
+  const osc1 = ctx.createOscillator();
+  const gain1 = ctx.createGain();
+  osc1.type = 'triangle';
+  osc1.frequency.setValueAtTime(200, ctx.currentTime);
+  osc1.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 0.02);
+  osc1.frequency.exponentialRampToValueAtTime(400, ctx.currentTime + 0.08);
+  gain1.gain.setValueAtTime(0.14, ctx.currentTime);
+  gain1.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
+  osc1.connect(gain1);
+  gain1.connect(ctx.destination);
+  osc1.start();
+  osc1.stop(ctx.currentTime + 0.15);
+};
+
 interface PhysicsPuzzleProps {
   onGameWin: (puzzleType: PuzzleType, timeInSec: number, score: number) => void;
   onClose?: (isQuit?: boolean) => void;
@@ -555,6 +580,7 @@ export const PhysicsPuzzle: React.FC<PhysicsPuzzleProps> = ({ onGameWin, onClose
 
     const dist = Math.sqrt((x - ball.x) ** 2 + (y - ball.y) ** 2);
     if (dist < ball.radius * 2 && !ball.isLaunched) {
+      playInstantSlingshotSound();
       ball.isDragging = true;
       ball.x = x;
       ball.y = y;
@@ -589,7 +615,6 @@ export const PhysicsPuzzle: React.FC<PhysicsPuzzleProps> = ({ onGameWin, onClose
     ball.vx = (currentLevel.originX - ball.x) * 0.28;
     ball.vy = (currentLevel.originY - ball.y) * 0.28;
     setAttempts(prev => prev + 1);
-    onPlaySound?.('slingshot');
   };
 
   // Touch listeners
@@ -613,6 +638,7 @@ export const PhysicsPuzzle: React.FC<PhysicsPuzzleProps> = ({ onGameWin, onClose
     const dist = Math.sqrt((x - ball.x) ** 2 + (y - ball.y) ** 2);
     if (dist < ball.radius * 2 && !ball.isLaunched) {
       if (e.cancelable) e.preventDefault();
+      playInstantSlingshotSound();
       ball.isDragging = true;
       ball.x = x;
       ball.y = y;
@@ -649,7 +675,6 @@ export const PhysicsPuzzle: React.FC<PhysicsPuzzleProps> = ({ onGameWin, onClose
     ball.vx = (currentLevel.originX - ball.x) * 0.28;
     ball.vy = (currentLevel.originY - ball.y) * 0.28;
     setAttempts(prev => prev + 1);
-    onPlaySound?.('slingshot');
   };
 
   const isLight = document.documentElement.classList.contains('light-theme');
