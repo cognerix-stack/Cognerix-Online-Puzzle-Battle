@@ -4,6 +4,29 @@ import { RefreshCcw, Award, Check, Search, Zap, Clock } from 'lucide-react';
 import { useGame } from '../context/GameContext';
 import { translate } from '../utils/translations';
 
+let globalAudioContext: AudioContext | null = null;
+const getAudioContext = () => {
+  if (!globalAudioContext) {
+    globalAudioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+  }
+  return globalAudioContext;
+};
+
+const playInstantSelectSound = () => {
+  const ctx = getAudioContext();
+  if (ctx.state === 'suspended') ctx.resume();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = 'sine';
+  osc.frequency.value = 440;
+  gain.gain.setValueAtTime(0.06, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.start();
+  osc.stop(ctx.currentTime + 0.09);
+};
+
 interface WordSearchProps {
   onGameWin: (puzzleType: PuzzleType, timeInSec: number, score: number) => void;
   onClose?: (isQuit?: boolean) => void;
@@ -255,7 +278,7 @@ export const WordSearch: React.FC<WordSearchProps> = ({ onGameWin, onClose, onPr
   const handlePointerDown = (cellIdx: number, e: React.PointerEvent) => {
     e.preventDefault();
     if (hasWon) return;
-    if (onPlaySound) onPlaySound('click');
+    playInstantSelectSound();
     setIsSelecting(true);
     setStartIdx(cellIdx);
     setCurrentIdx(cellIdx);
