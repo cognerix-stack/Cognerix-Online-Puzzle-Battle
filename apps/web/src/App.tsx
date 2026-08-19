@@ -933,7 +933,7 @@ function App() {
   const [activeGame, setActiveGame] = useState<PuzzleType | null>(null);
   const [isMuted, setIsMuted] = useState<boolean>(false);
   const [soundVolume, setSoundVolume] = useState<number>(0.5);
-  const [isMusicOn, setIsMusicOn] = useState<boolean>(true);
+  const [isMusicOn] = useState<boolean>(false);
   const [customStatusInput, setCustomStatusInput] = useState<string>(userProfile.status || '');
 
   // Manage ambient music lifecycle
@@ -6562,31 +6562,32 @@ function App() {
                 </div>
 
                 {/* 🎵 Background Music Toggle */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
+                <div style={{ 
+                  display: 'flex', 
+                  justifyContent: 'space-between', 
+                  alignItems: 'center', 
+                  flexWrap: 'wrap', 
+                  gap: '12px',
+                  opacity: 0.5,
+                  pointerEvents: 'none',
+                  userSelect: 'none'
+                }}>
                   <div>
                     <h4 style={{ fontSize: '15px', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      🎵 Background Music
+                      🎵 Background Music (Disabled)
                     </h4>
                     <p style={{ color: 'var(--text-muted)', fontSize: '12px', marginTop: '2px' }}>
-                      Play calm ambient music while you puzzle. Respects the mute toggle above.
+                      Ambient music is currently disabled.
                     </p>
                   </div>
                   <div
-                    onClick={() => {
-                      triggerSound('click');
-                      setIsMusicOn(!isMusicOn);
-                    }}
                     style={{
                       width: '52px',
                       height: '28px',
                       borderRadius: '14px',
-                      background: isMusicOn
-                        ? 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)'
-                        : isLightMode ? 'rgba(0,0,0,0.15)' : 'rgba(255,255,255,0.1)',
-                      cursor: 'pointer',
+                      background: 'rgba(255,255,255,0.05)',
+                      cursor: 'not-allowed',
                       position: 'relative',
-                      transition: 'background 0.3s ease',
-                      boxShadow: isMusicOn ? '0 0 12px rgba(139, 92, 246, 0.4)' : 'none',
                       flexShrink: 0
                     }}
                   >
@@ -6594,12 +6595,11 @@ function App() {
                       width: '22px',
                       height: '22px',
                       borderRadius: '50%',
-                      background: '#fff',
+                      background: '#888',
                       position: 'absolute',
                       top: '3px',
-                      left: isMusicOn ? '27px' : '3px',
-                      transition: 'left 0.3s ease',
-                      boxShadow: '0 2px 6px rgba(0,0,0,0.2)'
+                      left: '3px',
+                      boxShadow: 'none'
                     }} />
                   </div>
                 </div>
