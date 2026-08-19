@@ -306,14 +306,17 @@ export const BlockBluster: React.FC<BlockBlusterProps> = ({ onGameWin, onClose, 
     }
 
     if (nextLines >= 10) {
+      playMobileSound(600, 0.2, 0.15);
       if (onPlaySound) onPlaySound('success');
       if (onGameWin) {
         onGameWin(PuzzleType.BLOCK_BLUSTER, timer, nextScore);
       }
     } else {
       if (totalLines > 0) {
+        playMobileSound(880, 0.12, 0.25);
         if (onPlaySound) onPlaySound('bluster');
       } else {
+        playMobileSound(450, 0.06, 0.3);
         if (onPlaySound) onPlaySound('block_place');
       }
     }
@@ -375,6 +378,7 @@ export const BlockBluster: React.FC<BlockBlusterProps> = ({ onGameWin, onClose, 
 
   const handleGameOver = () => {
     setIsGameOver(true);
+    playMobileSound(370, 0.15, 0.2);
     if (onPlaySound) onPlaySound('fail');
   };
 
