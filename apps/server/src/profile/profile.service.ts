@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, OnModuleInit } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { RankName, PuzzleType } from '@puzzle-verse/shared';
 import * as fs from 'fs';
@@ -6,8 +6,29 @@ import * as path from 'path';
 import * as nodemailer from 'nodemailer';
 
 @Injectable()
-export class ProfileService {
-  constructor(private prisma: PrismaService) {}
+export class ProfileService implements OnModuleInit {
+  private static prismaInstance: PrismaService | null = null;
+
+  constructor(private prisma: PrismaService) {
+    ProfileService.prismaInstance = prisma;
+  }
+
+  async onModuleInit() {
+    // Auto-delete records older than 6 months on server startup
+    try {
+      const sixMonthsAgo = new Date(Date.now() - (180 * 24 * 60 * 60 * 1000)); // 180 days
+      const deleted = await this.prisma.chatHistory.deleteMany({
+        where: {
+          timestamp: {
+            lt: sixMonthsAgo
+          }
+        }
+      });
+      console.log(`[ChatHistory] Startup DB prune: deleted ${deleted.count} records older than 6 months.`);
+    } catch (e: any) {
+      console.error('[ChatHistory] Failed to prune chat history in DB on startup:', e.message);
+    }
+  }
 
   async getProfile(userId: string) {
     try {
@@ -354,23 +375,6 @@ export class ProfileService {
       }
     } catch (e) {
       console.error('[GameHistory] Failed to load game_history.json:', e);
-    }
-
-    // Auto-delete records older than 6 months on server startup
-    try {
-      const chatPath = ProfileService.getPersistencePath('chat_history.json');
-      if (fs.existsSync(chatPath)) {
-        const fileContent = fs.readFileSync(chatPath, 'utf-8');
-        const data = JSON.parse(fileContent);
-        if (Array.isArray(data)) {
-          const sixMonthsAgo = Date.now() - (180 * 24 * 60 * 60 * 1000); // 180 days
-          const filtered = data.filter((entry: any) => entry.timestamp >= sixMonthsAgo);
-          fs.writeFileSync(chatPath, JSON.stringify(filtered, null, 2), 'utf-8');
-          console.log(`[ChatHistory] Startup prune: kept ${filtered.length} of ${data.length} records.`);
-        }
-      }
-    } catch (e) {
-      console.error('[ChatHistory] Failed to load/prune chat_history.json on startup:', e);
     }
   }
 
@@ -1806,68 +1810,73 @@ Submitted on:        ${ticket.timestamp}
     return { success: true, deletedId: id };
   }
 
-  static saveChatMessage(roomId: string, puzzleType: string, players: { id: string; username: string }[], message: any) {
+  static async saveChatMessage(roomId: string, puzzleType: string, players: { id: string; username: string }[], message: any) {
     try {
-      const filePath = ProfileService.getPersistencePath('chat_history.json');
-      let history: any[] = [];
-      if (fs.existsSync(filePath)) {
-        try {
-          const content = fs.readFileSync(filePath, 'utf-8');
-          history = JSON.parse(content) || [];
-        } catch (e) {
-          history = [];
-        }
+      const prisma = ProfileService.prismaInstance;
+      if (!prisma) {
+        console.error('[ChatHistory] Prisma instance not initialized yet');
+        return;
       }
 
-      let roomEntry = history.find((entry: any) => entry.roomId === roomId);
-      if (!roomEntry) {
-        roomEntry = {
-          roomId,
-          puzzleType,
-          timestamp: Date.now(),
-          duration: 0,
-          players,
-          messages: []
-        };
-        history.push(roomEntry);
-      }
+      let entry = await prisma.chatHistory.findUnique({
+        where: { roomId }
+      });
 
-      roomEntry.messages.push(message);
-      fs.writeFileSync(filePath, JSON.stringify(history, null, 2), 'utf-8');
+      if (!entry) {
+        await prisma.chatHistory.create({
+          data: {
+            roomId,
+            puzzleType,
+            players: players as any,
+            messages: [message] as any
+          }
+        });
+      } else {
+        const currentMessages = entry.messages as any[];
+        await prisma.chatHistory.update({
+          where: { roomId },
+          data: {
+            messages: [...currentMessages, message] as any
+          }
+        });
+      }
     } catch (err) {
-      console.error('[ChatHistory] Error saving chat message:', err);
+      console.error('[ChatHistory] Error saving chat message to DB:', err);
     }
   }
 
-  static updateRoomDuration(roomId: string, duration: number) {
+  static async updateRoomDuration(roomId: string, duration: number) {
     try {
-      const filePath = ProfileService.getPersistencePath('chat_history.json');
-      if (fs.existsSync(filePath)) {
-        const content = fs.readFileSync(filePath, 'utf-8');
-        const history = JSON.parse(content) || [];
-        const roomEntry = history.find((entry: any) => entry.roomId === roomId);
-        if (roomEntry) {
-          roomEntry.duration = duration;
-          fs.writeFileSync(filePath, JSON.stringify(history, null, 2), 'utf-8');
-        }
-      }
+      const prisma = ProfileService.prismaInstance;
+      if (!prisma) return;
+
+      await prisma.chatHistory.updateMany({
+        where: { roomId },
+        data: { duration }
+      });
     } catch (err) {
-      console.error('[ChatHistory] Error updating room duration:', err);
+      console.error('[ChatHistory] Error updating room duration in DB:', err);
     }
   }
 
-  getChatHistoryForUser(userId: string) {
+  async getChatHistoryForUser(userId: string) {
     try {
-      const filePath = ProfileService.getPersistencePath('chat_history.json');
-      if (fs.existsSync(filePath)) {
-        const content = fs.readFileSync(filePath, 'utf-8');
-        const history = JSON.parse(content) || [];
-        return history.filter((entry: any) =>
-          entry.players && entry.players.some((p: any) => p.id === userId)
-        );
-      }
-    } catch (e) {
-      console.error('[ChatHistory] Error reading chat history:', e);
+      const histories = await this.prisma.chatHistory.findMany();
+      return histories
+        .filter((entry: any) => {
+          const players = entry.players as any[];
+          return players && players.some((p: any) => p.id === userId);
+        })
+        .map((entry) => ({
+          roomId: entry.roomId,
+          puzzleType: entry.puzzleType,
+          timestamp: entry.timestamp.getTime(),
+          duration: entry.duration,
+          players: entry.players,
+          messages: entry.messages
+        }));
+    } catch (e: any) {
+      console.error('[ChatHistory] Error reading chat history from DB:', e.message);
     }
     return [];
   }

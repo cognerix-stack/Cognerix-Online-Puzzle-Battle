@@ -101,3 +101,13 @@ model LeaderboardEntry {
 
   @@unique([userId, puzzleType])
 }
+
+model ChatHistory {
+  id          String   @id @default(uuid())
+  roomId      String   @unique
+  puzzleType  String
+  timestamp   DateTime @default(now())
+  duration    Int      @default(0)
+  players     Json
+  messages    Json
+}
