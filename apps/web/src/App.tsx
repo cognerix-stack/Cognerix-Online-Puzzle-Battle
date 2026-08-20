@@ -1259,7 +1259,7 @@ function App() {
     try {
       const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
       const token = btoa(JSON.stringify(payload));
-      const res = await fetch(`${BACKEND_HTTP_URL}/admin/chat-history?userId=${encodeURIComponent(playerId.trim())}`, {
+      const res = await fetch(`${BACKEND_HTTP_URL}/profile/admin/chat-history?userId=${encodeURIComponent(playerId.trim())}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }

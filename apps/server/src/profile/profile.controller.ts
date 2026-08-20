@@ -385,6 +385,12 @@ export class ProfileController {
     return this.profileService.deletePopupAnnouncement(id);
   }
 
+  @Get('admin/chat-history')
+  @UseGuards(AdminGuard)
+  async getAdminGameChatHistory(@Query('userId') userId: string) {
+    return this.profileService.getChatHistoryForUser(userId);
+  }
+
   @Get('matchmaking/queues')
   async getMatchmakingQueues() {
     const { GameRoom } = require('../multiplayer/rooms/GameRoom');
