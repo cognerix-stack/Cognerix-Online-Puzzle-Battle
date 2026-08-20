@@ -1,0 +1,17 @@
+# Nixpacks configuration for NestJS Server inside Monorepo
+[phases.setup]
+nixPkgs = ["...", "nodejs-20_x"]
+
+[phases.install]
+cmds = [
+  "npm ci --workspace=@puzzle-verse/server --workspace=@puzzle-verse/shared"
+]
+
+[phases.build]
+cmds = [
+  "npm run build --workspace=@puzzle-verse/shared",
+  "npm run build --workspace=@puzzle-verse/server"
+]
+
+[start]
+cmd = "npx prisma db push --schema=apps/server/prisma/schema.prisma --accept-data-loss && npm run start --workspace=@puzzle-verse/server"
