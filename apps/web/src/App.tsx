@@ -1234,6 +1234,7 @@ function App() {
       if (res.ok) {
         const data = await res.json();
         setAdminPlayerHistory(data);
+        fetchPlayerChatHistory(playerId);
       } else {
         setAdminPlayerHistory([]);
         showToast('Failed to load player history.', 'error');
@@ -1245,6 +1246,16 @@ function App() {
     } finally {
       setAdminHistoryLoading(false);
     }
+  };
+
+  const [expandedMatchChats, setExpandedMatchChats] = useState<Set<string>>(new Set());
+  const toggleMatchChat = (roomId: string) => {
+    setExpandedMatchChats(prev => {
+      const next = new Set(prev);
+      if (next.has(roomId)) next.delete(roomId);
+      else next.add(roomId);
+      return next;
+    });
   };
 
   const [adminSearchChatUserId, setAdminSearchChatUserId] = useState<string>('');
@@ -6861,16 +6872,40 @@ function App() {
                                       <span style={{ fontSize: '12px', fontWeight: 'bold', color: 'var(--text-primary)' }}>
                                         🎮 {game.puzzleType} ({game.mode})
                                       </span>
-                                      <span style={{
-                                        fontSize: '10px',
-                                        fontWeight: 'bold',
-                                        padding: '2px 8px',
-                                        borderRadius: '12px',
-                                        background: game.winnerId === "" ? 'rgba(255,255,255,0.1)' : (isWinner ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)'),
-                                        color: game.winnerId === "" ? 'var(--text-muted)' : (isWinner ? '#10b981' : '#ef4444')
-                                      }}>
-                                        {game.winnerId === "" ? 'DRAW' : (isWinner ? 'WON' : 'LOST')}
-                                      </span>
+                                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px' }}>
+                                        <span style={{
+                                          fontSize: '10px',
+                                          fontWeight: 'bold',
+                                          padding: '2px 8px',
+                                          borderRadius: '12px',
+                                          background: game.winnerId === "" ? 'rgba(255,255,255,0.1)' : (isWinner ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)'),
+                                          color: game.winnerId === "" ? 'var(--text-muted)' : (isWinner ? '#10b981' : '#ef4444')
+                                        }}>
+                                          {game.winnerId === "" ? 'DRAW' : (isWinner ? 'WON' : 'LOST')}
+                                        </span>
+                                        <button
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            triggerSound('click');
+                                            toggleMatchChat(game.roomId);
+                                          }}
+                                          style={{
+                                            background: 'rgba(139, 92, 246, 0.1)',
+                                            border: '1px solid rgba(139, 92, 246, 0.25)',
+                                            color: 'var(--text-primary)',
+                                            padding: '2px 6px',
+                                            borderRadius: '4px',
+                                            fontSize: '9px',
+                                            cursor: 'pointer',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '2px',
+                                            marginTop: '2px'
+                                          }}
+                                        >
+                                          💬 Match Chat
+                                        </button>
+                                      </div>
                                     </div>
                                     
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '11px', color: 'var(--text-secondary)' }}>
@@ -6886,6 +6921,38 @@ function App() {
                                         ))}
                                       </div>
                                     </div>
+
+                                    {expandedMatchChats.has(game.roomId) && (() => {
+                                      const chatRecord = adminChatHistoryList.find((c: any) => c.roomId === game.roomId);
+                                      return (
+                                        <div style={{
+                                          marginTop: '6px',
+                                          background: 'rgba(0,0,0,0.15)',
+                                          border: '1px solid var(--border-glass)',
+                                          borderRadius: '6px',
+                                          padding: '8px',
+                                          maxHeight: '120px',
+                                          overflowY: 'auto',
+                                          display: 'flex',
+                                          flexDirection: 'column',
+                                          gap: '2px'
+                                        }}>
+                                          {!chatRecord || !chatRecord.messages || chatRecord.messages.length === 0 ? (
+                                            <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontStyle: 'italic' }}>
+                                              No chat recorded for this match
+                                            </div>
+                                          ) : (
+                                            chatRecord.messages.map((msg: any, mIdx: number) => (
+                                              <div key={mIdx} style={{ fontSize: '10px', wordBreak: 'break-word', color: 'var(--text-primary)' }}>
+                                                <span style={{ fontWeight: 'bold' }}>{msg.username}: </span>
+                                                {msg.text && <span>{msg.text}</span>}
+                                                {msg.emoji && <span style={{ fontSize: '12px', marginLeft: '2px' }}>{msg.emoji}</span>}
+                                              </div>
+                                            ))
+                                          )}
+                                        </div>
+                                      );
+                                    })()}
                                   </div>
                                 );
                               })}
@@ -8904,12 +8971,36 @@ function App() {
                                     <span style={{ fontWeight: 'bold', color: 'var(--text-primary)' }}>
                                       {game.puzzleType} ({game.mode})
                                     </span>
-                                    <span style={{
-                                      fontWeight: 'bold',
-                                      color: game.winnerId === "" ? 'var(--text-muted)' : (isWinner ? '#10b981' : '#ef4444')
-                                    }}>
-                                      {game.winnerId === "" ? 'DRAW' : (isWinner ? 'WON' : 'LOST')}
-                                    </span>
+                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px' }}>
+                                      <span style={{
+                                        fontWeight: 'bold',
+                                        color: game.winnerId === "" ? 'var(--text-muted)' : (isWinner ? '#10b981' : '#ef4444')
+                                      }}>
+                                        {game.winnerId === "" ? 'DRAW' : (isWinner ? 'WON' : 'LOST')}
+                                      </span>
+                                      <button
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          triggerSound('click');
+                                          toggleMatchChat(game.roomId);
+                                        }}
+                                        style={{
+                                          background: 'rgba(139, 92, 246, 0.1)',
+                                          border: '1px solid rgba(139, 92, 246, 0.25)',
+                                          color: 'var(--text-primary)',
+                                          padding: '2px 6px',
+                                          borderRadius: '4px',
+                                          fontSize: '9px',
+                                          cursor: 'pointer',
+                                          display: 'flex',
+                                          alignItems: 'center',
+                                          gap: '2px',
+                                          marginTop: '2px'
+                                        }}
+                                      >
+                                        💬 Match Chat
+                                      </button>
+                                    </div>
                                   </div>
                                   <div style={{ color: 'var(--text-secondary)', display: 'flex', flexDirection: 'column', gap: '2px' }}>
                                     <div>Date: {formattedDate}</div>
@@ -8924,6 +9015,38 @@ function App() {
                                       ))}
                                     </div>
                                   </div>
+
+                                  {expandedMatchChats.has(game.roomId) && (() => {
+                                    const chatRecord = adminChatHistoryList.find((c: any) => c.roomId === game.roomId);
+                                    return (
+                                      <div style={{
+                                        marginTop: '6px',
+                                        background: 'rgba(0,0,0,0.15)',
+                                        border: '1px solid var(--border-glass)',
+                                        borderRadius: '6px',
+                                        padding: '8px',
+                                        maxHeight: '120px',
+                                        overflowY: 'auto',
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        gap: '2px'
+                                      }}>
+                                        {!chatRecord || !chatRecord.messages || chatRecord.messages.length === 0 ? (
+                                          <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontStyle: 'italic' }}>
+                                            No chat recorded for this match
+                                          </div>
+                                        ) : (
+                                          chatRecord.messages.map((msg: any, mIdx: number) => (
+                                            <div key={mIdx} style={{ fontSize: '10px', wordBreak: 'break-word', color: 'var(--text-primary)' }}>
+                                              <span style={{ fontWeight: 'bold' }}>{msg.username}: </span>
+                                              {msg.text && <span>{msg.text}</span>}
+                                              {msg.emoji && <span style={{ fontSize: '12px', marginLeft: '2px' }}>{msg.emoji}</span>}
+                                            </div>
+                                          ))
+                                        )}
+                                      </div>
+                                    );
+                                  })()}
                                 </div>
                               );
                             })}
