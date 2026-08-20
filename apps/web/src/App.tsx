@@ -1234,7 +1234,7 @@ function App() {
       if (res.ok) {
         const data = await res.json();
         setAdminPlayerHistory(data);
-        fetchPlayerChatHistory(playerId);
+        await fetchPlayerChatHistory(playerId);
       } else {
         setAdminPlayerHistory([]);
         showToast('Failed to load player history.', 'error');
@@ -1278,6 +1278,7 @@ function App() {
       if (res.ok) {
         const data = await res.json();
         setAdminChatHistoryList(data);
+        console.log('[DEBUG CHAT HISTORY] fetchPlayerChatHistory data count:', data?.length, 'Data:', data);
       } else {
         setAdminChatHistoryList([]);
         showToast('Failed to load player chat history.', 'error');
@@ -6857,7 +6858,7 @@ function App() {
                                   return `${dd}/${mm}/${yyyy}, ${hrsStr}:${mins}:${secs} ${ampm}`;
                                 })();
                                 const isWinner = game.winnerId === adminSearchHistoryId;
-                                
+                                console.log('[DEBUG CHAT JOIN - DASHBOARD] Card idx:', idx, 'game.roomId:', game.roomId);
                                 return (
                                   <div key={idx} style={{
                                     background: 'rgba(0,0,0,0.2)',
@@ -8956,6 +8957,7 @@ function App() {
                                 return `${dd}/${mm}/${yyyy}, ${hrsStr}:${mins}:${secs} ${ampm}`;
                               })();
                               const isWinner = game.winnerId === adminSearchHistoryId;
+                              console.log('[DEBUG CHAT JOIN - MAILBOX] Card idx:', idx, 'game.roomId:', game.roomId);
                               return (
                                 <div key={idx} style={{
                                   background: 'rgba(255,255,255,0.02)',
