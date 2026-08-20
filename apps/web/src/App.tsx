@@ -1247,6 +1247,39 @@ function App() {
     }
   };
 
+  const [adminSearchChatUserId, setAdminSearchChatUserId] = useState<string>('');
+  const [adminChatHistoryList, setAdminChatHistoryList] = useState<any[]>([]);
+  const [adminChatHistoryLoading, setAdminChatHistoryLoading] = useState<boolean>(false);
+  const [adminChatHistorySearched, setAdminChatHistorySearched] = useState<boolean>(false);
+
+  const fetchPlayerChatHistory = async (playerId: string) => {
+    if (!playerId.trim()) return;
+    setAdminChatHistoryLoading(true);
+    setAdminChatHistorySearched(true);
+    try {
+      const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
+      const token = btoa(JSON.stringify(payload));
+      const res = await fetch(`${BACKEND_HTTP_URL}/admin/chat-history?userId=${encodeURIComponent(playerId.trim())}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setAdminChatHistoryList(data);
+      } else {
+        setAdminChatHistoryList([]);
+        showToast('Failed to load player chat history.', 'error');
+      }
+    } catch (e) {
+      console.error('Error loading chat history:', e);
+      setAdminChatHistoryList([]);
+      showToast('Error connecting to backend for chat history.', 'error');
+    } finally {
+      setAdminChatHistoryLoading(false);
+    }
+  };
+
   // Help & Support Form states
   const [isSupportOpen, setIsSupportOpen] = useState<boolean>(false);
   const [supportName, setSupportName] = useState<string>('');
@@ -8890,6 +8923,113 @@ function App() {
                                         </span>
                                       ))}
                                     </div>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Game Chat History Section */}
+                  <div style={{ borderTop: '1px dashed rgba(139, 92, 246, 0.2)', paddingTop: '12px', marginTop: '4px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <h5 style={{ fontSize: '12px', fontWeight: 'bold', color: 'var(--color-primary)', margin: 0 }}>
+                      💬 Game Chat History
+                    </h5>
+                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                      <input 
+                        type="text" 
+                        value={adminSearchChatUserId}
+                        onChange={(e) => setAdminSearchChatUserId(e.target.value)}
+                        placeholder="Enter Player ID (e.g. 10921736433)..."
+                        style={{
+                          flex: 1,
+                          background: isLightMode ? 'rgba(0,0,0,0.05)' : 'rgba(0,0,0,0.1)',
+                          border: isLightMode ? '1px solid #d1d5db' : '1px solid var(--border-glass)',
+                          color: 'var(--text-primary)',
+                          padding: '6px 10px',
+                          borderRadius: '8px',
+                          fontSize: '12px',
+                          outline: 'none'
+                        }}
+                      />
+                      <button
+                        onClick={() => {
+                          triggerSound('click');
+                          fetchPlayerChatHistory(adminSearchChatUserId);
+                        }}
+                        disabled={adminChatHistoryLoading}
+                        style={{
+                          background: 'rgba(139, 92, 246, 0.15)',
+                          border: '1px solid rgba(139, 92, 246, 0.25)',
+                          color: 'var(--text-primary)',
+                          padding: '6px 14px',
+                          borderRadius: '8px',
+                          fontSize: '12px',
+                          fontWeight: 'bold',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s'
+                        }}
+                        className="btn-hover-bright"
+                      >
+                        {adminChatHistoryLoading ? '...' : 'Search'}
+                      </button>
+                    </div>
+
+                    {adminChatHistorySearched && (
+                      <div style={{ marginTop: '6px', background: 'rgba(0,0,0,0.1)', padding: '8px', borderRadius: '8px' }}>
+                        <h6 style={{ fontSize: '11px', color: 'var(--text-secondary)', margin: '0 0 6px 0' }}>
+                          Chat History for ID: <span style={{ fontFamily: 'monospace', color: 'var(--text-primary)' }}>{adminSearchChatUserId}</span>
+                        </h6>
+                        {adminChatHistoryList.length === 0 ? (
+                          <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontStyle: 'italic' }}>
+                            No chat history found for this player.
+                          </span>
+                        ) : (
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxHeight: '200px', overflowY: 'auto' }}>
+                            {adminChatHistoryList.map((record, idx) => {
+                              const opponents = record.players
+                                ?.filter((p: any) => p.id !== adminSearchChatUserId)
+                                .map((p: any) => `${p.username} (${p.id})`)
+                                .join(', ') || 'None';
+                              return (
+                                <div key={idx} style={{
+                                  background: 'rgba(255,255,255,0.02)',
+                                  border: '1px solid var(--border-glass)',
+                                  borderRadius: '8px',
+                                  padding: '8px',
+                                  fontSize: '11px',
+                                  display: 'flex',
+                                  flexDirection: 'column',
+                                  gap: '4px'
+                                }}>
+                                  <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold', color: 'var(--text-primary)' }}>
+                                    <span>{record.puzzleType}</span>
+                                    <span style={{ color: 'var(--text-muted)' }}>Duration: {record.duration || 0}s</span>
+                                  </div>
+                                  <div style={{ color: 'var(--text-secondary)', fontSize: '10px' }}>
+                                    <div>Room ID: <span style={{ fontFamily: 'monospace' }}>{record.roomId}</span></div>
+                                    <div>Opponent(s): {opponents}</div>
+                                  </div>
+                                  <div style={{
+                                    marginTop: '4px',
+                                    borderTop: '1px solid rgba(255,255,255,0.05)',
+                                    paddingTop: '4px',
+                                    maxHeight: '100px',
+                                    overflowY: 'auto',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    gap: '2px'
+                                  }}>
+                                    {record.messages?.map((msg: any, mIdx: number) => (
+                                      <div key={mIdx} style={{ fontSize: '10px', wordBreak: 'break-word', color: msg.senderId === adminSearchChatUserId ? 'var(--color-primary)' : 'var(--text-primary)' }}>
+                                        <span style={{ fontWeight: 'bold' }}>{msg.username}: </span>
+                                        {msg.text && <span>{msg.text}</span>}
+                                        {msg.emoji && <span style={{ fontSize: '14px', marginLeft: '4px' }}>{msg.emoji}</span>}
+                                      </div>
+                                    ))}
                                   </div>
                                 </div>
                               );

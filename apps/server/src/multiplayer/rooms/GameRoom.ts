@@ -397,6 +397,19 @@ export class GameRoom extends Room<RoomState> {
           username: player.username,
           emoji: data.emoji
         });
+
+        // Save to chat_history.json
+        const playersList: { id: string; username: string }[] = [];
+        this.state.players.forEach((p) => {
+          playersList.push({ id: p.id, username: p.username });
+        });
+        ProfileService.saveChatMessage(this.roomId, this.state.puzzleType, playersList, {
+          senderId: player.id,
+          username: player.username,
+          text: "",
+          emoji: data.emoji,
+          timestamp: Date.now()
+        });
       }
     });
 
@@ -404,10 +417,24 @@ export class GameRoom extends Room<RoomState> {
     this.onMessage("chat_send", (client, data: { text: string }) => {
       const player = this.state.players.get(client.sessionId);
       if (player && data.text.trim()) {
-        this.broadcast("chat_receive", {
+        const msg = {
           senderId: player.id,
           username: player.username,
           text: data.text.trim(),
+          timestamp: Date.now()
+        };
+        this.broadcast("chat_receive", msg);
+
+        // Save to chat_history.json
+        const playersList: { id: string; username: string }[] = [];
+        this.state.players.forEach((p) => {
+          playersList.push({ id: p.id, username: p.username });
+        });
+        ProfileService.saveChatMessage(this.roomId, this.state.puzzleType, playersList, {
+          senderId: player.id,
+          username: player.username,
+          text: data.text.trim(),
+          emoji: null,
           timestamp: Date.now()
         });
       }
@@ -672,6 +699,10 @@ export class GameRoom extends Room<RoomState> {
       };
 
       ProfileService.recordHistory(entry);
+
+      // Save match duration to chat history
+      const elapsedSec = this.state.startTime ? Math.floor((Date.now() - this.state.startTime) / 1000) : 0;
+      ProfileService.updateRoomDuration(this.roomId, elapsedSec);
     } catch (e) {
       console.error('[GameRoom] Error recording game history:', e);
     }

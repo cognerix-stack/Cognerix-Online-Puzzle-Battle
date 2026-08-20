@@ -355,6 +355,23 @@ export class ProfileService {
     } catch (e) {
       console.error('[GameHistory] Failed to load game_history.json:', e);
     }
+
+    // Auto-delete records older than 6 months on server startup
+    try {
+      const chatPath = ProfileService.getPersistencePath('chat_history.json');
+      if (fs.existsSync(chatPath)) {
+        const fileContent = fs.readFileSync(chatPath, 'utf-8');
+        const data = JSON.parse(fileContent);
+        if (Array.isArray(data)) {
+          const sixMonthsAgo = Date.now() - (180 * 24 * 60 * 60 * 1000); // 180 days
+          const filtered = data.filter((entry: any) => entry.timestamp >= sixMonthsAgo);
+          fs.writeFileSync(chatPath, JSON.stringify(filtered, null, 2), 'utf-8');
+          console.log(`[ChatHistory] Startup prune: kept ${filtered.length} of ${data.length} records.`);
+        }
+      }
+    } catch (e) {
+      console.error('[ChatHistory] Failed to load/prune chat_history.json on startup:', e);
+    }
   }
 
   static saveHistoryToDisk() {
@@ -1787,5 +1804,71 @@ Submitted on:        ${ticket.timestamp}
     ProfileService.savePopupAnnouncementsToDisk();
     console.log(`[PopupAnnouncements] Deleted announcement: "${removed.text}" (id: ${id})`);
     return { success: true, deletedId: id };
+  }
+
+  static saveChatMessage(roomId: string, puzzleType: string, players: { id: string; username: string }[], message: any) {
+    try {
+      const filePath = ProfileService.getPersistencePath('chat_history.json');
+      let history: any[] = [];
+      if (fs.existsSync(filePath)) {
+        try {
+          const content = fs.readFileSync(filePath, 'utf-8');
+          history = JSON.parse(content) || [];
+        } catch (e) {
+          history = [];
+        }
+      }
+
+      let roomEntry = history.find((entry: any) => entry.roomId === roomId);
+      if (!roomEntry) {
+        roomEntry = {
+          roomId,
+          puzzleType,
+          timestamp: Date.now(),
+          duration: 0,
+          players,
+          messages: []
+        };
+        history.push(roomEntry);
+      }
+
+      roomEntry.messages.push(message);
+      fs.writeFileSync(filePath, JSON.stringify(history, null, 2), 'utf-8');
+    } catch (err) {
+      console.error('[ChatHistory] Error saving chat message:', err);
+    }
+  }
+
+  static updateRoomDuration(roomId: string, duration: number) {
+    try {
+      const filePath = ProfileService.getPersistencePath('chat_history.json');
+      if (fs.existsSync(filePath)) {
+        const content = fs.readFileSync(filePath, 'utf-8');
+        const history = JSON.parse(content) || [];
+        const roomEntry = history.find((entry: any) => entry.roomId === roomId);
+        if (roomEntry) {
+          roomEntry.duration = duration;
+          fs.writeFileSync(filePath, JSON.stringify(history, null, 2), 'utf-8');
+        }
+      }
+    } catch (err) {
+      console.error('[ChatHistory] Error updating room duration:', err);
+    }
+  }
+
+  getChatHistoryForUser(userId: string) {
+    try {
+      const filePath = ProfileService.getPersistencePath('chat_history.json');
+      if (fs.existsSync(filePath)) {
+        const content = fs.readFileSync(filePath, 'utf-8');
+        const history = JSON.parse(content) || [];
+        return history.filter((entry: any) =>
+          entry.players && entry.players.some((p: any) => p.id === userId)
+        );
+      }
+    } catch (e) {
+      console.error('[ChatHistory] Error reading chat history:', e);
+    }
+    return [];
   }
 }
