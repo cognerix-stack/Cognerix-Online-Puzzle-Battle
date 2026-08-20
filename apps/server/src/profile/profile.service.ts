@@ -1840,8 +1840,9 @@ Submitted on:        ${ticket.timestamp}
           }
         });
       }
+      console.log('[CHAT SAVED] roomId:', roomId);
     } catch (err) {
-      console.error('[ChatHistory] Error saving chat message to DB:', err);
+      console.error('[CHAT SAVE ERROR]', err);
     }
   }
 
@@ -1876,7 +1877,7 @@ Submitted on:        ${ticket.timestamp}
           messages: entry.messages
         }));
     } catch (e: any) {
-      console.error('[ChatHistory] Error reading chat history from DB:', e.message);
+      console.error('[CHAT FETCH ERROR]', e);
     }
     return [];
   }
