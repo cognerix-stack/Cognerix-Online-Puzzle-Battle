@@ -1063,7 +1063,7 @@ button, .btn {
     flex-direction: column !important;
     align-items: center !important;
     justify-content: flex-start !important;
-    padding: 32px 24px !important;
+    padding: 20px 24px !important; /* Slightly reduced padding to save space */
     overflow-y: auto !important;
   }
 
@@ -1073,7 +1073,7 @@ button, .btn {
     align-items: center !important;
     width: 100% !important;
     max-width: 800px !important;
-    margin: 0 auto 24px auto !important; /* Bottom margin to separate from game board */
+    margin: 0 auto 12px auto !important; /* Bottom margin reduced to separate from game board */
     background: transparent !important;
     border: none !important;
     position: relative !important;
@@ -1104,6 +1104,54 @@ button, .btn {
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
+    transition: transform 0.2s ease-in-out !important;
+  }
+
+  /* Game component root containers */
+  .active-game-body > .glass-panel {
+    max-width: 100% !important;
+    max-height: calc(100vh - 180px) !important; /* Constraints to fit within the viewport at 100% zoom */
+    overflow: auto !important;
+    box-sizing: border-box !important;
+    padding: 16px 20px !important;
+    gap: 12px !important;
+  }
+
+  /* Scale canvas to fit nicely inside the max-height */
+  .active-game-body canvas {
+    max-height: calc(100vh - 320px) !important;
+    max-width: 100% !important;
+    height: auto !important;
+    object-fit: contain !important;
+  }
+}
+
+/* Dynamic scaling based on viewport height to fit without scrolling on smaller desktop heights */
+@media (min-width: 769px) and (max-height: 900px) {
+  .active-game-body {
+    transform: scale(0.9) !important;
+    transform-origin: top center !important;
+  }
+}
+
+@media (min-width: 769px) and (max-height: 800px) {
+  .active-game-body {
+    transform: scale(0.8) !important;
+    transform-origin: top center !important;
+  }
+}
+
+@media (min-width: 769px) and (max-height: 700px) {
+  .active-game-body {
+    transform: scale(0.7) !important;
+    transform-origin: top center !important;
+  }
+}
+
+@media (min-width: 769px) and (max-height: 600px) {
+  .active-game-body {
+    transform: scale(0.6) !important;
+    transform-origin: top center !important;
   }
 }
 
