@@ -4574,10 +4574,7 @@ function App() {
                 </div>
               )}
             </div>
-            </div>
 
-            <div className="active-game-content-layout" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', position: 'relative' }}>
-            
             {/* Realtime progress bar if in Multiplayer playing mode */}
             {matchmakingState === 'playing' && opponentInfo && (
               isLiveDuelHubExpanded ? (
@@ -4946,6 +4943,7 @@ function App() {
                 </div>
               )
             )}
+            </div>
 
             <div className="active-game-body" style={{ width: '100%', maxWidth: '650px', background: 'transparent', margin: 'auto', position: 'relative' }}>
               {activeGame === PuzzleType.SLIDING && (
@@ -5302,7 +5300,6 @@ function App() {
                   </form>
                 </div>
               )}
-            </div>
             </div>
 
           </div>
