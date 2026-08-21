@@ -1055,3 +1055,40 @@ button, .btn {
     justify-content: center !important;
   }
 }
+
+/* Layout for Active Game Modal Content on Desktop screens to prevent overlap */
+@media (min-width: 1024px) {
+  .active-game-modal {
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 24px !important;
+  }
+
+  .active-game-content-layout {
+    display: flex !important;
+    flex-direction: row-reverse !important; /* Live Duel Hub on the right, Game board on the left */
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 32px !important;
+    width: 100% !important;
+    max-width: 1100px !important;
+    margin: auto !important;
+    height: auto !important;
+  }
+
+  .active-game-modal .live-duel-hub-panel {
+    position: static !important;
+    transform: none !important;
+    width: 340px !important;
+    max-width: 340px !important;
+    flex-shrink: 0 !important;
+    margin: 0 !important;
+    box-shadow: var(--shadow-card) !important;
+  }
+
+  .active-game-body {
+    margin: 0 !important;
+    flex-grow: 1 !important;
+    max-width: 650px !important;
+  }
+}
