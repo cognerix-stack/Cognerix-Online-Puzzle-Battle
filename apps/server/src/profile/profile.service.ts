@@ -392,6 +392,52 @@ export class ProfileService implements OnModuleInit {
     ProfileService.saveHistoryToDisk();
   }
 
+  static createPendingGameRecord(roomId: string, puzzleType: string, players: { id: string; username: string }[], startTime: number) {
+    const entry = {
+      roomId,
+      puzzleType,
+      timestamp: startTime,
+      players,
+      winnerId: null,
+      winnerName: null,
+      status: "pending",
+      startTime,
+      endTime: null,
+      duration: 0,
+      mode: "1V1"
+    };
+    ProfileService.gameHistory.push(entry);
+    ProfileService.saveHistoryToDisk();
+  }
+
+  static completeGameRecord(roomId: string, winnerId: string, winnerName: string, durationSec: number, puzzleType?: string, players?: { id: string; username: string }[]) {
+    const record = ProfileService.gameHistory.find(r => r.roomId === roomId);
+    if (record) {
+      record.winnerId = winnerId || "";
+      record.winnerName = winnerName || "No Winner";
+      record.status = "completed";
+      record.duration = durationSec;
+      record.endTime = Date.now();
+    } else {
+      console.warn(`[ProfileService] Pending record not found for room ${roomId}, creating completed record`);
+      const entry = {
+        roomId,
+        puzzleType: puzzleType || "UNKNOWN",
+        timestamp: Date.now() - (durationSec * 1000),
+        players: players || [],
+        winnerId: winnerId || "",
+        winnerName: winnerName || "No Winner",
+        status: "completed",
+        startTime: Date.now() - (durationSec * 1000),
+        endTime: Date.now(),
+        duration: durationSec,
+        mode: "1V1"
+      };
+      ProfileService.gameHistory.push(entry);
+    }
+    ProfileService.saveHistoryToDisk();
+  }
+
   async getGameHistory(userId: string) {
     return ProfileService.gameHistory.filter(entry =>
       entry.players && entry.players.some((p: any) => p.id === userId)

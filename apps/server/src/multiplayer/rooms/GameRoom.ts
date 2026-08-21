@@ -607,6 +607,14 @@ export class GameRoom extends Room<RoomState> {
       rank: p.rank
     }));
 
+    // Create a preliminary/pending game history entry in both players' records the moment match starts
+    try {
+      const playersList = this.playersSnapshot.map(p => ({ id: p.id, username: p.username }));
+      ProfileService.createPendingGameRecord(this.roomId, this.state.puzzleType, playersList, this.state.startTime);
+    } catch (e) {
+      console.error('[GameRoom] Error creating pending game record:', e);
+    }
+
     // Send puzzle_start to all clients to initiate puzzle board loading
     this.clients.forEach((c, index) => {
       let opponentData: any = null;
@@ -755,20 +763,10 @@ export class GameRoom extends Room<RoomState> {
     }
 
     try {
-      const entry = {
-        roomId: this.roomId,
-        puzzleType: this.state.puzzleType,
-        timestamp: Date.now(),
-        players: playersList,
-        winnerId: winnerId || "",
-        winnerName: winnerName || "No Winner",
-        mode: this.state.mode || "1V1"
-      };
-
-      ProfileService.recordHistory(entry);
+      const elapsedSec = this.state.startTime ? Math.floor((Date.now() - this.state.startTime) / 1000) : 0;
+      ProfileService.completeGameRecord(this.roomId, winnerId, winnerName, elapsedSec, this.state.puzzleType, playersList);
 
       // Save match duration to chat history
-      const elapsedSec = this.state.startTime ? Math.floor((Date.now() - this.state.startTime) / 1000) : 0;
       ProfileService.updateRoomDuration(this.roomId, elapsedSec);
     } catch (e) {
       console.error('[GameRoom] Error recording game history:', e);
