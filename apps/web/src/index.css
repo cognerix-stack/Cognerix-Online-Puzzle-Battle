@@ -1056,39 +1056,45 @@ button, .btn {
   }
 }
 
-/* Layout for Active Game Modal Content on Desktop screens to prevent overlap */
-@media (min-width: 1024px) {
+/* Layout for Active Game Modal Content on Desktop/Tablet screens to prevent overlap */
+@media (min-width: 769px) {
   .active-game-modal {
+    display: flex !important;
+    flex-direction: column !important;
     align-items: center !important;
-    justify-content: center !important;
-    padding: 24px !important;
+    justify-content: flex-start !important;
+    padding: 32px 24px !important;
+    overflow-y: auto !important;
   }
 
   .active-game-content-layout {
     display: flex !important;
-    flex-direction: row-reverse !important; /* Live Duel Hub on the right, Game board on the left */
+    flex-direction: column !important; /* Stack vertically: Live Duel Hub on top, game board centered below it */
     align-items: center !important;
-    justify-content: center !important;
-    gap: 32px !important;
+    justify-content: flex-start !important;
     width: 100% !important;
-    max-width: 1100px !important;
-    margin: auto !important;
-    height: auto !important;
+    max-width: 800px !important;
+    margin: 0 auto !important;
+    gap: 28px !important; /* Explicit vertical gap to prevent touching */
   }
 
   .active-game-modal .live-duel-hub-panel {
     position: static !important;
     transform: none !important;
-    width: 340px !important;
-    max-width: 340px !important;
-    flex-shrink: 0 !important;
-    margin: 0 !important;
+    width: 100% !important;
+    max-width: 600px !important; /* Keep it neat and clean */
+    margin: 0 auto !important;
     box-shadow: var(--shadow-card) !important;
+    z-index: 1010 !important;
   }
 
   .active-game-body {
-    margin: 0 !important;
-    flex-grow: 1 !important;
+    position: relative !important;
+    width: 100% !important;
     max-width: 650px !important;
+    margin: 0 auto !important; /* Centered horizontally */
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
   }
 }
