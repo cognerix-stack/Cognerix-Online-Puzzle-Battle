@@ -1988,6 +1988,8 @@ function App() {
     setIsSidebarOpen(false);
     if (tab === 'home' && activeGame) {
       setIsGameHidden(false);
+    } else if (activeGame) {
+      setIsGameHidden(true);
     }
     if (tab === 'leaderboard') {
       refreshLeaderboard();
@@ -4487,7 +4489,7 @@ function App() {
 
         {/* 🎮 FLOATING ACTIVE GAME MODAL SCREEN */}
         {activeGame && (
-          <div className="active-game-modal" style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: isLightMode ? 'rgba(240, 244, 248, 0.98)' : 'rgba(4, 2, 9, 0.95)', zIndex: 1000, display: isGameHidden ? 'none' : 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px', backdropFilter: 'blur(8px)' }}>
+          <div className={`active-game-modal ${isGameHidden ? 'hidden' : ''}`} style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: isLightMode ? 'rgba(240, 244, 248, 0.98)' : 'rgba(4, 2, 9, 0.95)', zIndex: 1000, display: isGameHidden ? 'none' : 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px', backdropFilter: 'blur(8px)' }}>
             
             {/* Sticky Header Bar containing Menu Button and Live Duel Hub */}
             <div className="active-game-header" style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '100%', zIndex: 2000 }}>

@@ -1151,3 +1151,8 @@ button, .btn {
     z-index: 9999 !important;
   }
 }
+
+/* Ensure active-game-modal hidden class overrides all display rules on all viewports */
+.active-game-modal.hidden {
+  display: none !important;
+}
