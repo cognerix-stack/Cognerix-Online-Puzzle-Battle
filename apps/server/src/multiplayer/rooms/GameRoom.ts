@@ -654,6 +654,17 @@ export class GameRoom extends Room<RoomState> {
         GameRoom.broadcastQueueUpdate();
       }
 
+      // Refresh the players snapshot from all active players (including the leaving player)
+      this.playersSnapshot = Array.from(this.state.players.entries()).map(([sessionId, p]) => ({
+        id: p.id,
+        username: p.username,
+        sessionId: sessionId,
+        score: p.score,
+        nameColor: p.nameColor,
+        badges: p.badges,
+        rank: p.rank
+      }));
+
       // Capture remaining players before removing the leaving player
       const remainingPlayers: PlayerState[] = [];
       this.state.players.forEach((p, sid) => {
