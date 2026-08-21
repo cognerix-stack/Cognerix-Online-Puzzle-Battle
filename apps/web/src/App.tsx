@@ -4490,6 +4490,7 @@ function App() {
         {/* 🎮 FLOATING ACTIVE GAME MODAL SCREEN */}
         {activeGame && (
           <div className={`active-game-modal ${isGameHidden ? 'hidden' : ''}`} style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: isLightMode ? 'rgba(240, 244, 248, 0.98)' : 'rgba(4, 2, 9, 0.95)', zIndex: 1000, display: isGameHidden ? 'none' : 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px', backdropFilter: 'blur(8px)' }}>
+            <div className="game-container" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', height: '100%', boxSizing: 'border-box' }}>
             
             {/* Sticky Header Bar containing Menu Button and Live Duel Hub */}
             <div className="active-game-header" style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '100%', zIndex: 2000 }}>
@@ -5304,6 +5305,7 @@ function App() {
               )}
             </div>
 
+            </div>
           </div>
         )}
 
@@ -11158,7 +11160,7 @@ function App() {
       {/* ⚔️ CHOOSE GAME DIFFICULTY MODAL OVERLAY */}
       {difficultyModal && !matchResult && (
         <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(5, 3, 10, 0.85)', zIndex: 2100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px', backdropFilter: 'blur(8px)' }}>
-          <div className="glass-panel" style={{ width: '100%', maxWidth: '420px', padding: '28px', border: isLightMode ? '1px solid #000000' : '1px solid rgba(255,255,255,0.15)', background: isLightMode ? '#ffffff' : 'var(--bg-glass)', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          <div className="glass-panel difficulty-selection-modal" style={{ width: '100%', maxWidth: '420px', padding: '28px', border: isLightMode ? '1px solid #000000' : '1px solid rgba(255,255,255,0.15)', background: isLightMode ? '#ffffff' : 'var(--bg-glass)', display: 'flex', flexDirection: 'column', gap: '20px' }}>
             <div style={{ textAlign: 'center' }}>
               <h3 style={{ fontSize: '20px', color: 'var(--text-primary)', fontFamily: 'var(--font-display)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
                 ⚔️ {t('choose_game_mode')}
