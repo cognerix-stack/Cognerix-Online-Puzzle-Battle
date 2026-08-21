@@ -65,6 +65,8 @@ export class MatchmakingQueue {
 export class GameRoom extends Room<RoomState> {
   static profileService: any;
   private lobbyTimer: any = null;
+  private playersSnapshot: any[] = [];
+  private hasRecordedHistory: boolean = false;
 
   static getQueueCounts() {
     return MatchmakingQueue.getCounts();
@@ -595,6 +597,16 @@ export class GameRoom extends Room<RoomState> {
       p.roundWins = 0;
     });
 
+    this.playersSnapshot = Array.from(this.state.players.entries()).map(([sessionId, p]) => ({
+      id: p.id,
+      username: p.username,
+      sessionId: sessionId,
+      score: p.score,
+      nameColor: p.nameColor,
+      badges: p.badges,
+      rank: p.rank
+    }));
+
     // Send puzzle_start to all clients to initiate puzzle board loading
     this.clients.forEach((c, index) => {
       let opponentData: any = null;
@@ -642,50 +654,94 @@ export class GameRoom extends Room<RoomState> {
         GameRoom.broadcastQueueUpdate();
       }
 
+      // Capture remaining players before removing the leaving player
+      const remainingPlayers: PlayerState[] = [];
+      this.state.players.forEach((p, sid) => {
+        if (sid !== client.sessionId) {
+          remainingPlayers.push(p);
+        }
+      });
+
       this.state.players.delete(client.sessionId);
       
       // If playing/paused and opponent leaves, handle forfeiting
-      if ((this.state.status === "PLAYING" || this.state.status === "PAUSED") && this.state.players.size < 2) {
+      if (this.state.status === "PLAYING" || this.state.status === "PAUSED") {
         // Declare remaining player as winner
-        const remainingSessionId = Array.from(this.state.players.keys())[0];
-        if (remainingSessionId) {
-          const remainingPlayer = this.state.players.get(remainingSessionId);
-          if (remainingPlayer) {
-            this.state.winnerId = remainingPlayer.id;
-            this.state.status = "FINISHED";
-            this.recordGameHistoryEntry(remainingPlayer.id, remainingPlayer.username);
-            this.broadcast("game_over", { winnerId: remainingPlayer.id, winnerName: remainingPlayer.username, forfeit: true });
+        const remainingPlayer = remainingPlayers[0];
+        if (remainingPlayer) {
+          this.state.winnerId = remainingPlayer.id;
+          this.state.status = "FINISHED";
+          this.recordGameHistoryEntry(remainingPlayer.id, remainingPlayer.username);
+          this.broadcast("game_over", { winnerId: remainingPlayer.id, winnerName: remainingPlayer.username, forfeit: true });
 
-            // Record the forfeit win in the database for the remaining (winning) player
-            if (GameRoom.profileService) {
-              const elapsedSec = this.state.startTime ? Math.floor((Date.now() - this.state.startTime) / 1000) : 60;
-              GameRoom.profileService.recordGameWin(
-                remainingPlayer.id,
-                this.state.puzzleType,
-                elapsedSec,
-                remainingPlayer.score,
-                remainingPlayer.username,
-                remainingPlayer.nameColor,
-                remainingPlayer.badges,
-                remainingPlayer.rank
-              ).catch((err: any) => console.error("Database forfeit win save failed:", err));
-            }
+          // Record the forfeit win in the database for the remaining (winning) player
+          if (GameRoom.profileService) {
+            const elapsedSec = this.state.startTime ? Math.floor((Date.now() - this.state.startTime) / 1000) : 60;
+            GameRoom.profileService.recordGameWin(
+              remainingPlayer.id,
+              this.state.puzzleType,
+              elapsedSec,
+              remainingPlayer.score,
+              remainingPlayer.username,
+              remainingPlayer.nameColor,
+              remainingPlayer.badges,
+              remainingPlayer.rank
+            ).catch((err: any) => console.error("Database forfeit win save failed:", err));
           }
+        } else {
+          // No players remaining, match is finished with no winner
+          this.state.status = "FINISHED";
+          this.recordGameHistoryEntry("", "No Winner");
         }
       }
     }
   }
 
-
   onDispose() {
     GameRoom.broadcastQueueUpdate();
+
+    // Ensure recordGameHistoryEntry runs in ALL exit paths (e.g. room timeout/dispose mid-game)
+    if ((this.state.status === "PLAYING" || this.state.status === "PAUSED") && !this.hasRecordedHistory) {
+      this.state.status = "FINISHED";
+
+      // Compute winner based on score if possible
+      let winnerId = "";
+      let winnerName = "No Winner";
+      let maxScore = -1;
+
+      const players = this.playersSnapshot.length > 0 ? this.playersSnapshot : Array.from(this.state.players.values());
+      players.forEach((p) => {
+        if (p.score > maxScore) {
+          maxScore = p.score;
+          winnerId = p.id;
+          winnerName = p.username;
+        }
+      });
+
+      this.recordGameHistoryEntry(winnerId, winnerName);
+    }
+
+    // Always ensure chat record duration is updated even if match ended early
+    const elapsedSec = this.state.startTime ? Math.floor((Date.now() - this.state.startTime) / 1000) : 0;
+    try {
+      ProfileService.updateRoomDuration(this.roomId, elapsedSec);
+    } catch (e) {
+      console.error('[GameRoom] Error updating room duration on dispose:', e);
+    }
   }
 
   private recordGameHistoryEntry(winnerId: string, winnerName: string) {
-    const playersList: { id: string; username: string }[] = [];
-    this.state.players.forEach((p) => {
-      playersList.push({ id: p.id, username: p.username });
-    });
+    if (this.hasRecordedHistory) return;
+    this.hasRecordedHistory = true;
+
+    let playersList: { id: string; username: string }[] = [];
+    if (this.playersSnapshot && this.playersSnapshot.length > 0) {
+      playersList = this.playersSnapshot.map(p => ({ id: p.id, username: p.username }));
+    } else {
+      this.state.players.forEach((p) => {
+        playersList.push({ id: p.id, username: p.username });
+      });
+    }
 
     try {
       const entry = {
