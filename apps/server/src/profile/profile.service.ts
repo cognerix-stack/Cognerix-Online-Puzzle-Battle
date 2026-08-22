@@ -1909,7 +1909,7 @@ Submitted on:        ${ticket.timestamp}
           const players = entry.players as any[];
           return players && players.some((p: any) => p.id === userId);
         })
-        .map((entry) => ({
+        .map((entry: any) => ({
           roomId: entry.roomId,
           puzzleType: entry.puzzleType,
           timestamp: entry.timestamp.getTime(),
@@ -1954,25 +1954,12 @@ Submitted on:        ${ticket.timestamp}
     return result;
   }
 
-  async getReports() {
-    const dbReports = await this.prisma.playerReport.findMany({
+  async getAdminReports() {
+    return this.prisma.playerReport.findMany({
       orderBy: {
         timestamp: 'desc'
       }
     });
-
-    return dbReports.map(r => ({
-      id: r.id,
-      reportingProfileId: r.reporterPlayerId,
-      nickname: r.reporterUsername,
-      opponentProfileId: r.reportedPlayerId,
-      opponentNickname: r.reportedUsername,
-      reason: r.reason,
-      description: r.description || undefined,
-      sessionId: r.roomId || undefined,
-      puzzleType: r.gameType || undefined,
-      timestamp: r.timestamp.toISOString()
-    }));
   }
 }
 

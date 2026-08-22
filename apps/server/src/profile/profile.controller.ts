@@ -403,7 +403,7 @@ export class ProfileController {
   @Get('admin/reports')
   @UseGuards(AdminGuard)
   async getAdminReports() {
-    return this.profileService.getReports();
+    return this.profileService.getAdminReports();
   }
 
   @Get('matchmaking/queues')
