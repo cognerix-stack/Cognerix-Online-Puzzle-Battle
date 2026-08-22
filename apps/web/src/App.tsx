@@ -1,3 +1,4 @@
+// v2.1.0
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   Gamepad2, User, ShoppingBag, Trophy, Smile, Settings as SettingsIcon, ShieldAlert,
@@ -1305,6 +1306,7 @@ function App() {
 
   const fetchAdminReports = async () => {
     setAdminReportsLoading(true);
+    console.log('[AdminReports] Fetching reports...');
     try {
       const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
       const token = btoa(JSON.stringify(payload));
@@ -1315,6 +1317,7 @@ function App() {
       });
       if (res.ok) {
         const data = await res.json();
+        console.log('[AdminReports] Response:', data);
         setAdminReports(Array.isArray(data) ? data : []);
       } else {
         setAdminReports([]);
