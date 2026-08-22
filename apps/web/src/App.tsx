@@ -1298,6 +1298,35 @@ function App() {
   const [adminRoomLookupLoading, setAdminRoomLookupLoading] = useState<boolean>(false);
   const [adminRoomLookupSearched, setAdminRoomLookupSearched] = useState<boolean>(false);
 
+  // Player Reports states
+  const [adminReports, setAdminReports] = useState<any[]>([]);
+  const [adminReportsLoading, setAdminReportsLoading] = useState<boolean>(false);
+  const [selectedReport, setSelectedReport] = useState<any | null>(null);
+
+  const fetchAdminReports = async () => {
+    setAdminReportsLoading(true);
+    try {
+      const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
+      const token = btoa(JSON.stringify(payload));
+      const res = await fetch(`${BACKEND_HTTP_URL}/profile/admin/reports`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setAdminReports(Array.isArray(data) ? data : []);
+      } else {
+        setAdminReports([]);
+      }
+    } catch (e) {
+      console.warn('[AdminReports] Failed to fetch player reports:', e);
+      setAdminReports([]);
+    } finally {
+      setAdminReportsLoading(false);
+    }
+  };
+
   const fetchRoomLookup = async (roomId: string) => {
     if (!roomId.trim()) return;
     setAdminRoomLookupLoading(true);
@@ -1421,6 +1450,7 @@ function App() {
       fetchBanned();
       fetchUsers();
       fetchAnnouncementHistory();
+      fetchAdminReports();
     }
   }, [isMailboxOpen, isAdmin]);
 
@@ -9355,6 +9385,64 @@ function App() {
                     )}
                   </div>
 
+                  {/* Player Reports Section */}
+                  <div style={{ borderTop: '1px dashed rgba(139, 92, 246, 0.2)', paddingTop: '12px', marginTop: '4px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <h5 style={{ fontSize: '12px', fontWeight: 'bold', color: '#ef4444', margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      🚨 Player Reports ({adminReports.length})
+                    </h5>
+                    {adminReportsLoading ? (
+                      <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontStyle: 'italic' }}>Loading reports...</span>
+                    ) : adminReports.length === 0 ? (
+                      <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontStyle: 'italic' }}>No player reports submitted.</span>
+                    ) : (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', maxHeight: '180px', overflowY: 'auto' }}>
+                        {adminReports.map((report: any, idx: number) => (
+                          <div key={report.id || idx} style={{
+                            background: 'rgba(255, 255, 255, 0.02)',
+                            border: '1px solid var(--border-glass)',
+                            borderRadius: '8px',
+                            padding: '8px',
+                            fontSize: '11px',
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            gap: '12px'
+                          }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', overflow: 'hidden' }}>
+                              <span style={{ fontWeight: 'bold', color: 'var(--text-primary)' }}>
+                                Reported: {report.opponentNickname || 'N/A'}
+                              </span>
+                              <span style={{ fontSize: '10px', color: 'var(--text-secondary)', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+                                Reason: {report.reason}
+                              </span>
+                            </div>
+                            <button
+                              onClick={() => {
+                                triggerSound('click');
+                                setSelectedReport(report);
+                              }}
+                              style={{
+                                background: 'rgba(239, 68, 68, 0.15)',
+                                border: '1px solid rgba(239, 68, 68, 0.25)',
+                                color: 'var(--text-primary)',
+                                padding: '4px 10px',
+                                borderRadius: '6px',
+                                fontSize: '11px',
+                                fontWeight: 'bold',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s',
+                                flexShrink: 0
+                              }}
+                              className="btn-hover-bright"
+                            >
+                              View
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
                 </div>
               )}
 
@@ -11957,6 +12045,157 @@ function App() {
                 Confirm
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Selected Report details overlay modal */}
+      {selectedReport && (
+        <div 
+          onClick={() => setSelectedReport(null)}
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            background: 'rgba(0, 0, 0, 0.7)',
+            backdropFilter: 'blur(4px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 10020,
+            padding: '16px'
+          }}
+        >
+          <div 
+            className="glass-panel"
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              width: '100%',
+              maxWidth: '480px',
+              padding: '24px',
+              borderRadius: '16px',
+              border: '1px solid var(--border-glass)',
+              boxShadow: '0 20px 40px rgba(0, 0, 0, 0.5)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '16px',
+              color: 'var(--text-primary)',
+              position: 'relative',
+              animation: 'scaleIn 0.2s ease-out'
+            }}
+          >
+            {/* Close button X */}
+            <button
+              onClick={() => { triggerSound('click'); setSelectedReport(null); }}
+              style={{
+                position: 'absolute',
+                top: '16px',
+                right: '16px',
+                background: 'none',
+                border: 'none',
+                color: 'var(--text-secondary)',
+                fontSize: '18px',
+                cursor: 'pointer',
+                outline: 'none',
+                transition: 'color 0.2s'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.color = '#ef4444'}
+              onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-secondary)'}
+            >
+              ✕
+            </button>
+
+            <h3 style={{ fontSize: '18px', fontWeight: '800', fontFamily: 'var(--font-display)', display: 'flex', alignItems: 'center', gap: '8px', color: '#ef4444', borderBottom: '1px solid var(--border-glass)', paddingBottom: '10px', margin: 0 }}>
+              🚨 Report Details
+            </h3>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', maxHeight: '400px', overflowY: 'auto', paddingRight: '4px' }}>
+              
+              <div>
+                <span style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 'bold', display: 'block', marginBottom: '2px' }}>
+                  📅 Date & Time submitted
+                </span>
+                <span style={{ fontSize: '13px', color: 'var(--text-primary)' }}>
+                  {selectedReport.timestamp ? new Date(selectedReport.timestamp).toLocaleString() : 'N/A'}
+                </span>
+              </div>
+
+              <div>
+                <span style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 'bold', display: 'block', marginBottom: '2px' }}>
+                  🔑 Room ID
+                </span>
+                <span style={{ fontSize: '13px', fontFamily: 'monospace', color: 'var(--text-primary)' }}>
+                  {selectedReport.sessionId || 'N/A'}
+                </span>
+              </div>
+
+              <div>
+                <span style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 'bold', display: 'block', marginBottom: '2px' }}>
+                  👤 Reporter
+                </span>
+                <span style={{ fontSize: '13px', color: 'var(--text-primary)', display: 'block' }}>
+                  Username: <strong style={{ color: 'var(--color-primary)' }}>{selectedReport.nickname || 'N/A'}</strong>
+                </span>
+                <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontFamily: 'monospace' }}>
+                  ID: {selectedReport.reportingProfileId || 'N/A'}
+                </span>
+              </div>
+
+              <div>
+                <span style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 'bold', display: 'block', marginBottom: '2px' }}>
+                  🚨 Reported Player
+                </span>
+                <span style={{ fontSize: '13px', color: 'var(--text-primary)', display: 'block' }}>
+                  Username: <strong style={{ color: '#ef4444' }}>{selectedReport.opponentNickname || 'N/A'}</strong>
+                </span>
+                <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontFamily: 'monospace' }}>
+                  ID: {selectedReport.opponentProfileId || 'N/A'}
+                </span>
+              </div>
+
+              <div>
+                <span style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 'bold', display: 'block', marginBottom: '2px' }}>
+                  📝 Reason/message
+                </span>
+                <span style={{ fontSize: '13px', color: 'var(--text-primary)', display: 'block', fontWeight: 'bold', marginBottom: '4px' }}>
+                  {selectedReport.reason || 'N/A'}
+                </span>
+                {selectedReport.description && (
+                  <p style={{
+                    fontSize: '12px',
+                    color: 'var(--text-secondary)',
+                    background: 'rgba(0,0,0,0.15)',
+                    padding: '8px 10px',
+                    borderRadius: '8px',
+                    margin: 0,
+                    whiteSpace: 'pre-wrap',
+                    border: '1px solid var(--border-glass)'
+                  }}>
+                    {selectedReport.description}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <span style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 'bold', display: 'block', marginBottom: '2px' }}>
+                  🎮 Game type
+                </span>
+                <span style={{ fontSize: '12px', background: 'rgba(139, 92, 246, 0.1)', color: 'var(--color-secondary)', padding: '2px 8px', borderRadius: '4px', display: 'inline-block', fontWeight: 'bold' }}>
+                  {selectedReport.puzzleType || 'N/A'}
+                </span>
+              </div>
+
+            </div>
+
+            <button
+              onClick={() => { triggerSound('click'); setSelectedReport(null); }}
+              className="btn btn-secondary"
+              style={{ width: '100%', padding: '10px', borderRadius: '8px', fontWeight: 'bold' }}
+            >
+              Close
+            </button>
           </div>
         </div>
       )}

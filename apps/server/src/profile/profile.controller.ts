@@ -397,6 +397,12 @@ export class ProfileController {
     return this.profileService.getRoomLookup(roomId);
   }
 
+  @Get('admin/reports')
+  @UseGuards(AdminGuard)
+  async getAdminReports() {
+    return this.profileService.getReports();
+  }
+
   @Get('matchmaking/queues')
   async getMatchmakingQueues() {
     const { GameRoom } = require('../multiplayer/rooms/GameRoom');

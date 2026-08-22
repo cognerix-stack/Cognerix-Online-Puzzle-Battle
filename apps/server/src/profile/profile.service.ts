@@ -1958,4 +1958,14 @@ Submitted on:        ${ticket.timestamp}
 
     return result;
   }
+
+  async getReports() {
+    // Return all reports, sorted by timestamp (newest first)
+    return [...ProfileService.reports].sort((a, b) => {
+      const timeA = a.timestamp ? new Date(a.timestamp).getTime() : 0;
+      const timeB = b.timestamp ? new Date(b.timestamp).getTime() : 0;
+      return timeB - timeA;
+    });
+  }
 }
+
