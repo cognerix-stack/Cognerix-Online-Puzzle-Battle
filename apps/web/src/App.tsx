@@ -9413,7 +9413,7 @@ function App() {
                           }}>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', overflow: 'hidden' }}>
                               <span style={{ fontWeight: 'bold', color: 'var(--text-primary)' }}>
-                                Reported: {report.opponentNickname || 'N/A'}
+                                Reported: {report.reportedUsername || 'N/A'}
                               </span>
                               <span style={{ fontSize: '10px', color: 'var(--text-secondary)', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
                                 Reason: {report.reason}
@@ -12130,7 +12130,7 @@ function App() {
                   🔑 Room ID
                 </span>
                 <span style={{ fontSize: '13px', fontFamily: 'monospace', color: 'var(--text-primary)' }}>
-                  {selectedReport.sessionId || 'N/A'}
+                  {selectedReport.roomId || 'N/A'}
                 </span>
               </div>
 
@@ -12139,10 +12139,10 @@ function App() {
                   👤 Reporter
                 </span>
                 <span style={{ fontSize: '13px', color: 'var(--text-primary)', display: 'block' }}>
-                  Username: <strong style={{ color: 'var(--color-primary)' }}>{selectedReport.nickname || 'N/A'}</strong>
+                  Username: <strong style={{ color: 'var(--color-primary)' }}>{selectedReport.reporterUsername || 'N/A'}</strong>
                 </span>
                 <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontFamily: 'monospace' }}>
-                  ID: {selectedReport.reportingProfileId || 'N/A'}
+                  ID: {selectedReport.reporterPlayerId || 'N/A'}
                 </span>
               </div>
 
@@ -12151,10 +12151,10 @@ function App() {
                   🚨 Reported Player
                 </span>
                 <span style={{ fontSize: '13px', color: 'var(--text-primary)', display: 'block' }}>
-                  Username: <strong style={{ color: '#ef4444' }}>{selectedReport.opponentNickname || 'N/A'}</strong>
+                  Username: <strong style={{ color: '#ef4444' }}>{selectedReport.reportedUsername || 'N/A'}</strong>
                 </span>
                 <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontFamily: 'monospace' }}>
-                  ID: {selectedReport.opponentProfileId || 'N/A'}
+                  ID: {selectedReport.reportedPlayerId || 'N/A'}
                 </span>
               </div>
 
@@ -12186,7 +12186,7 @@ function App() {
                   🎮 Game type
                 </span>
                 <span style={{ fontSize: '12px', background: 'rgba(139, 92, 246, 0.1)', color: 'var(--color-secondary)', padding: '2px 8px', borderRadius: '4px', display: 'inline-block', fontWeight: 'bold' }}>
-                  {selectedReport.puzzleType || 'N/A'}
+                  {selectedReport.gameType || 'N/A'}
                 </span>
               </div>
 
