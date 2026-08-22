@@ -1419,30 +1419,7 @@ export class ProfileService implements OnModuleInit {
   }
 
   // --- USER REPORTS SYSTEM ---
-  static reports: any[] = [];
-
-  static {
-    try {
-      const filePath = ProfileService.getPersistencePath('reports.json');
-      if (fs.existsSync(filePath)) {
-        const fileContent = fs.readFileSync(filePath, 'utf-8');
-        ProfileService.reports = JSON.parse(fileContent) || [];
-        console.log(`[Reports] Loaded ${ProfileService.reports.length} report(s) from persistence.`);
-      }
-    } catch (e) {
-      console.error('[Reports] Failed to load reports:', e);
-    }
-  }
-
-  private static saveReports() {
-    try {
-      const filePath = ProfileService.getPersistencePath('reports.json');
-      fs.writeFileSync(filePath, JSON.stringify(ProfileService.reports, null, 2), 'utf-8');
-      console.log('[Reports] Saved reports to persistence file.');
-    } catch (e) {
-      console.error('[Reports] Failed to save reports:', e);
-    }
-  }
+  // Deprecated reports file persistence — migrated to Prisma PlayerReport database model.
 
   async banUser(profileId: string, reason?: string) {
     if (!profileId) {
@@ -1635,23 +1612,41 @@ export class ProfileService implements OnModuleInit {
     reason: string;
     description?: string;
     sessionId?: string;
+    puzzleType?: string;
   }) {
     if (!reportData.reportingProfileId || !reportData.opponentProfileId || !reportData.opponentNickname || !reportData.nickname || !reportData.reason) {
       throw new BadRequestException('Reporting player Profile ID, Opponent Profile ID, Opponent Nickname, Nickname, and Reason are required.');
     }
 
-    const newReport = {
-      id: 'rep_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
-      timestamp: new Date().toISOString(),
-      ...reportData
+    const createdReport = await this.prisma.playerReport.create({
+      data: {
+        reporterPlayerId: reportData.reportingProfileId,
+        reporterUsername: reportData.nickname,
+        reportedPlayerId: reportData.opponentProfileId,
+        reportedUsername: reportData.opponentNickname,
+        reason: reportData.reason,
+        description: reportData.description || null,
+        roomId: reportData.sessionId || null,
+        gameType: reportData.puzzleType || null
+      }
+    });
+
+    const emailReportObj = {
+      id: createdReport.id,
+      reportingProfileId: createdReport.reporterPlayerId,
+      nickname: createdReport.reporterUsername,
+      opponentProfileId: createdReport.reportedPlayerId,
+      opponentNickname: createdReport.reportedUsername,
+      reason: createdReport.reason,
+      description: createdReport.description,
+      sessionId: createdReport.roomId,
+      puzzleType: createdReport.gameType,
+      timestamp: createdReport.timestamp.toISOString()
     };
 
-    ProfileService.reports.push(newReport);
-    ProfileService.saveReports();
-
     // Send email via nodemailer
-    const emailResult = await this.sendEmailReport(newReport);
-    return { success: true, report: newReport, emailResult };
+    const emailResult = await this.sendEmailReport(emailReportObj);
+    return { success: true, report: emailReportObj, emailResult };
   }
 
   private sendEmailReport(report: any) {
@@ -1960,12 +1955,24 @@ Submitted on:        ${ticket.timestamp}
   }
 
   async getReports() {
-    // Return all reports, sorted by timestamp (newest first)
-    return [...ProfileService.reports].sort((a, b) => {
-      const timeA = a.timestamp ? new Date(a.timestamp).getTime() : 0;
-      const timeB = b.timestamp ? new Date(b.timestamp).getTime() : 0;
-      return timeB - timeA;
+    const dbReports = await this.prisma.playerReport.findMany({
+      orderBy: {
+        timestamp: 'desc'
+      }
     });
+
+    return dbReports.map(r => ({
+      id: r.id,
+      reportingProfileId: r.reporterPlayerId,
+      nickname: r.reporterUsername,
+      opponentProfileId: r.reportedPlayerId,
+      opponentNickname: r.reportedUsername,
+      reason: r.reason,
+      description: r.description || undefined,
+      sessionId: r.roomId || undefined,
+      puzzleType: r.gameType || undefined,
+      timestamp: r.timestamp.toISOString()
+    }));
   }
 }
 

@@ -327,6 +327,7 @@ export class ProfileController {
     @Body('reason') reason: string,
     @Body('description') description?: string,
     @Body('sessionId') sessionId?: string,
+    @Body('puzzleType') puzzleType?: string,
   ) {
     return this.profileService.submitReport({
       reportingProfileId,
@@ -335,6 +336,8 @@ export class ProfileController {
       nickname,
       reason,
       description,
+      sessionId,
+      puzzleType,
     });
   }
 

@@ -111,3 +111,16 @@ model ChatHistory {
   players     Json
   messages    Json
 }
+
+model PlayerReport {
+  id               String   @id @default(uuid())
+  reporterPlayerId String
+  reporterUsername String
+  reportedPlayerId String
+  reportedUsername String
+  reason           String
+  description      String?
+  roomId           String?
+  gameType         String?
+  timestamp        DateTime @default(now())
+}
