@@ -1292,6 +1292,40 @@ function App() {
     }
   };
 
+  // Room ID Lookup states
+  const [adminRoomLookupId, setAdminRoomLookupId] = useState<string>('');
+  const [adminRoomLookupResult, setAdminRoomLookupResult] = useState<any>(null);
+  const [adminRoomLookupLoading, setAdminRoomLookupLoading] = useState<boolean>(false);
+  const [adminRoomLookupSearched, setAdminRoomLookupSearched] = useState<boolean>(false);
+
+  const fetchRoomLookup = async (roomId: string) => {
+    if (!roomId.trim()) return;
+    setAdminRoomLookupLoading(true);
+    setAdminRoomLookupSearched(true);
+    try {
+      const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
+      const token = btoa(JSON.stringify(payload));
+      const res = await fetch(`${BACKEND_HTTP_URL}/profile/admin/room-lookup?roomId=${encodeURIComponent(roomId.trim())}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setAdminRoomLookupResult(data);
+      } else {
+        setAdminRoomLookupResult(null);
+        showToast('Failed to lookup room.', 'error');
+      }
+    } catch (e) {
+      console.error('Error looking up room:', e);
+      setAdminRoomLookupResult(null);
+      showToast('Error connecting to backend for room lookup.', 'error');
+    } finally {
+      setAdminRoomLookupLoading(false);
+    }
+  };
+
   // Help & Support Form states
   const [isSupportOpen, setIsSupportOpen] = useState<boolean>(false);
   const [supportName, setSupportName] = useState<string>('');
@@ -9162,6 +9196,159 @@ function App() {
                                 </div>
                               );
                             })}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Room ID Lookup Section */}
+                  <div style={{ borderTop: '1px dashed rgba(139, 92, 246, 0.2)', paddingTop: '12px', marginTop: '4px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <h5 style={{ fontSize: '12px', fontWeight: 'bold', color: 'var(--color-primary)', margin: 0 }}>
+                      🔍 Room ID Lookup
+                    </h5>
+                    <p style={{ fontSize: '10px', color: 'var(--text-muted)', margin: 0, lineHeight: '1.4' }}>
+                      Search by Room ID to view both players&apos; IDs and their in-game chat messages.
+                    </p>
+                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                      <input 
+                        type="text" 
+                        value={adminRoomLookupId}
+                        onChange={(e) => setAdminRoomLookupId(e.target.value)}
+                        onKeyDown={(e) => { if (e.key === 'Enter') { triggerSound('click'); fetchRoomLookup(adminRoomLookupId); } }}
+                        placeholder="Enter Room ID (e.g. 6xGf6TPNu)..."
+                        style={{
+                          flex: 1,
+                          background: isLightMode ? 'rgba(0,0,0,0.05)' : 'rgba(0,0,0,0.1)',
+                          border: isLightMode ? '1px solid #d1d5db' : '1px solid var(--border-glass)',
+                          color: 'var(--text-primary)',
+                          padding: '6px 10px',
+                          borderRadius: '8px',
+                          fontSize: '12px',
+                          outline: 'none'
+                        }}
+                      />
+                      <button
+                        onClick={() => {
+                          triggerSound('click');
+                          fetchRoomLookup(adminRoomLookupId);
+                        }}
+                        disabled={adminRoomLookupLoading}
+                        style={{
+                          background: 'rgba(59, 130, 246, 0.15)',
+                          border: '1px solid rgba(59, 130, 246, 0.25)',
+                          color: 'var(--text-primary)',
+                          padding: '6px 14px',
+                          borderRadius: '8px',
+                          fontSize: '12px',
+                          fontWeight: 'bold',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s'
+                        }}
+                        className="btn-hover-bright"
+                      >
+                        {adminRoomLookupLoading ? '...' : '🔍 Lookup'}
+                      </button>
+                    </div>
+
+                    {adminRoomLookupSearched && (
+                      <div style={{ marginTop: '6px', background: 'rgba(0,0,0,0.1)', padding: '10px', borderRadius: '8px' }}>
+                        <h6 style={{ fontSize: '11px', color: 'var(--text-secondary)', margin: '0 0 8px 0' }}>
+                          Room: <span style={{ fontFamily: 'monospace', color: 'var(--text-primary)' }}>{adminRoomLookupId}</span>
+                        </h6>
+
+                        {!adminRoomLookupResult || (!adminRoomLookupResult.gameHistory && !adminRoomLookupResult.chatHistory) ? (
+                          <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontStyle: 'italic' }}>
+                            No records found for this Room ID.
+                          </span>
+                        ) : (
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                            {/* Players Info */}
+                            {(() => {
+                              const players = adminRoomLookupResult.gameHistory?.players || adminRoomLookupResult.chatHistory?.players || [];
+                              return (
+                                <div style={{
+                                  background: 'rgba(59, 130, 246, 0.08)',
+                                  border: '1px solid rgba(59, 130, 246, 0.2)',
+                                  borderRadius: '8px',
+                                  padding: '8px'
+                                }}>
+                                  <div style={{ fontSize: '11px', fontWeight: 'bold', color: 'var(--color-primary)', marginBottom: '4px' }}>
+                                    👥 Players in Room
+                                  </div>
+                                  {players.length === 0 ? (
+                                    <span style={{ fontSize: '10px', color: 'var(--text-muted)', fontStyle: 'italic' }}>No player data available.</span>
+                                  ) : (
+                                    players.map((p: any, pIdx: number) => (
+                                      <div key={pIdx} style={{ fontSize: '11px', color: 'var(--text-primary)', padding: '2px 0' }}>
+                                        <span style={{ fontWeight: 'bold' }}>{p.username}</span>
+                                        <span style={{ color: 'var(--text-muted)', marginLeft: '6px', fontFamily: 'monospace', fontSize: '10px' }}>ID: {p.id}</span>
+                                      </div>
+                                    ))
+                                  )}
+                                </div>
+                              );
+                            })()}
+
+                            {/* Game History Info */}
+                            {adminRoomLookupResult.gameHistory && (
+                              <div style={{
+                                background: 'rgba(16, 185, 129, 0.08)',
+                                border: '1px solid rgba(16, 185, 129, 0.2)',
+                                borderRadius: '8px',
+                                padding: '8px',
+                                fontSize: '10px',
+                                color: 'var(--text-secondary)',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '2px'
+                              }}>
+                                <div style={{ fontSize: '11px', fontWeight: 'bold', color: 'rgb(16, 185, 129)', marginBottom: '2px' }}>
+                                  🎮 Game Info
+                                </div>
+                                <div>Puzzle Type: <span style={{ color: 'var(--text-primary)', fontWeight: 'bold' }}>{adminRoomLookupResult.gameHistory.puzzleType}</span></div>
+                                <div>Winner: <span style={{ color: 'var(--text-primary)', fontWeight: 'bold' }}>{adminRoomLookupResult.gameHistory.winnerName || 'N/A'}</span>
+                                  {adminRoomLookupResult.gameHistory.winnerId && <span style={{ fontFamily: 'monospace', marginLeft: '4px' }}>(ID: {adminRoomLookupResult.gameHistory.winnerId})</span>}
+                                </div>
+                                <div>Status: <span style={{ color: adminRoomLookupResult.gameHistory.status === 'completed' ? 'rgb(16, 185, 129)' : 'rgb(245, 158, 11)', fontWeight: 'bold' }}>{adminRoomLookupResult.gameHistory.status || 'unknown'}</span></div>
+                                <div>Mode: {adminRoomLookupResult.gameHistory.mode || 'N/A'}</div>
+                                {adminRoomLookupResult.gameHistory.duration != null && <div>Duration: {adminRoomLookupResult.gameHistory.duration}s</div>}
+                                {adminRoomLookupResult.gameHistory.timestamp && <div>Time: {new Date(adminRoomLookupResult.gameHistory.timestamp).toLocaleString()}</div>}
+                              </div>
+                            )}
+
+                            {/* Chat Messages */}
+                            {adminRoomLookupResult.chatHistory && (
+                              <div style={{
+                                background: 'rgba(139, 92, 246, 0.08)',
+                                border: '1px solid rgba(139, 92, 246, 0.2)',
+                                borderRadius: '8px',
+                                padding: '8px'
+                              }}>
+                                <div style={{ fontSize: '11px', fontWeight: 'bold', color: 'var(--color-primary)', marginBottom: '4px' }}>
+                                  💬 Chat Messages
+                                </div>
+                                {(!adminRoomLookupResult.chatHistory.messages || (adminRoomLookupResult.chatHistory.messages as any[]).length === 0) ? (
+                                  <span style={{ fontSize: '10px', color: 'var(--text-muted)', fontStyle: 'italic' }}>No messages in this room.</span>
+                                ) : (
+                                  <div style={{
+                                    maxHeight: '180px',
+                                    overflowY: 'auto',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    gap: '3px'
+                                  }}>
+                                    {(adminRoomLookupResult.chatHistory.messages as any[]).map((msg: any, mIdx: number) => (
+                                      <div key={mIdx} style={{ fontSize: '10px', wordBreak: 'break-word', color: 'var(--text-primary)' }}>
+                                        <span style={{ fontWeight: 'bold', color: 'var(--color-primary)' }}>{msg.username}: </span>
+                                        {msg.text && <span>{msg.text}</span>}
+                                        {msg.emoji && <span style={{ fontSize: '14px', marginLeft: '4px' }}>{msg.emoji}</span>}
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            )}
                           </div>
                         )}
                       </div>

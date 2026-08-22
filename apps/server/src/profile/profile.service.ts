@@ -1927,4 +1927,35 @@ Submitted on:        ${ticket.timestamp}
     }
     return [];
   }
+
+  async getRoomLookup(roomId: string) {
+    const result: any = { roomId, gameHistory: null, chatHistory: null };
+
+    // Lookup game history from in-memory store
+    const gameRecord = ProfileService.gameHistory.find(r => r.roomId === roomId);
+    if (gameRecord) {
+      result.gameHistory = gameRecord;
+    }
+
+    // Lookup chat history from database
+    try {
+      const chatRecord = await this.prisma.chatHistory.findUnique({
+        where: { roomId }
+      });
+      if (chatRecord) {
+        result.chatHistory = {
+          roomId: chatRecord.roomId,
+          puzzleType: chatRecord.puzzleType,
+          timestamp: chatRecord.timestamp.getTime(),
+          duration: chatRecord.duration,
+          players: chatRecord.players,
+          messages: chatRecord.messages
+        };
+      }
+    } catch (e: any) {
+      console.error('[ROOM LOOKUP CHAT ERROR]', e);
+    }
+
+    return result;
+  }
 }
