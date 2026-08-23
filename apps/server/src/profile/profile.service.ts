@@ -1736,8 +1736,8 @@ Reported on:                 ${report.timestamp}
       const smtpPort = Number(process.env.SMTP_PORT) || 587;
       const smtpSecure = process.env.SMTP_SECURE === 'true';
 
-      const mailUser = process.env.GMAIL_USER || process.env.SMTP_USER;
-      const mailPass = process.env.GMAIL_APP_PASSWORD || process.env.SMTP_PASS;
+      const mailUser = process.env.SUPPORT_GMAIL_USER || process.env.GMAIL_USER || process.env.SMTP_USER;
+      const mailPass = process.env.SUPPORT_GMAIL_APP_PASSWORD || process.env.GMAIL_APP_PASSWORD || process.env.SMTP_PASS;
 
       if (!mailUser || !mailPass) {
         console.log(`[Email] [SIMULATION] SMTP/GMAIL credentials not configured. Support email simulated successfully.`);
