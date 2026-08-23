@@ -1303,6 +1303,35 @@ function App() {
   const [adminReports, setAdminReports] = useState<any[]>([]);
   const [adminReportsLoading, setAdminReportsLoading] = useState<boolean>(false);
   const [selectedReport, setSelectedReport] = useState<any | null>(null);
+  const [openedReports, setOpenedReports] = useState<Set<string>>(() => new Set(JSON.parse(localStorage.getItem('openedReports') || '[]')));
+
+  const formatReportTimestamp = (iso: string) => {
+    if (!iso) return 'N/A';
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return 'N/A';
+    return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`;
+  };
+
+  const deleteAdminReport = async (reportId: string) => {
+    if (!window.confirm('Are you sure you want to delete this report?')) return;
+    try {
+      const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
+      const token = btoa(JSON.stringify(payload));
+      const res = await fetch(`${BACKEND_HTTP_URL}/profile/admin/reports/${reportId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (res.ok) {
+        fetchAdminReports();
+      } else {
+        console.error('[AdminReports] Failed to delete report');
+      }
+    } catch (e) {
+      console.error('[AdminReports] Failed to delete report:', e);
+    }
+  };
 
   const fetchAdminReports = async () => {
     setAdminReportsLoading(true);
@@ -9409,37 +9438,67 @@ function App() {
                             display: 'flex',
                             justifyContent: 'space-between',
                             alignItems: 'center',
-                            gap: '12px'
+                            gap: '8px'
                           }}>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', overflow: 'hidden' }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', overflow: 'hidden', flex: 1 }}>
                               <span style={{ fontWeight: 'bold', color: 'var(--text-primary)' }}>
                                 Reported: {report.reportedUsername || 'N/A'}
+                              </span>
+                              <span style={{ fontSize: '9px', color: 'var(--text-muted)' }}>
+                                📅 {formatReportTimestamp(report.timestamp)}
                               </span>
                               <span style={{ fontSize: '10px', color: 'var(--text-secondary)', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
                                 Reason: {report.reason}
                               </span>
                             </div>
-                            <button
-                              onClick={() => {
-                                triggerSound('click');
-                                setSelectedReport(report);
-                              }}
-                              style={{
-                                background: 'rgba(239, 68, 68, 0.15)',
-                                border: '1px solid rgba(239, 68, 68, 0.25)',
-                                color: 'var(--text-primary)',
-                                padding: '4px 10px',
-                                borderRadius: '6px',
-                                fontSize: '11px',
-                                fontWeight: 'bold',
-                                cursor: 'pointer',
-                                transition: 'all 0.2s',
-                                flexShrink: 0
-                              }}
-                              className="btn-hover-bright"
-                            >
-                              View
-                            </button>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
+                              {openedReports.has(report.id) && (
+                                <span style={{ fontSize: '12px' }} title="Opened">✅</span>
+                              )}
+                              <button
+                                onClick={() => {
+                                  triggerSound('click');
+                                  setSelectedReport(report);
+                                  if (report.id) {
+                                    const next = new Set(openedReports);
+                                    next.add(report.id);
+                                    setOpenedReports(next);
+                                    localStorage.setItem('openedReports', JSON.stringify(Array.from(next)));
+                                  }
+                                }}
+                                style={{
+                                  background: 'rgba(59, 130, 246, 0.15)',
+                                  border: '1px solid rgba(59, 130, 246, 0.25)',
+                                  color: 'var(--text-primary)',
+                                  padding: '4px 8px',
+                                  borderRadius: '6px',
+                                  fontSize: '11px',
+                                  fontWeight: 'bold',
+                                  cursor: 'pointer',
+                                  transition: 'all 0.2s'
+                                }}
+                                className="btn-hover-bright"
+                              >
+                                View
+                              </button>
+                              <button
+                                onClick={() => deleteAdminReport(report.id)}
+                                style={{
+                                  background: 'rgba(239, 68, 68, 0.15)',
+                                  border: '1px solid rgba(239, 68, 68, 0.25)',
+                                  color: '#ef4444',
+                                  padding: '4px 8px',
+                                  borderRadius: '6px',
+                                  fontSize: '11px',
+                                  fontWeight: 'bold',
+                                  cursor: 'pointer',
+                                  transition: 'all 0.2s'
+                                }}
+                                className="btn-hover-bright"
+                              >
+                                🗑 Delete
+                              </button>
+                            </div>
                           </div>
                         ))}
                       </div>

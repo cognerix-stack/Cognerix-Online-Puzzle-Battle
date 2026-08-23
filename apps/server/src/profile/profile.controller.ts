@@ -406,6 +406,12 @@ export class ProfileController {
     return this.profileService.getAdminReports();
   }
 
+  @Delete('admin/reports/:id')
+  @UseGuards(AdminGuard)
+  async deleteAdminReport(@Param('id') id: string) {
+    return this.profileService.deleteReport(id);
+  }
+
   @Get('matchmaking/queues')
   async getMatchmakingQueues() {
     const { GameRoom } = require('../multiplayer/rooms/GameRoom');

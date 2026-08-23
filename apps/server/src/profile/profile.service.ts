@@ -1936,5 +1936,9 @@ Submitted on:        ${ticket.timestamp}`
       }
     });
   }
+
+  async deleteReport(id: string) {
+    return this.prisma.playerReport.delete({ where: { id } });
+  }
 }
 
