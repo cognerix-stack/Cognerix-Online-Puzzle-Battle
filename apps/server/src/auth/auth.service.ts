@@ -140,6 +140,8 @@ export class AuthService {
       throw new UnauthorizedException('Google token payload missing user identity');
     }
 
+    console.log('[GOOGLE AUTH] Received:', { googleId: payload.sub, email: payload.email });
+
     const googleId = payload.sub;        // Google's unique user identifier
     const email = payload.email || '';
     const name = payload.name || `Player_${Math.floor(Math.random() * 9000 + 1000)}`;
