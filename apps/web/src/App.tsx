@@ -7189,13 +7189,11 @@ function App() {
                         <button
                           onClick={() => {
                             triggerSound('click');
-                            setActiveChatFriend({ id: friend.id, username: friend.username });
-                            setChatHistory([]);
-                            setFriendChatInput('');
+                            showToast("Coming Soon! 🚀 Friend chat will be available in a future update.", 'success');
                           }}
                           className="btn btn-glass"
-                          style={{ padding: '8px 16px', borderRadius: '10px', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '4px', position: 'relative' }}
-                          title="Direct Message Chat"
+                          style={{ padding: '8px 16px', borderRadius: '10px', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '4px', position: 'relative', opacity: 0.5, cursor: 'not-allowed' }}
+                          title="Coming Soon"
                         >
                           💬 Chat
                           {unreadChats[friend.id] && (
