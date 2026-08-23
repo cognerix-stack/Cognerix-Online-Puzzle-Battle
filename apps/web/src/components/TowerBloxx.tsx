@@ -51,7 +51,7 @@ interface Particle {
   alpha: number;
 }
 
-const TARGET_FLOORS = 15;
+const TARGET_FLOORS = 20;
 const BLOCK_WIDTH = 118;
 const BLOCK_HEIGHT = 56;
 const CANVAS_WIDTH = 420;
