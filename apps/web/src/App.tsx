@@ -856,7 +856,7 @@ function App() {
   } = useGame();
 
   const t = (key: string) => translate(key, language);
-  const isAdmin = userProfile?.id === '101698362403' || userProfile?.email?.toLowerCase() === 'admin.cognerix@gmail.com';
+  const isAdmin = userProfile?.email?.toLowerCase() === 'admin.cognerix@gmail.com';
 
   const getPuzzleName = (pType: string | null | undefined): string => {
     if (!pType) return 'Puzzle Arena';
