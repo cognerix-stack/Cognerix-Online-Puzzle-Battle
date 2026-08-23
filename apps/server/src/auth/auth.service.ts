@@ -154,10 +154,7 @@ export class AuthService {
     try {
       let user = await this.prisma.user.findFirst({
         where: {
-          OR: [
-            { firebaseId: googleId },
-            { email: 'admin.cognerix@gmail.com' }
-          ]
+          firebaseId: googleId
         },
         include: { profile: true },
       });
