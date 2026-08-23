@@ -1488,6 +1488,11 @@ function App() {
 
   useEffect(() => {
     if (!isProfileLoaded || !userProfile?.id) return;
+    console.log('[AUTH DEBUG] userProfile set:', JSON.stringify({
+      id: userProfile?.id,
+      email: userProfile?.email,
+      username: userProfile?.username
+    }));
     const checkBanStatus = async () => {
       try {
         const res = await fetch(`${BACKEND_HTTP_URL}/profile/banned`);
