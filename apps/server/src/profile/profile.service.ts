@@ -1729,65 +1729,29 @@ Reported on:                 ${report.timestamp}
     return { success: true, ticket: newTicket, emailResult };
   }
 
-  private sendSupportEmail(ticket: any) {
+  private async sendSupportEmail(ticket: any) {
     try {
-      console.log(`[Email] Attempting to send support ticket to cognerix.support@gmail.com...`);
-      const smtpHost = process.env.SMTP_HOST || 'smtp.gmail.com';
-      const smtpPort = Number(process.env.SMTP_PORT) || 587;
-      const smtpSecure = process.env.SMTP_SECURE === 'true';
-
-      const mailUser = process.env.SUPPORT_GMAIL_USER || process.env.GMAIL_USER || process.env.SMTP_USER;
-      const mailPass = process.env.SUPPORT_GMAIL_APP_PASSWORD || process.env.GMAIL_APP_PASSWORD || process.env.SMTP_PASS;
-
-      if (!mailUser || !mailPass) {
-        console.log(`[Email] [SIMULATION] SMTP/GMAIL credentials not configured. Support email simulated successfully.`);
-        console.log(`[Email] [SIMULATION] Sent to: cognerix.support@gmail.com`);
-        console.log(`[Email] [SIMULATION] Subject: [Support Ticket] ${ticket.subject}`);
-        console.log(`[Email] [SIMULATION] Content:\n`, JSON.stringify(ticket, null, 2));
-        return { success: true, simulated: true };
-      }
-
-      const transporter = nodemailer.createTransport({
-        host: smtpHost,
-        port: smtpPort,
-        secure: smtpSecure,
-        auth: {
-          user: mailUser,
-          pass: mailPass,
+      console.log(`[Email] Attempting to send support ticket to cognerix.support@gmail.com via Resend...`);
+      const resendResponse = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
+          'Content-Type': 'application/json'
         },
+        body: JSON.stringify({
+          from: 'onboarding@resend.dev',
+          to: 'cognerix.support@gmail.com',
+          subject: `[Support Ticket] ${ticket.subject}`,
+          text: `Name: ${ticket.name}\nEmail: ${ticket.email}\nSubject: ${ticket.subject}\nMessage: ${ticket.description || ticket.message}`
+        })
       });
-
-      const mailOptions = {
-        from: `"Cognerix Help & Support" <${mailUser}>`,
-        to: 'cognerix.support@gmail.com',
-        replyTo: ticket.email,
-        subject: `📬 [Help & Support] Ticket: ${ticket.subject} (From: ${ticket.name})`,
-        text: `
-Support Ticket Received:
-----------------------------
-Ticket ID:           ${ticket.id}
-User Name:           ${ticket.name}
-Email Address:       ${ticket.email}
-User Profile ID:     ${ticket.userId}
-Subject:             ${ticket.subject}
-----------------------------
-Description of the Issue:
-${ticket.description}
-----------------------------
-Submitted on:        ${ticket.timestamp}
-`
-      };
-
-      // Send email without awaiting it to prevent blocking
-      transporter.sendMail(mailOptions).then(info => {
-        console.log(`[Email] Support email sent successfully: messageId=${info.messageId}`);
-      }).catch(err => {
-        console.error('[Support] Email send failed:', err.message);
-      });
-
+      const resendData = await resendResponse.json() as any;
+      if (!resendResponse.ok) {
+        throw new Error(JSON.stringify(resendData));
+      }
       return { success: true };
     } catch (e) {
-      console.error('[Email] Failed to initiate support email:', e);
+      console.error('[Email] Failed to send support email via Resend:', e);
       return { success: false, error: (e as any).message };
     }
   }
