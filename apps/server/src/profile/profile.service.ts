@@ -1741,8 +1741,19 @@ Reported on:                 ${report.timestamp}
         body: JSON.stringify({
           from: 'onboarding@resend.dev',
           to: 'cognerix.support@gmail.com',
-          subject: `[Support Ticket] ${ticket.subject}`,
-          text: `Name: ${ticket.name}\nEmail: ${ticket.email}\nSubject: ${ticket.subject}\nMessage: ${ticket.description || ticket.message}`
+          subject: `📬 [Help & Support] Ticket: ${ticket.subject} (From: ${ticket.name})`,
+          text: `Support Ticket Received:
+----------------------------
+Ticket ID:           ${ticket.id}
+User Name:           ${ticket.name}
+Email Address:       ${ticket.email}
+User Profile ID:     ${ticket.userId}
+Subject:             ${ticket.subject}
+----------------------------
+Description of the Issue:
+${ticket.description}
+----------------------------
+Submitted on:        ${ticket.timestamp}`
         })
       });
       const resendData = await resendResponse.json() as any;
