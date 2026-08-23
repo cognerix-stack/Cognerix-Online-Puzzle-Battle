@@ -1760,6 +1760,7 @@ function App() {
     triggerSound('success');
     const guestId = '20' + Math.floor(1000000000 + Math.random() * 9000000000);
     localStorage.removeItem('puzzle_verse_profile');
+    localStorage.setItem('pv_auth_user_id', guestId);
     loginUser(guestId, guestUser.trim());
     localStorage.setItem('pv_logged_in', 'true');
     setIsLoggedIn(true);
@@ -1836,6 +1837,7 @@ function App() {
         const data = await res.json();
         triggerSound('success');
         localStorage.removeItem('puzzle_verse_profile');
+        localStorage.setItem('pv_auth_user_id', data.userId);
         loginUser(data.userId, data.profile.username, data.profile.email, data.profile);
         localStorage.setItem('pv_logged_in', 'true');
         setIsLoggedIn(true);

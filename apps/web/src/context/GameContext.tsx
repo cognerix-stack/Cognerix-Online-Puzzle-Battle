@@ -449,6 +449,17 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Load from local storage on mount
   useEffect(() => {
+    const currentAuthUserId = localStorage.getItem('pv_auth_user_id');
+    const cachedProfile = localStorage.getItem('puzzle_verse_profile');
+    if (cachedProfile) {
+      try {
+        const parsed = JSON.parse(cachedProfile);
+        if (currentAuthUserId && parsed.id !== currentAuthUserId) {
+          localStorage.removeItem('puzzle_verse_profile');
+        }
+      } catch (e) {}
+    }
+
     const savedProfile = localStorage.getItem('puzzle_verse_profile');
     if (savedProfile) {
       try {
@@ -989,6 +1000,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logoutUser = () => {
+    localStorage.removeItem('pv_auth_user_id');
     const newProfile = DEFAULT_PROFILE();
     saveProfile(newProfile);
   };
