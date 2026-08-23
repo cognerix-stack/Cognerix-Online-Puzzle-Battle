@@ -990,7 +990,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       saveProfile(merged);
     } else {
       const nextProfile = {
-        ...userProfile,
+        ...DEFAULT_PROFILE(),
         id,
         username,
         email
