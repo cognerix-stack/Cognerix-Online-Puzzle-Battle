@@ -3695,6 +3695,11 @@ function App() {
 
   const handleTriviaGameWin = (score: number, playerCorrect: number) => {
     playerFinishedTimeRef.current = Date.now();
+    console.log('[TRIVIA DEBUG] playerFinishedTime:', playerFinishedTimeRef.current);
+    console.log('[TRIVIA DEBUG] botFinishedTime:', botFinishedTimeRef.current);
+    console.log('[TRIVIA DEBUG] playerCorrect:', playerCorrect);
+    console.log('[TRIVIA DEBUG] botTriviaCorrect:', botTriviaCorrect);
+    console.log('[TRIVIA DEBUG] playerFinishedFirst:', !botFinishedTimeRef.current || playerFinishedTimeRef.current <= (botFinishedTimeRef.current ?? Infinity));
     if (matchSolveIntervalRef.current) clearInterval(matchSolveIntervalRef.current);
     
     if (roomRef.current) {
