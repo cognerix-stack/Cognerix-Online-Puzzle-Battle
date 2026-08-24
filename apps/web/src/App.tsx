@@ -3717,7 +3717,7 @@ function App() {
         winnerName: userProfile.username,
         isSolo: true
       });
-      closeGame();
+      closeGame(false, false, true);
       return;
     }
 
@@ -3768,7 +3768,7 @@ function App() {
       recordGameWin(PuzzleType.EIGHT_BALL_QUIZ, 60, score, 2, 0, 2);
     }
     
-    closeGame();
+    closeGame(false, false, true);
   };
 
   // Update bio/status text
