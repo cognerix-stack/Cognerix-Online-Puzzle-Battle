@@ -1008,6 +1008,8 @@ function App() {
   const opponentNameRef = useRef<string>('Opponent');
   const opponentIdRef = useRef<string>('');
   const lastPlayedMatchResultRef = useRef<any>(null);
+  const playerFinishedTimeRef = useRef<number | null>(null);
+  const botFinishedTimeRef = useRef<number | null>(null);
   const [difficultyModal, setDifficultyModal] = useState<{ puzzleType: PuzzleType } | null>(null);
   const selectedDifficultyRef = useRef<'online' | 'easy' | 'medium' | 'hard' | 'private_create' | 'private_join' | 'solo'>('online');
   const [isReportModalOpen, setIsReportModalOpen] = useState<boolean>(false);
@@ -2563,6 +2565,7 @@ function App() {
       if (botProgress >= 100) {
         botProgress = 100;
         clearInterval(matchSolveIntervalRef.current!);
+        botFinishedTimeRef.current = Date.now();
 
         if (pType === PuzzleType.PHYSICS) {
           // Three rounds mode for online fallback bot
@@ -2990,6 +2993,8 @@ function App() {
     setPlayerRoundWins(0);
     setOpponentRoundWins(0);
     setRoundWinnerMessage(null);
+    playerFinishedTimeRef.current = null;
+    botFinishedTimeRef.current = null;
 
     if (mode !== 'online' && mode !== 'private_create' && mode !== 'private_join') {
       // Instant Bot Match
@@ -3689,6 +3694,7 @@ function App() {
   };
 
   const handleTriviaGameWin = (score: number, playerCorrect: number) => {
+    playerFinishedTimeRef.current = Date.now();
     if (matchSolveIntervalRef.current) clearInterval(matchSolveIntervalRef.current);
     
     if (roomRef.current) {
@@ -3712,8 +3718,9 @@ function App() {
 
     // Determine winner based on trivia rules (accuracy first, completion speed second)
     const botCorrect = botTriviaCorrect;
-    const botFinishedFirst = opponentInfo && opponentInfo.progress === 100;
-    const playerFinishedFirst = !botFinishedFirst;
+    const playerFinishedFirst = !botFinishedTimeRef.current || 
+      (playerFinishedTimeRef.current !== null && 
+       playerFinishedTimeRef.current <= botFinishedTimeRef.current);
 
     let isWinner = false;
     if (playerCorrect > botCorrect) {
