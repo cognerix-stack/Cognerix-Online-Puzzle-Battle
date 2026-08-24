@@ -11309,7 +11309,9 @@ function App() {
                         : (matchResult.forfeit
                             ? t('forfeit_desc')
                             : (matchResult.triviaDetails 
-                                ? t('accuracy_loss_desc').replace('{winner}', matchResult.winnerName || t('opponent_label')) 
+                                ? (matchResult.triviaDetails.playerCorrect === matchResult.triviaDetails.opponentCorrect
+                                    ? t('speed_loss_desc').replace('{winner}', matchResult.winnerName || t('opponent_label'))
+                                    : t('accuracy_loss_desc').replace('{winner}', matchResult.winnerName || t('opponent_label')))
                                 : t('speed_loss_desc').replace('{winner}', matchResult.winnerName || t('opponent_label'))))
                 }
               </p>
