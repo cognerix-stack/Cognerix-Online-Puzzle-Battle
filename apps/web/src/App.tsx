@@ -2587,8 +2587,8 @@ function App() {
             }
             return newWins;
           });
-        } else if (pType === PuzzleType.MENTAL_MATH) {
-          // Do not close the board immediately. The player has a 10s countdown to solve it.
+        } else if (pType === PuzzleType.MENTAL_MATH || pType === PuzzleType.EIGHT_BALL_QUIZ) {
+          // Do not close the board immediately. The player can finish their quiz.
         } else {
           setMatchResult({
             isWinner: false,
@@ -3710,9 +3710,20 @@ function App() {
       return;
     }
 
-    // Determine winner based on trivia rules
+    // Determine winner based on trivia rules (accuracy first, completion speed second)
     const botCorrect = botTriviaCorrect;
-    const isWinner = playerCorrect > botCorrect || (playerCorrect === botCorrect && score >= 250);
+    const botFinishedFirst = opponentInfo && opponentInfo.progress === 100;
+    const playerFinishedFirst = !botFinishedFirst;
+
+    let isWinner = false;
+    if (playerCorrect > botCorrect) {
+      isWinner = true;
+    } else if (playerCorrect < botCorrect) {
+      isWinner = false;
+    } else {
+      // Tie-breaker: who finished first wins!
+      isWinner = playerFinishedFirst;
+    }
     const rivalName = opponentInfo ? opponentInfo.username : 'Rival Bot';
 
     setMatchResult({
