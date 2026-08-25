@@ -241,6 +241,19 @@ export class ProfileService implements OnModuleInit {
       return updatedProfile;
     } catch (e: any) {
       console.error('[Leaderboard DB Save Error]:', e.message, e.code);
+      
+      // If profile not found, try saving leaderboard entry directly (handles guest accounts)
+      if (e.message === 'Profile not found') {
+        try {
+          await this.prisma.leaderboardEntry.upsert({
+            where: { userId_puzzleType: { userId, puzzleType: puzzleType.toString() } },
+            update: { score: { increment: score }, rank: (clientRank || 'BRONZE') as any, username: username || userId },
+            create: { userId, username: username || userId, rank: (clientRank || 'BRONZE') as any, score, puzzleType: puzzleType.toString() }
+          });
+          return;
+        } catch (e2) {}
+      }
+      
       // Database offline/fallback mode: record directly in shared MEMORY_LEADERBOARD
       const { LeaderboardService, MEMORY_LEADERBOARD } = require('../leaderboard/leaderboard.service');
       const resolvedName = username || (userId.startsWith('10') || userId.startsWith('20') || userId.startsWith('90') || userId.startsWith('user_') || userId.startsWith('google_') || userId.startsWith('guest_')
