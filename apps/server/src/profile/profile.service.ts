@@ -239,7 +239,8 @@ export class ProfileService implements OnModuleInit {
       });
 
       return updatedProfile;
-    } catch (e) {
+    } catch (e: any) {
+      console.error('[Leaderboard DB Save Error]:', e.message, e.code);
       // Database offline/fallback mode: record directly in shared MEMORY_LEADERBOARD
       const { LeaderboardService, MEMORY_LEADERBOARD } = require('../leaderboard/leaderboard.service');
       const resolvedName = username || (userId.startsWith('10') || userId.startsWith('20') || userId.startsWith('90') || userId.startsWith('user_') || userId.startsWith('google_') || userId.startsWith('guest_')
