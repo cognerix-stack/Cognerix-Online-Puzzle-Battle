@@ -243,15 +243,28 @@ export class ProfileService implements OnModuleInit {
       console.error('[Leaderboard DB Save Error]:', e.message, e.code);
       
       // If profile not found, try saving leaderboard entry directly (handles guest accounts)
-      if (e.message === 'Profile not found') {
+      if (e.message?.includes('Profile not found') || e.status === 404) {
         try {
           await this.prisma.leaderboardEntry.upsert({
             where: { userId_puzzleType: { userId, puzzleType: puzzleType.toString() } },
             update: { score: { increment: score }, rank: (clientRank || 'BRONZE') as any, username: username || userId },
             create: { userId, username: username || userId, rank: (clientRank || 'BRONZE') as any, score, puzzleType: puzzleType.toString() }
           });
+          // Also update GLOBAL entry
+          const userEntries = await this.prisma.leaderboardEntry.findMany({
+            where: { userId, NOT: { puzzleType: 'GLOBAL' } }
+          });
+          const globalScore = userEntries.reduce((sum: number, e: any) => sum + e.score, 0);
+          await this.prisma.leaderboardEntry.upsert({
+            where: { userId_puzzleType: { userId, puzzleType: 'GLOBAL' } },
+            update: { score: globalScore, rank: (clientRank || 'BRONZE') as any, username: username || userId },
+            create: { userId, username: username || userId, rank: (clientRank || 'BRONZE') as any, score: globalScore, puzzleType: 'GLOBAL' }
+          });
+          console.log('[Leaderboard] Guest entry saved for:', userId);
           return;
-        } catch (e2) {}
+        } catch (e2: any) {
+          console.error('[Leaderboard Guest Save Error]:', e2.message);
+        }
       }
       
       // Database offline/fallback mode: record directly in shared MEMORY_LEADERBOARD
