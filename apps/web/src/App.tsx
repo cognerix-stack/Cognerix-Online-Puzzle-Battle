@@ -1172,6 +1172,7 @@ function App() {
   const [userBanReason, setUserBanReason] = useState<string>('');
   const [bannedPlayersList, setBannedPlayersList] = useState<{ bannedProfileIds: string[], bannedUserIds: string[], bannedIps: string[] }>({ bannedProfileIds: [], bannedUserIds: [], bannedIps: [] });
   const [adminUsersList, setAdminUsersList] = useState<any[]>([]);
+  const [showActivePlayersPanel, setShowActivePlayersPanel] = useState<boolean>(false);
   const [selectedAdminUser, setSelectedAdminUser] = useState<any | null>(null);
   const [isAdminFriendsModalOpen, setIsAdminFriendsModalOpen] = useState<boolean>(false);
   const [adminFriendsList, setAdminFriendsList] = useState<any[]>([]);
@@ -8655,6 +8656,86 @@ function App() {
                             </span>
                           ))}
                         </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Active Players Widget */}
+                  <div style={{ borderTop: '1px dashed rgba(139, 92, 246, 0.2)', paddingTop: '12px', marginTop: '4px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <div 
+                      onClick={() => {
+                        setShowActivePlayersPanel(!showActivePlayersPanel);
+                        try { triggerSound('click'); } catch (e) {}
+                      }} 
+                      style={{ 
+                        cursor: 'pointer', 
+                        fontSize: '12px', 
+                        fontWeight: 'bold', 
+                        color: '#10b981', 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'space-between',
+                        background: 'rgba(16, 185, 129, 0.08)',
+                        padding: '8px 12px',
+                        borderRadius: '10px',
+                        border: '1px solid rgba(16, 185, 129, 0.2)'
+                      }}
+                      className="btn-hover-bright"
+                    >
+                      <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        🟢 Active Players
+                      </span>
+                      <span style={{ fontSize: '11px', background: 'rgba(16, 185, 129, 0.15)', padding: '2px 6px', borderRadius: '4px', fontWeight: 'bold' }}>
+                        {adminUsersList.length}
+                      </span>
+                    </div>
+
+                    {showActivePlayersPanel && (
+                      <div style={{ 
+                        display: 'flex', 
+                        flexDirection: 'column', 
+                        gap: '6px', 
+                        maxHeight: '150px',
+                        overflowY: 'auto',
+                        background: 'rgba(0,0,0,0.15)',
+                        padding: '8px',
+                        borderRadius: '8px',
+                        marginTop: '4px'
+                      }}>
+                        {adminUsersList.length === 0 ? (
+                          <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontStyle: 'italic', padding: '4px' }}>
+                            No active players found.
+                          </span>
+                        ) : (
+                          adminUsersList.map(player => (
+                            <div 
+                              key={player.id} 
+                              onClick={() => {
+                                try { triggerSound('click'); } catch (e) {}
+                                setSelectedAdminUser(player);
+                                setIsUserViewBoxOpen(true);
+                              }}
+                              style={{ 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                justifyContent: 'space-between', 
+                                padding: '6px 8px', 
+                                borderRadius: '6px', 
+                                background: 'rgba(255,255,255,0.02)', 
+                                border: '1px solid rgba(255,255,255,0.04)', 
+                                cursor: 'pointer',
+                                transition: 'all 0.2s'
+                              }}
+                              className="badge-hover"
+                            >
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <span style={{ fontSize: '16px' }}>{player.avatar || '👤'}</span>
+                                <span style={{ fontSize: '12px', fontWeight: 'bold', color: 'var(--text-primary)' }}>{player.username}</span>
+                              </div>
+                              <span style={{ fontSize: '10px', color: 'var(--text-muted)', fontFamily: 'monospace' }}>{player.id}</span>
+                            </div>
+                          ))
+                        )}
                       </div>
                     )}
                   </div>
