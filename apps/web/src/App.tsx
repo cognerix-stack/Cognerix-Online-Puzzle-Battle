@@ -6122,11 +6122,9 @@ function App() {
                         );
                       });
 
-                      const showMyRowAtBottom = userProfile.id.startsWith('10') && 
-                        sortedLeaderboard.findIndex(entry => entry.userId === userProfile.id) >= 20;
+                      const showMyRowAtBottom = sortedLeaderboard.findIndex(entry => entry.userId === userProfile.id) >= 20;
                       
-                      const showMyRowIfNotFound = userProfile.id.startsWith('10') && 
-                        sortedLeaderboard.findIndex(entry => entry.userId === userProfile.id) === -1;
+                      const showMyRowIfNotFound = sortedLeaderboard.findIndex(entry => entry.userId === userProfile.id) === -1;
 
                       if (showMyRowAtBottom) {
                         const myIdx = sortedLeaderboard.findIndex(entry => entry.userId === userProfile.id);

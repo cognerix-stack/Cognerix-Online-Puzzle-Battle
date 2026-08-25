@@ -75,7 +75,8 @@ export class LeaderboardService {
           frame: p?.frame || undefined
         };
       });
-    } catch (e) {
+    } catch (e: any) {
+      console.error('[Leaderboard DB Error]:', e.message);
       // Offline fallback: return in-memory scores sorted descending
       return MEMORY_LEADERBOARD.filter(
         e => e.puzzleType === puzzleType.toUpperCase()
