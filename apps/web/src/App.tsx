@@ -8663,7 +8663,7 @@ function App() {
                                     {/* Active Players Widget */}
                   {(() => {
                     const activePlayers = adminUsersList.filter(player => {
-                      const isRecent = player.lastSeen && (Date.now() - player.lastSeen < 10000); // active client sync in last 10s
+                      const isRecent = player.lastSeen && (Date.now() - player.lastSeen < 180000); // active client sync in last 180s
                       return isRecent || player.status === 'online' || player.isOnline === true;
                     });
                     
