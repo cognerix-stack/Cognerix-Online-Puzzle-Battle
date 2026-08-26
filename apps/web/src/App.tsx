@@ -9911,13 +9911,13 @@ function App() {
               <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 12px', background: isLightMode ? 'rgba(0,0,0,0.03)' : 'rgba(0,0,0,0.2)', borderRadius: '8px' }}>
                 <span style={{ color: 'var(--text-muted)' }}>Login Method</span>
                 <span style={{ 
-                  color: selectedAdminUser.id.startsWith('10') ? '#3b82f6' : '#10b981', 
+                  color: selectedAdminUser.email ? '#3b82f6' : '#10b981', 
                   fontWeight: 'bold',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '4px'
                 }}>
-                  {selectedAdminUser.id.startsWith('10') ? '🌐 Google Account' : '👤 Guest Player'}
+                  {selectedAdminUser.email ? '🌐 Google Account' : '👤 Guest Player'}
                 </span>
               </div>
 
