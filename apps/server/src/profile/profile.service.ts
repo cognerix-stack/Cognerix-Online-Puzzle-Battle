@@ -545,6 +545,15 @@ export class ProfileService implements OnModuleInit {
     return ProfileService.userRegistry.get(userId);
   }
 
+  static updateLastSeen(userId: string) {
+    const existing = ProfileService.userRegistry.get(userId);
+    if (existing) {
+      existing.lastSeen = Date.now();
+      ProfileService.userRegistry.set(userId, existing);
+      ProfileService.saveRegistryToDisk();
+    }
+  }
+
   async syncProfile(profile: any) {
     if (profile && profile.id) {
       if (ProfileService.deletedProfileIds.has(profile.id)) {

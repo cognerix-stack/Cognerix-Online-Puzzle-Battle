@@ -67,6 +67,7 @@ export class GameRoom extends Room<RoomState> {
   private lobbyTimer: any = null;
   private playersSnapshot: any[] = [];
   private hasRecordedHistory: boolean = false;
+  private keepAliveInterval: any = null;
 
   static getQueueCounts() {
     return MatchmakingQueue.getCounts();
@@ -484,6 +485,16 @@ export class GameRoom extends Room<RoomState> {
         console.log(`[GameRoom] Player ${player.username} has started the puzzle.`);
       }
     });
+
+    // Keep players visible in admin panel during match
+    this.keepAliveInterval = setInterval(() => {
+      this.clients.forEach(client => {
+        const player = this.state.players.get(client.sessionId);
+        if (player?.id) {
+          ProfileService.updateLastSeen(player.id);
+        }
+      });
+    }, 10000);
   }
 
   onJoin(client: Client, options: any) {
@@ -719,6 +730,9 @@ export class GameRoom extends Room<RoomState> {
   }
 
   onDispose() {
+    if (this.keepAliveInterval) {
+      clearInterval(this.keepAliveInterval);
+    }
     GameRoom.broadcastQueueUpdate();
 
     // Ensure recordGameHistoryEntry runs in ALL exit paths (e.g. room timeout/dispose mid-game)
