@@ -10,6 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@capacitor/android": "^6.2.1",
+    "@capacitor/cli": "^6.2.1",
+    "@capacitor/core": "^6.2.1",
     "@puzzle-verse/shared": "file:../../packages/shared",
     "colyseus.js": "^0.16.22",
     "framer-motion": "^12.42.2",

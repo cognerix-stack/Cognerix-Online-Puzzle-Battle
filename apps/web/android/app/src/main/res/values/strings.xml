@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Cognerix</string>
+    <string name="title_activity_main">Cognerix</string>
+    <string name="package_name">com.cognerix.puzzlebattle</string>
+    <string name="custom_url_scheme">com.cognerix.puzzlebattle</string>
+</resources>
