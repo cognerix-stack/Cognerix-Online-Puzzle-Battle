@@ -21,6 +21,8 @@ import TowerBloxx from './components/TowerBloxx';
 import { MentalMathChallenge } from './components/MentalMathChallenge';
 import { Room } from 'colyseus.js';
 import { MultiplayerService, BACKEND_HTTP_URL, colyseusClient } from './services/multiplayer';
+import { Capacitor } from '@capacitor/core';
+import { AdMob, RewardAdPluginEvents, AdMobRewardItem } from '@capacitor-community/admob';
 import { StorePopup } from './components/StorePopup';
 
 const EMOJI_LIST = ["😊", "😂", "🤣", "😍", "😒", "👌", "😁", "👍", "🤦‍♀️", "🤦‍♂️", "🤷‍♀️", "🤷‍♂️", "✌️", "🤞", "😉", "😎", "😢", "😋", "😅", "😚", "😶", "😶‍🌫️", "🤐", "😫", "🥱", "😴", "🙄", "🤯", "😨", "👻", "🤖"];
@@ -858,6 +860,14 @@ function App() {
   const t = (key: string) => translate(key, language);
   const isAdmin = userProfile?.email?.toLowerCase() === 'admin.cognerix@gmail.com';
 
+  useEffect(() => {
+    if (Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'android') {
+      AdMob.initialize()
+        .then(() => console.log('[AdMob] Initialized successfully'))
+        .catch(err => console.error('[AdMob] Initialization failed:', err));
+    }
+  }, []);
+
   const getPuzzleName = (pType: string | null | undefined): string => {
     if (!pType) return 'Puzzle Arena';
     if (pType === PuzzleType.SLIDING) return t('sliding_name');
@@ -1079,6 +1089,77 @@ function App() {
   });
   const [cooldownTick, setCooldownTick] = useState<number>(0);
 
+  const claimFreeReward = () => {
+    const newCoins = 700;
+    const newGems = 100;
+    const updatedProfile = {
+      ...userProfile,
+      coins: userProfile.coins + newCoins,
+      gems: userProfile.gems + newGems
+    };
+    saveProfile(updatedProfile);
+    
+    // Persist cooldown
+    const now = Date.now();
+    setLastRewardClaimedTime(now);
+    localStorage.setItem('pv_last_reward_claimed', now.toString());
+    try { triggerSound('success'); } catch (e) {}
+    setShowRewardCollectScreen(true);
+  };
+
+  const watchRealAd = async () => {
+    try {
+      showToast('Loading sponsored video...', 'info');
+
+
+
+      let rewardEarned = false;
+
+      const rewardListener = await AdMob.addListener(RewardAdPluginEvents.Rewarded, (reward: AdMobRewardItem) => {
+        console.log('[AdMob] Reward earned:', reward);
+        rewardEarned = true;
+      });
+
+      const dismissListener = await AdMob.addListener(RewardAdPluginEvents.Dismissed, () => {
+        console.log('[AdMob] Ad dismissed');
+        rewardListener.remove();
+        dismissListener.remove();
+        
+        if (rewardEarned) {
+          claimFreeReward();
+        } else {
+          showToast('Ad closed early. No reward claimed.', 'error');
+        }
+      });
+
+      const failedListener = await AdMob.addListener(RewardAdPluginEvents.FailedToLoad, (err) => {
+        console.error('[AdMob] Failed to load ad:', err);
+        rewardListener.remove();
+        dismissListener.remove();
+        failedListener.remove();
+        showToast('Failed to load ad. Falling back to simulated player...', 'error');
+        runSimulatedAd();
+      });
+
+      await AdMob.prepareRewardVideoAd({
+        adId: 'ca-app-pub-3940256099942544/5224354917', // Test Ad Unit ID
+        isTesting: true
+      });
+
+      await AdMob.showRewardVideoAd();
+
+    } catch (error) {
+      console.error('[AdMob] Error playing ad:', error);
+      showToast('Ad playback failed. Falling back to simulated player...', 'error');
+      runSimulatedAd();
+    }
+  };
+
+  const runSimulatedAd = () => {
+    setIsWatchingAd(true);
+    setAdTimeLeft(5);
+  };
+
   useEffect(() => {
     let timer: any;
     if (isWatchingAd && adTimeLeft > 0) {
@@ -1087,25 +1168,10 @@ function App() {
       }, 1000);
     } else if (isWatchingAd && adTimeLeft === 0) {
       setIsWatchingAd(false);
-      // Give reward
-      const newCoins = 700;
-      const newGems = 100;
-      const updatedProfile = {
-        ...userProfile,
-        coins: userProfile.coins + newCoins,
-        gems: userProfile.gems + newGems
-      };
-      saveProfile(updatedProfile);
-      
-      // Persist cooldown
-      const now = Date.now();
-      setLastRewardClaimedTime(now);
-      localStorage.setItem('pv_last_reward_claimed', now.toString());
-      triggerSound('success');
-      setShowRewardCollectScreen(true);
+      claimFreeReward();
     }
     return () => clearTimeout(timer);
-  }, [isWatchingAd, adTimeLeft]);
+  }, [isWatchingAd, adTimeLeft, userProfile]);
 
   useEffect(() => {
     let interval: any;
@@ -8017,12 +8083,25 @@ function App() {
                     boxSizing: 'border-box'
                   }}
                 >
-                  <span style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 'bold', letterSpacing: '1px' }}>
-                    Google AdSense Banner Slot
-                  </span>
-                  <span style={{ fontSize: '11px', color: 'var(--text-secondary)', textAlign: 'center', maxWidth: '340px' }}>
-                    Standard Google Ads layout container. Ad unit placement can be loaded dynamically.
-                  </span>
+                  {Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'android' ? (
+                    <>
+                      <span style={{ fontSize: '10px', textTransform: 'uppercase', color: '#10b981', fontWeight: 'bold', letterSpacing: '1px' }}>
+                        AdMob Sponsored Video
+                      </span>
+                      <span style={{ fontSize: '11px', color: 'var(--text-secondary)', textAlign: 'center', maxWidth: '340px' }}>
+                        Click below to watch a video and claim your reward!
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <span style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 'bold', letterSpacing: '1px' }}>
+                        Google AdSense Banner Slot
+                      </span>
+                      <span style={{ fontSize: '11px', color: 'var(--text-secondary)', textAlign: 'center', maxWidth: '340px' }}>
+                        Standard Google Ads layout container. Ad unit placement can be loaded dynamically.
+                      </span>
+                    </>
+                  )}
                 </div>
 
                 <div style={{
@@ -8073,9 +8152,12 @@ function App() {
                   // 🚀 ACTIVE WATCH AD BUTTON
                   <button
                     onClick={() => {
-                      triggerSound('click');
-                      setIsWatchingAd(true);
-                      setAdTimeLeft(5);
+                      try { triggerSound('click'); } catch (e) {}
+                      if (Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'android') {
+                        watchRealAd();
+                      } else {
+                        runSimulatedAd();
+                      }
                     }}
                     className="btn btn-primary"
                     style={{
