@@ -22,7 +22,7 @@ import { MentalMathChallenge } from './components/MentalMathChallenge';
 import { Room } from 'colyseus.js';
 import { MultiplayerService, BACKEND_HTTP_URL, colyseusClient } from './services/multiplayer';
 import { Capacitor } from '@capacitor/core';
-import { AdMob, RewardAdPluginEvents, AdMobRewardItem } from '@capacitor-community/admob';
+import { AdMob, RewardAdPluginEvents, AdMobRewardItem, BannerAdSize, BannerAdPosition } from '@capacitor-community/admob';
 import { StorePopup } from './components/StorePopup';
 
 const EMOJI_LIST = ["😊", "😂", "🤣", "😍", "😒", "👌", "😁", "👍", "🤦‍♀️", "🤦‍♂️", "🤷‍♀️", "🤷‍♂️", "✌️", "🤞", "😉", "😎", "😢", "😋", "😅", "😚", "😶", "😶‍🌫️", "🤐", "😫", "🥱", "😴", "🙄", "🤯", "😨", "👻", "🤖"];
@@ -1160,6 +1160,46 @@ function App() {
     setAdTimeLeft(5);
   };
 
+  const showScreenBanners = async () => {
+    if (Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'android') {
+      try {
+        console.log('[AdMob] Showing top banner');
+        await AdMob.showBanner({
+          adId: 'ca-app-pub-3940256099942544/9214589741',
+          adSize: BannerAdSize.ADAPTIVE_BANNER,
+          position: BannerAdPosition.TOP_CENTER,
+          margin: 0,
+          isTesting: true
+        });
+      } catch (e) {
+        console.error('Error showing top banner:', e);
+      }
+      try {
+        console.log('[AdMob] Showing bottom banner');
+        await AdMob.showBanner({
+          adId: 'ca-app-pub-3940256099942544/9214589741',
+          adSize: BannerAdSize.ADAPTIVE_BANNER,
+          position: BannerAdPosition.BOTTOM_CENTER,
+          margin: 0,
+          isTesting: true
+        });
+      } catch (e) {
+        console.error('Error showing bottom banner:', e);
+      }
+    }
+  };
+
+  const hideScreenBanners = async () => {
+    if (Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'android') {
+      try {
+        console.log('[AdMob] Hiding banner');
+        await AdMob.hideBanner();
+      } catch (e) {
+        console.error('Error hiding banner:', e);
+      }
+    }
+  };
+
   useEffect(() => {
     let timer: any;
     if (isWatchingAd && adTimeLeft > 0) {
@@ -2055,9 +2095,11 @@ function App() {
       if (matchResult !== lastPlayedMatchResultRef.current) {
         lastPlayedMatchResultRef.current = matchResult;
         triggerSound(matchResult.isWinner ? 'victory' : 'defeat');
+        showScreenBanners();
       }
     } else {
       lastPlayedMatchResultRef.current = null;
+      hideScreenBanners();
     }
 
     if (matchResult && matchResult.isWinner && confettiCanvasRef.current) {
