@@ -1,27 +1,36 @@
 import { Client, Room } from 'colyseus.js';
 import { PuzzleType } from '@puzzle-verse/shared';
+import { Capacitor } from '@capacitor/core';
+
+const isNative = Capacitor.isNativePlatform();
 
 // Connect to Colyseus server (runs on NestJS port 4000 in dev)
-const isLocal = 
+const isLocal = !isNative && (
   window.location.hostname === 'localhost' || 
   window.location.hostname === '127.0.0.1' || 
   window.location.hostname.startsWith('192.168.') || 
   window.location.hostname.startsWith('10.') ||
-  !!import.meta.env.DEV;
+  !!import.meta.env.DEV
+);
 
 const customBackendUrl = import.meta.env.VITE_BACKEND_URL || '';
-
-export const BACKEND_WS_URL = customBackendUrl
-  ? customBackendUrl.replace(/^http/, 'ws')
-  : (isLocal
-      ? `ws://${window.location.hostname}:4000`
-      : `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}`);
+const PRODUCTION_URL = 'https://cognerix-online-puzzle-battle-production.up.railway.app';
 
 export const BACKEND_HTTP_URL = customBackendUrl
   ? customBackendUrl
-  : (isLocal
-      ? `http://${window.location.hostname}:4000`
-      : `${window.location.protocol}//${window.location.host}`);
+  : (isNative
+      ? PRODUCTION_URL
+      : (isLocal
+          ? `http://${window.location.hostname}:4000`
+          : `${window.location.protocol}//${window.location.host}`));
+
+export const BACKEND_WS_URL = customBackendUrl
+  ? customBackendUrl.replace(/^http/, 'ws')
+  : (isNative
+      ? PRODUCTION_URL.replace(/^http/, 'ws')
+      : (isLocal
+          ? `ws://${window.location.hostname}:4000`
+          : `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}`));
 
 export const colyseusClient = new Client(BACKEND_WS_URL);
 
