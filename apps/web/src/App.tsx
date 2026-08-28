@@ -1200,6 +1200,19 @@ function App() {
     }
   };
 
+  const showLevelUpInterstitial = async () => {
+    if (!Capacitor.isNativePlatform()) return;
+    try {
+      await AdMob.prepareInterstitial({
+        adId: 'ca-app-pub-3940256099942544/1033173712',
+        isTesting: true
+      });
+      await AdMob.showInterstitial();
+    } catch (e) {
+      console.error('[AdMob] Interstitial failed:', e);
+    }
+  };
+
   useEffect(() => {
     let timer: any;
     if (isWatchingAd && adTimeLeft > 0) {
@@ -2186,7 +2199,9 @@ function App() {
 
     if (userProfile.level > prevLevelRef.current) {
       synthSound('levelUp', isMuted, soundVolume);
-      setShowLevelUpModal(userProfile.level);
+      showLevelUpInterstitial().then(() => {
+        setShowLevelUpModal(userProfile.level);
+      });
       prevLevelRef.current = userProfile.level;
     } else if (userProfile.level < prevLevelRef.current) {
       prevLevelRef.current = userProfile.level;
