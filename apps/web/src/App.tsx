@@ -1973,7 +1973,10 @@ function App() {
         loginUser(data.userId, data.profile.username, data.profile.email, data.profile);
         localStorage.setItem('pv_logged_in', 'true');
         setIsLoggedIn(true);
-        if (localStorage.getItem('pv_terms_accepted') !== 'true') {
+        if (Capacitor.isNativePlatform()) {
+          localStorage.setItem('pv_terms_accepted', 'true');
+          setOnboardingStep('none');
+        } else if (localStorage.getItem('pv_terms_accepted') !== 'true') {
           setLanguage('English');
           setOnboardingStep('language');
         } else {
