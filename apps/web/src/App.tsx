@@ -1897,6 +1897,8 @@ function App() {
 
   // --- Real Google Sign-In: Fetch client ID and load GIS script ---
   useEffect(() => {
+    console.log('[Capacitor] isNativePlatform:', Capacitor.isNativePlatform());
+    console.log('[Capacitor] platform:', Capacitor.getPlatform());
     if (Capacitor.isNativePlatform()) {
       GoogleAuth.initialize({
         clientId: '205247808441-cj93adqm6cb7kbcobi6bblg5tuq45tdj.apps.googleusercontent.com',
@@ -4030,14 +4032,10 @@ function App() {
 
               {/* Real Google Sign-In Button */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'center' }}>
-                {Capacitor.isNativePlatform() ? (
-                  <button onClick={handleNativeGoogleSignIn} disabled={googleLoginLoading}
-                    style={{ width: '100%', padding: '12px', borderRadius: '8px', background: 'white', color: '#333', border: '1px solid #ddd', fontSize: '14px', fontWeight: 'bold', cursor: 'pointer' }}>
-                    🌐 {googleLoginLoading ? 'Signing in...' : 'Sign in with Google'}
-                  </button>
-                ) : (
-                  <div ref={googleButtonRef} style={{ width: '100%', display: 'flex', justifyContent: 'center', minHeight: '44px' }} />
-                )}
+                <button onClick={handleNativeGoogleSignIn} disabled={googleLoginLoading}
+                  style={{ width: '100%', padding: '12px', borderRadius: '8px', background: 'white', color: '#333', border: '1px solid #ddd', fontSize: '14px', fontWeight: 'bold', cursor: 'pointer' }}>
+                  🌐 {googleLoginLoading ? 'Signing in...' : 'Sign in with Google'}
+                </button>
                 {!googleClientId && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}>
                     <div className="processing-spinner" style={{ width: '16px', height: '16px', border: '2px solid rgba(34,197,94,0.2)', borderTopColor: '#22c55e', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
