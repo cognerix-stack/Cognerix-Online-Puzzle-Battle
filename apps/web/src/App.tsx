@@ -1997,11 +1997,37 @@ function App() {
   const handleNativeGoogleSignIn = async () => {
     try {
       setGoogleLoginLoading(true);
+      showToast('Starting Google Sign-In...', 'info');
       const user = await GoogleAuth.signIn();
-      const idToken = user.authentication.idToken;
-      await handleGoogleCredentialResponse({ credential: idToken });
+      showToast('Got user, sending to server...', 'info');
+      const idToken = user.authentication?.idToken;
+      if (!idToken) {
+        showToast('No ID token received from Google', 'error');
+        return;
+      }
+      const backendUrl = `${BACKEND_HTTP_URL}/auth/google-login`;
+      showToast(`Connecting to: ${backendUrl}`, 'info');
+      const res = await fetch(backendUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: idToken }),
+      });
+      showToast(`Server response: ${res.status}`, 'info');
+      const data = await res.json();
+      if (res.ok) {
+        localStorage.removeItem('puzzle_verse_profile');
+        localStorage.setItem('pv_auth_user_id', data.userId);
+        localStorage.setItem('pv_terms_accepted', 'true');
+        loginUser(data.userId, data.profile.username, data.profile.email, data.profile);
+        localStorage.setItem('pv_logged_in', 'true');
+        setIsLoggedIn(true);
+        setOnboardingStep('none');
+      } else {
+        showToast(`Login failed: ${data.message || res.status}`, 'error');
+      }
     } catch (e: any) {
-      showToast('Google Sign-In failed. Please try again.', 'error');
+      showToast(`Error: ${e.message}`, 'error');
+    } finally {
       setGoogleLoginLoading(false);
     }
   };
