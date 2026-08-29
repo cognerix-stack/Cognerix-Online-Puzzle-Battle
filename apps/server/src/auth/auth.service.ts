@@ -128,7 +128,11 @@ export class AuthService {
     try {
       const ticket = await client.verifyIdToken({
         idToken,
-        audience: clientId,
+        audience: [
+          clientId,
+          '205247808441-1q2bi6rq0g9omibkcv99hgnn8icd91s9.apps.googleusercontent.com',
+          '205247808441-cj93adqm6cb7kbcobi6bblg5tuq45tdj.apps.googleusercontent.com'
+        ],
       });
       payload = ticket.getPayload();
     } catch (err: any) {
