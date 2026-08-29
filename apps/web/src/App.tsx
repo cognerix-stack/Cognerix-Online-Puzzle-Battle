@@ -22,6 +22,7 @@ import { MentalMathChallenge } from './components/MentalMathChallenge';
 import { Room } from 'colyseus.js';
 import { MultiplayerService, BACKEND_HTTP_URL, colyseusClient } from './services/multiplayer';
 import { Capacitor } from '@capacitor/core';
+import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
 import { AdMob, RewardAdPluginEvents, AdMobRewardItem, BannerAdSize, BannerAdPosition } from '@capacitor-community/admob';
 import { StorePopup } from './components/StorePopup';
 
@@ -1896,6 +1897,15 @@ function App() {
 
   // --- Real Google Sign-In: Fetch client ID and load GIS script ---
   useEffect(() => {
+    if (Capacitor.isNativePlatform()) {
+      GoogleAuth.initialize({
+        clientId: '205247808441-cj93adqm6cb7kbcobi6bblg5tuq45tdj.apps.googleusercontent.com',
+        scopes: ['profile', 'email'],
+        grantOfflineAccess: true,
+      });
+      setGoogleClientId('native');
+      return;
+    }
     fetch(`${BACKEND_HTTP_URL}/auth/google-client-id`)
       .then(r => r.json())
       .then(data => {
@@ -1977,6 +1987,18 @@ function App() {
       console.error('[GoogleLogin] Real Google Sign-In failed:', e);
       showToast(t('error_network_backend'), 'error');
     } finally {
+      setGoogleLoginLoading(false);
+    }
+  };
+
+  const handleNativeGoogleSignIn = async () => {
+    try {
+      setGoogleLoginLoading(true);
+      const user = await GoogleAuth.signIn();
+      const idToken = user.authentication.idToken;
+      await handleGoogleCredentialResponse({ credential: idToken });
+    } catch (e: any) {
+      showToast('Google Sign-In failed. Please try again.', 'error');
       setGoogleLoginLoading(false);
     }
   };
@@ -3979,10 +4001,14 @@ function App() {
 
               {/* Real Google Sign-In Button */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'center' }}>
-                <div
-                  ref={googleButtonRef}
-                  style={{ width: '100%', display: 'flex', justifyContent: 'center', minHeight: '44px' }}
-                />
+                {Capacitor.isNativePlatform() ? (
+                  <button onClick={handleNativeGoogleSignIn} disabled={googleLoginLoading}
+                    style={{ width: '100%', padding: '12px', borderRadius: '8px', background: 'white', color: '#333', border: '1px solid #ddd', fontSize: '14px', fontWeight: 'bold', cursor: 'pointer' }}>
+                    🌐 {googleLoginLoading ? 'Signing in...' : 'Sign in with Google'}
+                  </button>
+                ) : (
+                  <div ref={googleButtonRef} style={{ width: '100%', display: 'flex', justifyContent: 'center', minHeight: '44px' }} />
+                )}
                 {!googleClientId && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}>
                     <div className="processing-spinner" style={{ width: '16px', height: '16px', border: '2px solid rgba(34,197,94,0.2)', borderTopColor: '#22c55e', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
