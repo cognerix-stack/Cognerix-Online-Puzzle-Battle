@@ -23,7 +23,8 @@ import { Room } from 'colyseus.js';
 import { MultiplayerService, BACKEND_HTTP_URL, colyseusClient } from './services/multiplayer';
 import { Capacitor } from '@capacitor/core';
 import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
-import { AdMob, RewardAdPluginEvents, AdMobRewardItem, BannerAdSize, BannerAdPosition } from '@capacitor-community/admob';
+import { AdMob, RewardAdPluginEvents, BannerAdSize, BannerAdPosition } from '@capacitor-community/admob';
+import { Network } from '@capacitor/network';
 import { StorePopup } from './components/StorePopup';
 
 const EMOJI_LIST = ["😊", "😂", "🤣", "😍", "😒", "👌", "😁", "👍", "🤦‍♀️", "🤦‍♂️", "🤷‍♀️", "🤷‍♂️", "✌️", "🤞", "😉", "😎", "😢", "😋", "😅", "😚", "😶", "😶‍🌫️", "🤐", "😫", "🥱", "😴", "🙄", "🤯", "😨", "👻", "🤖"];
@@ -1109,28 +1110,25 @@ function App() {
   };
 
   const watchRealAd = async () => {
+    // Check internet
+    const status = await Network.getStatus();
+    if (!status.connected) {
+      showToast('No internet connection. Ad unavailable.', 'error');
+      return; // no reward, no simulated ad
+    }
+
     try {
-      showToast('Loading sponsored video...', 'info');
-
-
-
-      let rewardEarned = false;
-
-      const rewardListener = await AdMob.addListener(RewardAdPluginEvents.Rewarded, (reward: AdMobRewardItem) => {
-        console.log('[AdMob] Reward earned:', reward);
-        rewardEarned = true;
+      const rewardListener = await AdMob.addListener(RewardAdPluginEvents.Rewarded, () => {
+        rewardListener.remove();
+        dismissListener.remove();
+        failedListener.remove();
+        claimFreeReward();
       });
 
       const dismissListener = await AdMob.addListener(RewardAdPluginEvents.Dismissed, () => {
-        console.log('[AdMob] Ad dismissed');
         rewardListener.remove();
         dismissListener.remove();
-        
-        if (rewardEarned) {
-          claimFreeReward();
-        } else {
-          showToast('Ad closed early. No reward claimed.', 'error');
-        }
+        failedListener.remove();
       });
 
       const failedListener = await AdMob.addListener(RewardAdPluginEvents.FailedToLoad, (err) => {
@@ -1138,21 +1136,19 @@ function App() {
         rewardListener.remove();
         dismissListener.remove();
         failedListener.remove();
-        showToast('Failed to load ad. Falling back to simulated player...', 'error');
-        runSimulatedAd();
+        showToast('Failed to load ad. Try again later.', 'error');
+        // no runSimulatedAd(), no reward
       });
 
       await AdMob.prepareRewardVideoAd({
-        adId: 'ca-app-pub-3940256099942544/5224354917', // Test Ad Unit ID
+        adId: 'ca-app-pub-3940256099942544/5224354917',
         isTesting: true
       });
-
       await AdMob.showRewardVideoAd();
-
     } catch (error) {
-      console.error('[AdMob] Error playing ad:', error);
-      showToast('Ad playback failed. Falling back to simulated player...', 'error');
-      runSimulatedAd();
+      console.error('[AdMob] Error:', error);
+      showToast('Ad unavailable. Try again later.', 'error');
+      // no runSimulatedAd(), no reward
     }
   };
 
