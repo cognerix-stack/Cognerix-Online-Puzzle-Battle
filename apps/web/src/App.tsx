@@ -2280,16 +2280,41 @@ function App() {
     try {
       const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
       const token = btoa(JSON.stringify(payload));
-      const res = await fetch(`${BACKEND_HTTP_URL}/profile/friends/request`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ friendUsername, friendId })
-      });
+      const url = `${BACKEND_HTTP_URL}/profile/friends/request`;
 
-      if (res.ok) {
+      let ok = false;
+      let errMessage = 'Failed to send friend request.';
+
+      if (Capacitor.isNativePlatform()) {
+        const response = await CapacitorHttp.post({
+          url,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          data: { friendUsername, friendId }
+        });
+        ok = response.status === 200 || response.status === 201;
+        if (!ok) {
+          errMessage = response.data?.message || errMessage;
+        }
+      } else {
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ friendUsername, friendId })
+        });
+        ok = res.ok;
+        if (!ok) {
+          const err = await res.json();
+          errMessage = err.message || errMessage;
+        }
+      }
+
+      if (ok) {
         triggerSound('success');
         if (friendId) {
           setSentRequests(prev => {
@@ -2300,8 +2325,7 @@ function App() {
         }
         return { success: true };
       } else {
-        const err = await res.json();
-        throw new Error(err.message || 'Failed to send friend request.');
+        throw new Error(errMessage);
       }
     } catch (e: any) {
       console.error('[Friends] Send request failed:', e);
