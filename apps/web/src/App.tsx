@@ -2027,7 +2027,7 @@ function App() {
         alert(`Login failed: ${data.message || res.status}`);
       }
     } catch (e: any) {
-      alert('Error: ' + e.message);
+      alert('Error name: ' + e.name + '\nmessage: ' + e.message + '\nstack: ' + e.stack);
     } finally {
       setGoogleLoginLoading(false);
     }
