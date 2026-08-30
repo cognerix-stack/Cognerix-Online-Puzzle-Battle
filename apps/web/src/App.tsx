@@ -11512,21 +11512,15 @@ function App() {
                   onClick={() => {
                     if (sentRequests.has(matchResult.opponentId!)) return;
                     triggerSound('click');
-                    if (matchResult.opponentId!.startsWith('bot_')) {
-                      // Mock successful friend request to bot
-                      triggerSound('success');
-                      setSentRequests(prev => {
-                        const next = new Set(prev);
-                        next.add(matchResult.opponentId!);
-                        return next;
-                      });
-                    } else {
-                      sendFriendRequestToServer(undefined, matchResult.opponentId).then((res) => {
-                        if (res && res.success) {
-                          showToast(`Friend request successfully sent to ${matchResult.opponentName || 'Opponent'}!`, 'success');
-                        }
-                      });
+                    if (matchResult.opponentId!.startsWith('bot_') || matchResult.opponentId!.startsWith('20')) {
+                      showToast('Cannot send friend request to guest players.', 'error');
+                      return;
                     }
+                    sendFriendRequestToServer(undefined, matchResult.opponentId).then((res) => {
+                      if (res && res.success) {
+                        showToast(`Friend request successfully sent to ${matchResult.opponentName || 'Opponent'}!`, 'success');
+                      }
+                    });
                   }}
                   style={{
                     background: sentRequests.has(matchResult.opponentId) 
