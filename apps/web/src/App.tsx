@@ -2004,7 +2004,9 @@ function App() {
         return;
       }
       const backendUrl = `${BACKEND_HTTP_URL}/auth/google-login`;
-      alert(`Connecting to: ${backendUrl}`);
+      alert('About to fetch...');
+      const testRes = await fetch('https://cognerix-online-puzzle-battle-production.up.railway.app/auth/google-client-id');
+      alert('Test fetch status: ' + testRes.status);
       const res = await fetch(backendUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
