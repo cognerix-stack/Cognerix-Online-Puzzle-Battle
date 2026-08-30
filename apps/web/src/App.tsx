@@ -21,7 +21,7 @@ import TowerBloxx from './components/TowerBloxx';
 import { MentalMathChallenge } from './components/MentalMathChallenge';
 import { Room } from 'colyseus.js';
 import { MultiplayerService, BACKEND_HTTP_URL, colyseusClient } from './services/multiplayer';
-import { Capacitor } from '@capacitor/core';
+import { Capacitor, CapacitorHttp } from '@capacitor/core';
 import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
 import { AdMob, RewardAdPluginEvents, BannerAdSize, BannerAdPosition } from '@capacitor-community/admob';
 import { Network } from '@capacitor/network';
@@ -2005,17 +2005,19 @@ function App() {
       }
       const backendUrl = `${BACKEND_HTTP_URL}/auth/google-login`;
       alert('About to fetch...');
-      const testRes = await fetch('https://cognerix-online-puzzle-battle-production.up.railway.app/auth/google-client-id');
-      alert('Test fetch status: ' + testRes.status);
-      const res = await fetch(backendUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: idToken }),
+      const testRes = await CapacitorHttp.get({
+        url: 'https://cognerix-online-puzzle-battle-production.up.railway.app/auth/google-client-id'
       });
-      alert(`Server response: ${res.status}`);
-      const data = await res.json();
+      alert('Test fetch status: ' + testRes.status);
+      const res = await CapacitorHttp.post({
+        url: backendUrl,
+        headers: { 'Content-Type': 'application/json' },
+        data: { token: idToken }
+      });
+      alert('Server response: ' + res.status);
+      const data = res.data;
       alert('Data: ' + JSON.stringify(data));
-      if (res.ok) {
+      if (res.status === 200 || res.status === 201) {
         localStorage.removeItem('puzzle_verse_profile');
         localStorage.setItem('pv_auth_user_id', data.userId);
         localStorage.setItem('pv_terms_accepted', 'true');
