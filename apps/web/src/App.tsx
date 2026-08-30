@@ -1995,24 +1995,32 @@ function App() {
   const handleNativeGoogleSignIn = async () => {
     try {
       setGoogleLoginLoading(true);
+      console.log('[GoogleAuth] Calling GoogleAuth.signIn()...');
       showToast('Starting Google Sign-In...', 'info');
       const user = await GoogleAuth.signIn();
+      console.log('[GoogleAuth] GoogleAuth.signIn() returned user object:', JSON.stringify(user));
       showToast('Got user, sending to server...', 'info');
       const idToken = user.authentication?.idToken;
+      console.log('[GoogleAuth] Extracted idToken:', idToken ? `${idToken.substring(0, 15)}... [Length: ${idToken.length}]` : 'undefined/null');
       if (!idToken) {
+        console.log('[GoogleAuth] Missing idToken, showing toast error');
         showToast('No ID token received from Google', 'error');
         return;
       }
       const backendUrl = `${BACKEND_HTTP_URL}/auth/google-login`;
+      console.log('[GoogleAuth] Dispatching POST request to backendUrl:', backendUrl);
       showToast(`Connecting to: ${backendUrl}`, 'info');
       const res = await fetch(backendUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token: idToken }),
       });
+      console.log('[GoogleAuth] Backend response received. Status:', res.status);
       showToast(`Server response: ${res.status}`, 'info');
       const data = await res.json();
+      console.log('[GoogleAuth] Deserialized server payload:', JSON.stringify(data));
       if (res.ok) {
+        console.log('[GoogleAuth] Sign-in successful. Storing credentials locally.');
         localStorage.removeItem('puzzle_verse_profile');
         localStorage.setItem('pv_auth_user_id', data.userId);
         localStorage.setItem('pv_terms_accepted', 'true');
@@ -2021,11 +2029,14 @@ function App() {
         setIsLoggedIn(true);
         setOnboardingStep('none');
       } else {
+        console.log('[GoogleAuth] Backend sign-in error, showing toast');
         showToast(`Login failed: ${data.message || res.status}`, 'error');
       }
     } catch (e: any) {
+      console.error('[GoogleAuth] Exception caught during native Google sign-in:', e);
       showToast(`Error: ${e.message}`, 'error');
     } finally {
+      console.log('[GoogleAuth] handleNativeGoogleSignIn complete. Setting loading state to false.');
       setGoogleLoginLoading(false);
     }
   };
