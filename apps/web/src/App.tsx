@@ -1995,28 +1995,22 @@ function App() {
   const handleNativeGoogleSignIn = async () => {
     try {
       setGoogleLoginLoading(true);
-      alert('Starting Google Sign-In...');
       const user = await GoogleAuth.signIn();
-      alert('User: ' + JSON.stringify(user));
       const idToken = user.authentication?.idToken;
       if (!idToken) {
-        alert('No ID token!');
+        showToast('No ID token received from Google', 'error');
         return;
       }
       const backendUrl = `${BACKEND_HTTP_URL}/auth/google-login`;
-      alert('About to fetch...');
-      const testRes = await CapacitorHttp.get({
+      await CapacitorHttp.get({
         url: 'https://cognerix-online-puzzle-battle-production.up.railway.app/auth/google-client-id'
       });
-      alert('Test fetch status: ' + testRes.status);
       const res = await CapacitorHttp.post({
         url: backendUrl,
         headers: { 'Content-Type': 'application/json' },
         data: { token: idToken }
       });
-      alert('Server response: ' + res.status);
       const data = res.data;
-      alert('Data: ' + JSON.stringify(data));
       if (res.status === 200 || res.status === 201) {
         localStorage.removeItem('puzzle_verse_profile');
         localStorage.setItem('pv_auth_user_id', data.userId);
@@ -2026,10 +2020,10 @@ function App() {
         setIsLoggedIn(true);
         setOnboardingStep('none');
       } else {
-        alert(`Login failed: ${data.message || res.status}`);
+        showToast(`Login failed: ${data.message || res.status}`, 'error');
       }
     } catch (e: any) {
-      alert('Error name: ' + e.name + '\nmessage: ' + e.message + '\nstack: ' + e.stack);
+      showToast(`Error: ${e.message}`, 'error');
     } finally {
       setGoogleLoginLoading(false);
     }
