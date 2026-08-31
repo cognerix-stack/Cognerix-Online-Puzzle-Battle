@@ -2008,7 +2008,7 @@ function App() {
         nickname: reportNickname.trim(),
         reason: reportReason,
         description: reportReason === 'Other' ? reportDescription.trim() : undefined,
-        sessionId: roomRef.current?.roomId || undefined
+        sessionId: matchResult?.roomId || undefined
       };
 
       const authPayload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
@@ -2099,7 +2099,7 @@ function App() {
     }
   }, [playerProgress, activeGame, opponentInfo]);
 
-  const [matchResult, setMatchResult] = useState<{ isWinner: boolean; winnerName: string; opponentName?: string; opponentNameColor?: string; opponentBadges?: string[]; opponentId?: string; forfeit?: boolean; isSolo?: boolean; isDisconnect?: boolean; bothDefeated?: boolean; triviaDetails?: { playerCorrect: number; opponentCorrect: number } } | null>(null);
+  const [matchResult, setMatchResult] = useState<{ isWinner: boolean; winnerName: string; opponentName?: string; opponentNameColor?: string; opponentBadges?: string[]; opponentId?: string; forfeit?: boolean; isSolo?: boolean; isDisconnect?: boolean; bothDefeated?: boolean; triviaDetails?: { playerCorrect: number; opponentCorrect: number }; roomId?: string } | null>(null);
   const [delayedMatchResult, setDelayedMatchResult] = useState<any>(null);
   const confettiCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -3332,7 +3332,8 @@ function App() {
           opponentId: opponentIdRef.current,
           forfeit: data.forfeit,
           triviaDetails,
-          bothDefeated: data.bothDefeated
+          bothDefeated: data.bothDefeated,
+          roomId: roomRef.current?.roomId || undefined
         };
 
         if (puzzleType === PuzzleType.MENTAL_MATH && !data.forfeit) {
