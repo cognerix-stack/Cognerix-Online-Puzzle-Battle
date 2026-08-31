@@ -7310,50 +7310,56 @@ function App() {
                 <Users size={24} color="var(--color-primary)" />
                 Add a Friend
               </h3>
-              <form 
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  const targetName = friendSearchInput.trim();
-                  if (!targetName) return;
-                  if (targetName.toLowerCase() === userProfile.username.toLowerCase()) {
-                    showToast(t('error_self_add'), 'error');
-                    return;
-                  }
-                  if (friendsList.some(f => f.username.toLowerCase() === targetName.toLowerCase())) {
-                    showToast(t('error_already_friends'), 'error');
-                    return;
-                  }
-                  
-                  sendFriendRequestToServer(targetName).then((res) => {
-                    if (res && res.success) {
-                      showToast(t('friend_request_sent_success').replace('{name}', targetName), 'success');
+              {userProfile?.id?.startsWith('20') ? (
+                <div style={{ textAlign: 'center', padding: '20px', color: 'var(--text-muted)' }}>
+                  Friend requests are only available for Google account holders.
+                </div>
+              ) : (
+                <form 
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    const targetName = friendSearchInput.trim();
+                    if (!targetName) return;
+                    if (targetName.toLowerCase() === userProfile.username.toLowerCase()) {
+                      showToast(t('error_self_add'), 'error');
+                      return;
                     }
-                  });
-                  setFriendSearchInput('');
-                }}
-                style={{ display: 'flex', gap: '12px' }}
-              >
-                <input 
-                  type="text" 
-                  value={friendSearchInput}
-                  onChange={(e) => setFriendSearchInput(e.target.value)}
-                  placeholder="Enter opponent's username..."
-                  maxLength={20}
-                  style={{
-                    flex: 1,
-                    background: 'var(--bg-glass)',
-                    border: '1px solid var(--border-glass)',
-                    color: 'var(--text-primary)',
-                    padding: '12px 18px',
-                    borderRadius: '12px',
-                    fontSize: '14px',
-                    outline: 'none'
+                    if (friendsList.some(f => f.username.toLowerCase() === targetName.toLowerCase())) {
+                      showToast(t('error_already_friends'), 'error');
+                      return;
+                    }
+                    
+                    sendFriendRequestToServer(targetName).then((res) => {
+                      if (res && res.success) {
+                        showToast(t('friend_request_sent_success').replace('{name}', targetName), 'success');
+                      }
+                    });
+                    setFriendSearchInput('');
                   }}
-                />
-                <button type="submit" className="btn btn-primary" style={{ padding: '12px 24px', borderRadius: '12px', fontSize: '14px' }}>
-                  Add Friend
-                </button>
-              </form>
+                  style={{ display: 'flex', gap: '12px' }}
+                >
+                  <input 
+                    type="text" 
+                    value={friendSearchInput}
+                    onChange={(e) => setFriendSearchInput(e.target.value)}
+                    placeholder="Enter opponent's username..."
+                    maxLength={20}
+                    style={{
+                      flex: 1,
+                      background: 'var(--bg-glass)',
+                      border: '1px solid var(--border-glass)',
+                      color: 'var(--text-primary)',
+                      padding: '12px 18px',
+                      borderRadius: '12px',
+                      fontSize: '14px',
+                      outline: 'none'
+                    }}
+                  />
+                  <button type="submit" className="btn btn-primary" style={{ padding: '12px 24px', borderRadius: '12px', fontSize: '14px' }}>
+                    Add Friend
+                  </button>
+                </form>
+              )}
             </div>
 
             {/* Friends List Container */}
