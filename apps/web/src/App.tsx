@@ -11518,7 +11518,7 @@ function App() {
                   onClick={() => {
                     if (sentRequests.has(matchResult.opponentId!)) return;
                     triggerSound('click');
-                    if (matchResult.opponentId!.startsWith('bot_') || matchResult.opponentId!.startsWith('20')) {
+                    if (matchResult.opponentId!.startsWith('bot_')) {
                       showToast('Cannot send friend request to guest players.', 'error');
                       return;
                     }
