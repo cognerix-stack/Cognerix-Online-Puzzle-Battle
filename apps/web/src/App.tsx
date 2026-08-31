@@ -12265,7 +12265,7 @@ function App() {
                   🔑 Room ID
                 </span>
                 <span style={{ fontSize: '13px', fontFamily: 'monospace', color: 'var(--text-primary)' }}>
-                  {selectedReport.roomId || 'N/A'}
+                  {selectedReport.sessionId || selectedReport.roomId || 'N/A'}
                 </span>
               </div>
 
