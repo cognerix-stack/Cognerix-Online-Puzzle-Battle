@@ -27,6 +27,19 @@ import { AdMob, RewardAdPluginEvents, BannerAdSize, BannerAdPosition } from '@ca
 import { Network } from '@capacitor/network';
 import { StorePopup } from './components/StorePopup';
 
+const apiRequest = async (method: 'GET' | 'POST' | 'DELETE', url: string, body?: object, token?: string) => {
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  if (Capacitor.isNativePlatform()) {
+    const res = await CapacitorHttp.request({ method, url, headers, data: body });
+    return { ok: res.status >= 200 && res.status < 300, status: res.status, data: res.data };
+  } else {
+    const res = await fetch(url, { method, headers, body: body ? JSON.stringify(body) : undefined });
+    const data = await res.json().catch(() => ({}));
+    return { ok: res.ok, status: res.status, data };
+  }
+};
+
 const EMOJI_LIST = ["😊", "😂", "🤣", "😍", "😒", "👌", "😁", "👍", "🤦‍♀️", "🤦‍♂️", "🤷‍♀️", "🤷‍♂️", "✌️", "🤞", "😉", "😎", "😢", "😋", "😅", "😚", "😶", "😶‍🌫️", "🤐", "😫", "🥱", "😴", "🙄", "🤯", "😨", "👻", "🤖"];
 
 const AVAILABLE_AVATARS = [
@@ -1302,13 +1315,9 @@ function App() {
     try {
       const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
       const token = btoa(JSON.stringify(payload));
-      const res = await fetch(`${BACKEND_HTTP_URL}/profile/friends/admin?userId=${targetUserId}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
+      const res = await apiRequest('GET', `${BACKEND_HTTP_URL}/profile/friends/admin?userId=${targetUserId}`, undefined, token);
       if (res.ok) {
-        const data = await res.json();
+        const data = res.data;
         setAdminFriendsList(Array.isArray(data) ? data : []);
       }
     } catch (e) {
@@ -1346,13 +1355,9 @@ function App() {
     try {
       const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
       const token = btoa(JSON.stringify(payload));
-      const res = await fetch(`${BACKEND_HTTP_URL}/profile/history?userId=${encodeURIComponent(playerId.trim())}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
+      const res = await apiRequest('GET', `${BACKEND_HTTP_URL}/profile/history?userId=${encodeURIComponent(playerId.trim())}`, undefined, token);
       if (res.ok) {
-        const data = await res.json();
+        const data = res.data;
         setAdminPlayerHistory(data);
         await fetchPlayerChatHistory(playerId);
       } else {
@@ -1390,13 +1395,9 @@ function App() {
     try {
       const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
       const token = btoa(JSON.stringify(payload));
-      const res = await fetch(`${BACKEND_HTTP_URL}/profile/admin/chat-history?userId=${encodeURIComponent(playerId.trim())}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
+      const res = await apiRequest('GET', `${BACKEND_HTTP_URL}/profile/admin/chat-history?userId=${encodeURIComponent(playerId.trim())}`, undefined, token);
       if (res.ok) {
-        const data = await res.json();
+        const data = res.data;
         setAdminChatHistoryList(data);
         console.log('[DEBUG CHAT HISTORY] fetchPlayerChatHistory data count:', data?.length, 'Data:', data);
       } else {
@@ -1436,12 +1437,7 @@ function App() {
     try {
       const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
       const token = btoa(JSON.stringify(payload));
-      const res = await fetch(`${BACKEND_HTTP_URL}/profile/admin/reports/${reportId}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
+      const res = await apiRequest('DELETE', `${BACKEND_HTTP_URL}/profile/admin/reports/${reportId}`, undefined, token);
       if (res.ok) {
         fetchAdminReports();
       } else {
@@ -1458,13 +1454,9 @@ function App() {
     try {
       const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
       const token = btoa(JSON.stringify(payload));
-      const res = await fetch(`${BACKEND_HTTP_URL}/profile/admin/reports`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
+      const res = await apiRequest('GET', `${BACKEND_HTTP_URL}/profile/admin/reports`, undefined, token);
       if (res.ok) {
-        const data = await res.json();
+        const data = res.data;
         console.log('[AdminReports] Response:', data);
         setAdminReports(Array.isArray(data) ? data : []);
       } else {
@@ -1485,13 +1477,9 @@ function App() {
     try {
       const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
       const token = btoa(JSON.stringify(payload));
-      const res = await fetch(`${BACKEND_HTTP_URL}/profile/admin/room-lookup?roomId=${encodeURIComponent(roomId.trim())}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
+      const res = await apiRequest('GET', `${BACKEND_HTTP_URL}/profile/admin/room-lookup?roomId=${encodeURIComponent(roomId.trim())}`, undefined, token);
       if (res.ok) {
-        const data = await res.json();
+        const data = res.data;
         setAdminRoomLookupResult(data);
       } else {
         setAdminRoomLookupResult(null);
@@ -1548,13 +1536,9 @@ function App() {
         try {
           const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
           const token = btoa(JSON.stringify(payload));
-          const res = await fetch(`${BACKEND_HTTP_URL}/profile/banned`, {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          });
+          const res = await apiRequest('GET', `${BACKEND_HTTP_URL}/profile/banned`, undefined, token);
           if (res.ok) {
-            const data = await res.json();
+            const data = res.data;
             setBannedPlayersList(data);
           }
         } catch (e) {
@@ -1566,13 +1550,9 @@ function App() {
         try {
           const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
           const token = btoa(JSON.stringify(payload));
-          const res = await fetch(`${BACKEND_HTTP_URL}/profile/users`, {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          });
+          const res = await apiRequest('GET', `${BACKEND_HTTP_URL}/profile/users`, undefined, token);
           if (res.ok) {
-            const data = await res.json();
+            const data = res.data;
             setAdminUsersList(data);
           }
         } catch (e) {
@@ -1584,13 +1564,9 @@ function App() {
         try {
           const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
           const token = btoa(JSON.stringify(payload));
-          const res = await fetch(`${BACKEND_HTTP_URL}/profile/popup-announcements/all`, {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          });
+          const res = await apiRequest('GET', `${BACKEND_HTTP_URL}/profile/popup-announcements/all`, undefined, token);
           if (res.ok) {
-            const data = await res.json();
+            const data = res.data;
             setAdminAnnouncementHistory(Array.isArray(data) ? data : []);
           }
         } catch (e) {
@@ -1614,9 +1590,9 @@ function App() {
     }));
     const checkBanStatus = async () => {
       try {
-        const res = await fetch(`${BACKEND_HTTP_URL}/profile/banned`);
+        const res = await apiRequest('GET', `${BACKEND_HTTP_URL}/profile/banned`);
         if (res.ok) {
-          const data = await res.json();
+          const data = res.data;
           if (data && data.bannedProfileIds && Array.isArray(data.bannedProfileIds)) {
             if (data.bannedProfileIds.includes(userProfile.id)) {
               setIsUserBanned(true);
@@ -1729,13 +1705,9 @@ function App() {
       try {
         const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
         const token = btoa(JSON.stringify(payload));
-        const res = await fetch(`${BACKEND_HTTP_URL}/profile/mailbox`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
+        const res = await apiRequest('GET', `${BACKEND_HTTP_URL}/profile/mailbox`, undefined, token);
         if (res.status === 401) {
-          const errData = await res.json().catch(() => ({}));
+          const errData = res.data || {};
           if (errData.message && errData.message.includes('deleted')) {
             showToast("⚠️ Your account has been deleted by an administrator.", 'error');
             localStorage.removeItem('pv_logged_in');
@@ -1746,7 +1718,7 @@ function App() {
           }
         }
         if (res.ok) {
-          const data = await res.json();
+          const data = res.data;
           setMailboxItems(data);
           const newUnclaimedCount = data.filter((item: any) => !item.claimed).length;
           setUnreadMailCount(newUnclaimedCount);
@@ -1761,13 +1733,9 @@ function App() {
       try {
         const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
         const token = btoa(JSON.stringify(payload));
-        const res = await fetch(`${BACKEND_HTTP_URL}/profile/popup-announcements`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
+        const res = await apiRequest('GET', `${BACKEND_HTTP_URL}/profile/popup-announcements`, undefined, token);
         if (res.ok) {
-          const list = await res.json();
+          const list = res.data;
           if (Array.isArray(list)) {
             const savedDismissed = localStorage.getItem('puzzle_verse_dismissed_announcements');
             const dismissedIds: string[] = savedDismissed ? JSON.parse(savedDismissed) : [];
@@ -1808,9 +1776,9 @@ function App() {
 
     const fetchInitialQueues = async () => {
       try {
-        const res = await fetch(`${BACKEND_HTTP_URL}/profile/matchmaking/queues`);
+        const res = await apiRequest('GET', `${BACKEND_HTTP_URL}/profile/matchmaking/queues`);
         if (res.ok) {
-          const counts = await res.json();
+          const counts = res.data;
           if (isSubscribed && counts) {
             setMatchmakingQueues(counts);
           }
@@ -1904,8 +1872,8 @@ function App() {
       setGoogleClientId('native');
       return;
     }
-    fetch(`${BACKEND_HTTP_URL}/auth/google-client-id`)
-      .then(r => r.json())
+    apiRequest('GET', `${BACKEND_HTTP_URL}/auth/google-client-id`)
+      .then(res => res.data)
       .then(data => {
         const cid = data.googleClientId || '';
         setGoogleClientId(cid);
@@ -1958,13 +1926,9 @@ function App() {
     }
     setGoogleLoginLoading(true);
     try {
-      const res = await fetch(`${BACKEND_HTTP_URL}/auth/google-login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: response.credential }),
-      });
+      const res = await apiRequest('POST', `${BACKEND_HTTP_URL}/auth/google-login`, { token: response.credential });
       if (res.ok) {
-        const data = await res.json();
+        const data = res.data;
         triggerSound('success');
         localStorage.removeItem('puzzle_verse_profile');
         localStorage.setItem('pv_auth_user_id', data.userId);
@@ -1981,7 +1945,7 @@ function App() {
           setOnboardingStep('none');
         }
       } else {
-        const errData = await res.json().catch(() => ({}));
+        const errData = res.data || {};
         showToast(errData.message || 'Google Sign-In failed. Please try again.', 'error');
       }
     } catch (e: any) {
@@ -2002,16 +1966,10 @@ function App() {
         return;
       }
       const backendUrl = `${BACKEND_HTTP_URL}/auth/google-login`;
-      await CapacitorHttp.get({
-        url: 'https://cognerix-online-puzzle-battle-production.up.railway.app/auth/google-client-id'
-      });
-      const res = await CapacitorHttp.post({
-        url: backendUrl,
-        headers: { 'Content-Type': 'application/json' },
-        data: { token: idToken }
-      });
+      await apiRequest('GET', 'https://cognerix-online-puzzle-battle-production.up.railway.app/auth/google-client-id');
+      const res = await apiRequest('POST', backendUrl, { token: idToken });
       const data = res.data;
-      if (res.status === 200 || res.status === 201) {
+      if (res.ok) {
         localStorage.removeItem('puzzle_verse_profile');
         localStorage.setItem('pv_auth_user_id', data.userId);
         localStorage.setItem('pv_terms_accepted', 'true');
@@ -2059,44 +2017,15 @@ function App() {
       console.log('[Report] Submitting report to:', `${BACKEND_HTTP_URL}/profile/report`);
       const url = `${BACKEND_HTTP_URL}/profile/report`;
 
-      let ok = false;
-      let errMessage = 'Server error';
+      const res = await apiRequest('POST', url, payload, token);
 
-      if (Capacitor.isNativePlatform()) {
-        const response = await CapacitorHttp.post({
-          url,
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          data: payload
-        });
-        ok = response.status === 200 || response.status === 201;
-        if (!ok) {
-          errMessage = response.data?.message || errMessage;
-        }
-      } else {
-        const res = await fetch(url, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify(payload)
-        });
-        ok = res.ok;
-        if (!ok) {
-          const errData = await res.json().catch(() => ({}));
-          errMessage = errData.message || errMessage;
-        }
-      }
-
-      if (ok) {
+      if (res.ok) {
         showToast("Report Submitted. Thank you for helping keep Cognerix safe.", 'success');
         setIsReportModalOpen(false);
         setReportDescription('');
         setReportReason('Violence in Chat');
       } else {
+        const errMessage = res.data?.message || 'Server error';
         showToast(`Failed to submit report: ${errMessage}`, 'error');
       }
     } catch (err) {
@@ -2306,39 +2235,9 @@ function App() {
       const token = btoa(JSON.stringify(payload));
       const url = `${BACKEND_HTTP_URL}/profile/friends/request`;
 
-      let ok = false;
-      let errMessage = 'Failed to send friend request.';
+      const res = await apiRequest('POST', url, { friendUsername, friendId }, token);
 
-      if (Capacitor.isNativePlatform()) {
-        const response = await CapacitorHttp.post({
-          url,
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          data: { friendUsername, friendId }
-        });
-        ok = response.status === 200 || response.status === 201;
-        if (!ok) {
-          errMessage = response.data?.message || errMessage;
-        }
-      } else {
-        const res = await fetch(url, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({ friendUsername, friendId })
-        });
-        ok = res.ok;
-        if (!ok) {
-          const err = await res.json();
-          errMessage = err.message || errMessage;
-        }
-      }
-
-      if (ok) {
+      if (res.ok) {
         triggerSound('success');
         if (friendId) {
           setSentRequests(prev => {
@@ -2349,6 +2248,7 @@ function App() {
         }
         return { success: true };
       } else {
+        const errMessage = res.data?.message || 'Failed to send friend request.';
         throw new Error(errMessage);
       }
     } catch (e: any) {
@@ -2369,14 +2269,7 @@ function App() {
     try {
       const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
       const token = btoa(JSON.stringify(payload));
-      await fetch(`${BACKEND_HTTP_URL}/profile/friends/chat/clear`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ friendId })
-      });
+      await apiRequest('POST', `${BACKEND_HTTP_URL}/profile/friends/chat/clear`, { friendId }, token);
     } catch (e) {
       console.error('[Friends] Clear chat failed on close:', e);
     }
@@ -2847,20 +2740,13 @@ function App() {
           .filter(e => e.userId === profileToSync.id && e.puzzleType !== 'GLOBAL')
           .reduce((sum, entry) => sum + entry.score, 0);
 
-        const res = await fetch(`${BACKEND_HTTP_URL}/profile/sync`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({
-            ...profileToSync,
-            score: globalScore
-          })
-        });
+        const res = await apiRequest('POST', `${BACKEND_HTTP_URL}/profile/sync`, {
+          ...profileToSync,
+          score: globalScore
+        }, token);
 
         if (res.status === 401) {
-          const errData = await res.json().catch(() => ({}));
+          const errData = res.data || {};
           if (errData.message && errData.message.includes('deleted')) {
             showToast("⚠️ Your account has been deleted by an administrator.", 'error');
             localStorage.removeItem('pv_logged_in');
@@ -2872,7 +2758,7 @@ function App() {
         }
 
         if (res.ok) {
-          const data = await res.json();
+          const data = res.data;
           if (data.deleted) {
             showToast("⚠️ Your account has been deleted by an administrator.", 'error');
             localStorage.removeItem('pv_logged_in');
@@ -2884,15 +2770,10 @@ function App() {
         }
       } else {
         // --- PULL SERVER STATE TO LOCAL ---
-        const res = await fetch(`${BACKEND_HTTP_URL}/profile/me`, {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
+        const res = await apiRequest('GET', `${BACKEND_HTTP_URL}/profile/me`, undefined, token);
 
         if (res.ok) {
-          const serverProfile = await res.json();
+          const serverProfile = res.data;
           if (serverProfile) {
             const isDifferent = 
               serverProfile.coins !== profileToSync.coins ||
@@ -2936,13 +2817,9 @@ function App() {
     try {
       const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
       const token = btoa(JSON.stringify(payload));
-      const response = await fetch(`${BACKEND_HTTP_URL}/profile/friends`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
+      const response = await apiRequest('GET', `${BACKEND_HTTP_URL}/profile/friends`, undefined, token);
       if (response.ok) {
-        const data = await response.json();
+        const data = response.data;
         setFriendsList(data);
       }
     } catch (e) {
@@ -2962,13 +2839,9 @@ function App() {
       try {
         const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
         const token = btoa(JSON.stringify(payload));
-        const res = await fetch(`${BACKEND_HTTP_URL}/profile/friends/challenges`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
+        const res = await apiRequest('GET', `${BACKEND_HTTP_URL}/profile/friends/challenges`, undefined, token);
         if (res.ok) {
-          const data = await res.json();
+          const data = res.data;
           if (data && data.length > 0) {
             const challenge = data[0];
             setIncomingChallenge({
@@ -2990,13 +2863,9 @@ function App() {
       try {
         const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
         const token = btoa(JSON.stringify(payload));
-        const res = await fetch(`${BACKEND_HTTP_URL}/profile/friends/requests`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
+        const res = await apiRequest('GET', `${BACKEND_HTTP_URL}/profile/friends/requests`, undefined, token);
         if (res.ok) {
-          const data = await res.json();
+          const data = res.data;
           if (data && Array.isArray(data)) {
             setFriendRequests(data);
           }
@@ -3022,25 +2891,15 @@ function App() {
       try {
         const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
         const token = btoa(JSON.stringify(payload));
-        const res = await fetch(`${BACKEND_HTTP_URL}/profile/friends/challenge/status?pin=${privatePin}`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
+        const res = await apiRequest('GET', `${BACKEND_HTTP_URL}/profile/friends/challenge/status?pin=${privatePin}`, undefined, token);
         if (res.ok) {
-          const data = await res.json();
+          const data = res.data;
           if (data && data.status === 'declined') {
             showToast('Your duel challenge was declined by the opponent.', 'error');
             
             // Clean/delete backend challenge record
-            fetch(`${BACKEND_HTTP_URL}/profile/friends/challenge/clear`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-              },
-              body: JSON.stringify({ senderId: userProfile.id })
-            }).catch(e => console.error('[Friends] Clean challenge failed:', e));
+            apiRequest('POST', `${BACKEND_HTTP_URL}/profile/friends/challenge/clear`, { senderId: userProfile.id }, token)
+              .catch(e => console.error('[Friends] Clean challenge failed:', e));
 
             cancelMatchmaking();
           }
@@ -3061,13 +2920,9 @@ function App() {
       try {
         const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
         const token = btoa(JSON.stringify(payload));
-        const res = await fetch(`${BACKEND_HTTP_URL}/profile/friends/chat?friendId=${activeChatFriend.id}`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
+        const res = await apiRequest('GET', `${BACKEND_HTTP_URL}/profile/friends/chat?friendId=${activeChatFriend.id}`, undefined, token);
         if (res.ok) {
-          const data = await res.json();
+          const data = res.data;
           setChatHistory(data);
         }
       } catch (e) {
@@ -3127,11 +2982,9 @@ function App() {
         const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
         const token = btoa(JSON.stringify(payload));
         
-        const fRes = await fetch(`${BACKEND_HTTP_URL}/profile/friends`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
+        const fRes = await apiRequest('GET', `${BACKEND_HTTP_URL}/profile/friends`, undefined, token);
         if (fRes.ok) {
-          const data = await fRes.json();
+          const data = fRes.data;
           currentFriends = data;
           setFriendsList(data);
         }
@@ -3147,11 +3000,9 @@ function App() {
         try {
           const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
           const token = btoa(JSON.stringify(payload));
-          const res = await fetch(`${BACKEND_HTTP_URL}/profile/friends/chat?friendId=${friend.id}`, {
-            headers: { 'Authorization': `Bearer ${token}` }
-          });
+          const res = await apiRequest('GET', `${BACKEND_HTTP_URL}/profile/friends/chat?friendId=${friend.id}`, undefined, token);
           if (res.ok) {
-            const data = await res.json();
+            const data = res.data;
             if (data && data.length > 0) {
               const maxTs = Math.max(...data.map((m: any) => m.timestamp || 0));
               const lastRead = lastReadTimestamps.current[friend.id] || 0;
@@ -3643,14 +3494,8 @@ function App() {
       try {
         const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
         const token = btoa(JSON.stringify(payload));
-        fetch(`${BACKEND_HTTP_URL}/profile/friends/challenge/clear`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({ senderId: userProfile.id })
-        }).catch(err => console.warn('[Friends] Failed to clear challenge on cancel:', err));
+        apiRequest('POST', `${BACKEND_HTTP_URL}/profile/friends/challenge/clear`, { senderId: userProfile.id }, token)
+          .catch(err => console.warn('[Friends] Failed to clear challenge on cancel:', err));
       } catch (e) {
         // Fallback
       }
@@ -7486,19 +7331,13 @@ function App() {
                               onConfirm: () => {
                                 const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
                                 const token = btoa(JSON.stringify(payload));
-                                fetch(`${BACKEND_HTTP_URL}/profile/friends/remove`, {
-                                  method: 'POST',
-                                  headers: {
-                                    'Content-Type': 'application/json',
-                                    'Authorization': `Bearer ${token}`
-                                  },
-                                  body: JSON.stringify({ friendId: friend.id })
-                                }).then((res) => {
-                                  if (res.ok) {
-                                    triggerSound('success');
-                                    setFriendsList(prev => prev.filter(f => f.id !== friend.id));
-                                  }
-                                });
+                                apiRequest('POST', `${BACKEND_HTTP_URL}/profile/friends/remove`, { friendId: friend.id }, token)
+                                  .then((res) => {
+                                    if (res.ok) {
+                                      triggerSound('success');
+                                      setFriendsList(prev => prev.filter(f => f.id !== friend.id));
+                                    }
+                                  });
                               }
                             });
                           }}
@@ -7711,13 +7550,9 @@ function App() {
                     try {
                       const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
                       const token = btoa(JSON.stringify(payload));
-                      const checkRes = await fetch(`${BACKEND_HTTP_URL}/profile/friends/check-block?targetId=${challengeTargetFriend.id}`, {
-                        headers: {
-                          'Authorization': `Bearer ${token}`
-                        }
-                      });
+                      const checkRes = await apiRequest('GET', `${BACKEND_HTTP_URL}/profile/friends/check-block?targetId=${challengeTargetFriend.id}`, undefined, token);
                       if (checkRes.ok) {
-                        const check = await checkRes.json();
+                        const check = checkRes.data;
                         if (check.blocked) {
                           showToast(`❌ ${challengeTargetFriend.username} is currently declining challenges. Try again in ${check.remainingSec} seconds.`, 'error');
                           setChallengeTargetFriend(null);
@@ -7741,18 +7576,11 @@ function App() {
                     try {
                       const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
                       const token = btoa(JSON.stringify(payload));
-                      await fetch(`${BACKEND_HTTP_URL}/profile/friends/challenge`, {
-                        method: 'POST',
-                        headers: {
-                          'Content-Type': 'application/json',
-                          'Authorization': `Bearer ${token}`
-                        },
-                        body: JSON.stringify({
-                          targetId: targetFriendId,
-                          puzzleType: game.type,
-                          pin: generatedPin
-                        })
-                      });
+                      await apiRequest('POST', `${BACKEND_HTTP_URL}/profile/friends/challenge`, {
+                        targetId: targetFriendId,
+                        puzzleType: game.type,
+                        pin: generatedPin
+                      }, token);
                     } catch (e) {
                       console.error('[Friends] Post challenge failed:', e);
                     }
@@ -7837,14 +7665,7 @@ function App() {
                 try {
                   const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
                   const token = btoa(JSON.stringify(payload));
-                  await fetch(`${BACKEND_HTTP_URL}/profile/friends/challenge/decline`, {
-                    method: 'POST',
-                    headers: {
-                      'Content-Type': 'application/json',
-                      'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ senderId: incomingChallenge.senderId })
-                  });
+                  await apiRequest('POST', `${BACKEND_HTTP_URL}/profile/friends/challenge/decline`, { senderId: incomingChallenge.senderId }, token);
                 } catch (e) {
                   console.error('[Friends] Decline challenge failed:', e);
                 }
@@ -7863,24 +7684,10 @@ function App() {
                   const token = btoa(JSON.stringify(payload));
                   
                   // Block challenger
-                  await fetch(`${BACKEND_HTTP_URL}/profile/friends/block`, {
-                    method: 'POST',
-                    headers: {
-                      'Content-Type': 'application/json',
-                      'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ challengerId: incomingChallenge.senderId, durationSec: 300 })
-                  });
+                  await apiRequest('POST', `${BACKEND_HTTP_URL}/profile/friends/block`, { challengerId: incomingChallenge.senderId, durationSec: 300 }, token);
 
                   // Decline challenge
-                  await fetch(`${BACKEND_HTTP_URL}/profile/friends/challenge/decline`, {
-                    method: 'POST',
-                    headers: {
-                      'Content-Type': 'application/json',
-                      'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ senderId: incomingChallenge.senderId })
-                  });
+                  await apiRequest('POST', `${BACKEND_HTTP_URL}/profile/friends/challenge/decline`, { senderId: incomingChallenge.senderId }, token);
 
                   showToast(`Challenges from ${incomingChallenge.sender} will be declined for 5 minutes.`, 'info');
                 } catch (e) {
@@ -7907,14 +7714,7 @@ function App() {
                 try {
                   const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
                   const token = btoa(JSON.stringify(payload));
-                  await fetch(`${BACKEND_HTTP_URL}/profile/friends/challenge/clear`, {
-                    method: 'POST',
-                    headers: {
-                      'Content-Type': 'application/json',
-                      'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ senderId: incomingChallenge.senderId })
-                  });
+                  await apiRequest('POST', `${BACKEND_HTTP_URL}/profile/friends/challenge/clear`, { senderId: incomingChallenge.senderId }, token);
                 } catch (e) {
                   console.error('[Friends] Clear challenge failed:', e);
                 }
@@ -7972,14 +7772,7 @@ function App() {
                   try {
                     const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
                     const token = btoa(JSON.stringify(payload));
-                    const res = await fetch(`${BACKEND_HTTP_URL}/profile/friends/request/decline`, {
-                      method: 'POST',
-                      headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                      },
-                      body: JSON.stringify({ senderId: request.senderId })
-                    });
+                    const res = await apiRequest('POST', `${BACKEND_HTTP_URL}/profile/friends/request/decline`, { senderId: request.senderId }, token);
                     if (res.ok) {
                       setFriendRequests(prev => prev.filter(r => r.senderId !== request.senderId));
                     }
@@ -7998,16 +7791,9 @@ function App() {
                   try {
                     const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
                     const token = btoa(JSON.stringify(payload));
-                    const res = await fetch(`${BACKEND_HTTP_URL}/profile/friends/request/accept`, {
-                      method: 'POST',
-                      headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                      },
-                      body: JSON.stringify({ senderId: request.senderId })
-                    });
+                    const res = await apiRequest('POST', `${BACKEND_HTTP_URL}/profile/friends/request/accept`, { senderId: request.senderId }, token);
                     if (res.ok) {
-                      const updatedFriends = await res.json();
+                      const updatedFriends = res.data;
                       setFriendsList(updatedFriends);
                       setFriendRequests(prev => prev.filter(r => r.senderId !== request.senderId));
                       triggerSound('success');
@@ -8580,24 +8366,17 @@ function App() {
                       try {
                         const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
                         const token = btoa(JSON.stringify(payload));
-                        const res = await fetch(`${BACKEND_HTTP_URL}/profile/mailbox/send`, {
-                          method: 'POST',
-                          headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                          },
-                          body: JSON.stringify({
+                        const res = await apiRequest('POST', `${BACKEND_HTTP_URL}/profile/mailbox/send`, {
                             targetId: targetId || undefined,
                             mailType: adminMailType,
                             title,
                             content,
                             rewardCoins: adminMailType === 'gift' ? adminGiftCoins : undefined,
                             rewardGems: adminMailType === 'gift' ? adminGiftGems : undefined
-                          })
-                        });
+                          }, token);
                         
                         if (res.ok) {
-                          const data = await res.json();
+                          const data = res.data;
                           if (data.success && data.item) {
                             if (!targetId || targetId === userProfile.id) {
                               setMailboxItems(prev => [data.item, ...prev]);
@@ -8740,28 +8519,19 @@ function App() {
                                 try {
                                   const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
                                   const token = btoa(JSON.stringify(payload));
-                                  const res = await fetch(`${BACKEND_HTTP_URL}/profile/ban`, {
-                                    method: 'POST',
-                                    headers: {
-                                      'Content-Type': 'application/json',
-                                      'Authorization': `Bearer ${token}`
-                                    },
-                                    body: JSON.stringify({ profileId: targetId, reason: adminBanReason.trim() })
-                                  });
+                                  const res = await apiRequest('POST', `${BACKEND_HTTP_URL}/profile/ban`, { profileId: targetId, reason: adminBanReason.trim() }, token);
                                   if (res.ok) {
-                                    const data = await res.json();
+                                    const data = res.data;
                                     showToast(`Successfully banned player: ${data.username || targetId}`, 'success');
                                     setAdminBanPlayerId('');
                                     setAdminBanReason('');
                                     // Refresh list
-                                    const listRes = await fetch(`${BACKEND_HTTP_URL}/profile/banned`, {
-                                      headers: { 'Authorization': `Bearer ${token}` }
-                                    });
+                                    const listRes = await apiRequest('GET', `${BACKEND_HTTP_URL}/profile/banned`, undefined, token);
                                     if (listRes.ok) {
-                                      setBannedPlayersList(await listRes.json());
+                                      setBannedPlayersList(listRes.data);
                                     }
                                   } else {
-                                    const err = await res.json();
+                                    const err = res.data || {};
                                     showToast(`Error: ${err.message || 'Failed to ban user'}`, 'error');
                                   }
                                 } catch (e) {
@@ -8790,23 +8560,14 @@ function App() {
                             try {
                               const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
                               const token = btoa(JSON.stringify(payload));
-                              const res = await fetch(`${BACKEND_HTTP_URL}/profile/unban`, {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'Authorization': `Bearer ${token}`
-                                },
-                                body: JSON.stringify({ profileId: targetId })
-                              });
+                              const res = await apiRequest('POST', `${BACKEND_HTTP_URL}/profile/unban`, { profileId: targetId }, token);
                               if (res.ok) {
                                 showToast(`Successfully unbanned profile ID: ${targetId}`, 'success');
                                 setAdminBanPlayerId('');
                                 // Refresh list
-                                const listRes = await fetch(`${BACKEND_HTTP_URL}/profile/banned`, {
-                                  headers: { 'Authorization': `Bearer ${token}` }
-                                });
+                                const listRes = await apiRequest('GET', `${BACKEND_HTTP_URL}/profile/banned`, undefined, token);
                                 if (listRes.ok) {
-                                    setBannedPlayersList(await listRes.json());
+                                    setBannedPlayersList(listRes.data);
                                 }
                               }
                             } catch (e) {
@@ -9214,20 +8975,13 @@ function App() {
                           try {
                             const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
                             const token = btoa(JSON.stringify(payload));
-                            const res = await fetch(`${BACKEND_HTTP_URL}/profile/popup-announcements`, {
-                              method: 'POST',
-                              headers: {
-                                'Content-Type': 'application/json',
-                                'Authorization': `Bearer ${token}`
-                              },
-                              body: JSON.stringify({
-                                text,
-                                targetUserIds: adminPopupTargets.trim() || undefined
-                              })
-                            });
+                            const res = await apiRequest('POST', `${BACKEND_HTTP_URL}/profile/popup-announcements`, {
+                              text,
+                              targetUserIds: adminPopupTargets.trim() || undefined
+                            }, token);
                             
                             if (res.ok) {
-                              const result = await res.json();
+                              const result = res.data;
                               showToast("Popup announcement sent successfully!", 'success');
                               setAdminPopupText('');
                               setAdminPopupTargets('');
@@ -9236,7 +8990,7 @@ function App() {
                                 setAdminAnnouncementHistory(prev => [...prev, result.announcement]);
                               }
                             } else {
-                              const err = await res.json();
+                              const err = res.data || {};
                               showToast(`Failed to send: ${err.message || 'Error occurred'}`, 'error');
                             }
                           } catch (e) {
@@ -9294,14 +9048,11 @@ function App() {
                                         try {
                                           const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
                                           const token = btoa(JSON.stringify(payload));
-                                          const res = await fetch(`${BACKEND_HTTP_URL}/profile/popup-announcements/${ann.id}`, {
-                                            method: 'DELETE',
-                                            headers: { 'Authorization': `Bearer ${token}` }
-                                          });
+                                          const res = await apiRequest('DELETE', `${BACKEND_HTTP_URL}/profile/popup-announcements/${ann.id}`, undefined, token);
                                           if (res.ok) {
                                             setAdminAnnouncementHistory(prev => prev.filter(a => a.id !== ann.id));
                                           } else {
-                                            const err = await res.json();
+                                            const err = res.data || {};
                                             showToast(`Delete failed: ${err.message || 'Error'}`, 'error');
                                           }
                                         } catch (e) {
@@ -9951,14 +9702,7 @@ function App() {
                               try {
                                 const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
                                 const token = btoa(JSON.stringify(payload));
-                                await fetch(`${BACKEND_HTTP_URL}/profile/mailbox/claim`, {
-                                  method: 'POST',
-                                  headers: {
-                                    'Content-Type': 'application/json',
-                                    'Authorization': `Bearer ${token}`
-                                  },
-                                  body: JSON.stringify({ mailId: item.id })
-                                });
+                                await apiRequest('POST', `${BACKEND_HTTP_URL}/profile/mailbox/claim`, { mailId: item.id }, token);
                               } catch (e) {
                                 console.error('[Mailbox] Backend claim failed:', e);
                               }
@@ -9994,14 +9738,7 @@ function App() {
                               try {
                                 const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
                                 const token = btoa(JSON.stringify(payload));
-                                await fetch(`${BACKEND_HTTP_URL}/profile/mailbox/claim`, {
-                                  method: 'POST',
-                                  headers: {
-                                    'Content-Type': 'application/json',
-                                    'Authorization': `Bearer ${token}`
-                                  },
-                                  body: JSON.stringify({ mailId: item.id })
-                                });
+                                await apiRequest('POST', `${BACKEND_HTTP_URL}/profile/mailbox/claim`, { mailId: item.id }, token);
                               } catch (e) {
                                 console.error('[Mailbox] Backend claim failed:', e);
                               }
@@ -10393,14 +10130,7 @@ function App() {
                       try {
                         const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
                         const token = btoa(JSON.stringify(payload));
-                        const res = await fetch(`${BACKEND_HTTP_URL}/profile/delete`, {
-                          method: 'POST',
-                          headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                          },
-                          body: JSON.stringify({ userId: selectedAdminUser.id })
-                        });
+                        const res = await apiRequest('POST', `${BACKEND_HTTP_URL}/profile/delete`, { userId: selectedAdminUser.id }, token);
                         if (res.ok) {
                           showToast(`Player "${selectedAdminUser.username}" has been deleted.`, 'success');
                           setAdminUsersList((prev: any[]) => prev.filter((u: any) => u.id !== selectedAdminUser.id));
@@ -10646,43 +10376,14 @@ function App() {
                     description: supportDescription.trim()
                   };
 
-                  let ok = false;
-                  let errMessage = 'Server error';
+                  const res = await apiRequest('POST', url, bodyPayload, token);
 
-                  if (Capacitor.isNativePlatform()) {
-                    const response = await CapacitorHttp.post({
-                      url,
-                      headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                      },
-                      data: bodyPayload
-                    });
-                    ok = response.status === 200 || response.status === 201;
-                    if (!ok) {
-                      errMessage = response.data?.message || errMessage;
-                    }
-                  } else {
-                    const res = await fetch(url, {
-                      method: 'POST',
-                      headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                      },
-                      body: JSON.stringify(bodyPayload)
-                    });
-                    ok = res.ok;
-                    if (!ok) {
-                      const err = await res.json().catch(() => ({}));
-                      errMessage = err.message || errMessage;
-                    }
-                  }
-
-                  if (ok) {
+                  if (res.ok) {
                     triggerSound('success');
                     showToast("Support Ticket Submitted successfully! We will get back to you soon.", 'success');
                     setIsSupportOpen(false);
                   } else {
+                    const errMessage = res.data?.message || 'Server error';
                     showToast(`Failed to submit support request: ${errMessage}`, 'error');
                   }
                 } catch (err) {
@@ -11197,17 +10898,10 @@ function App() {
                 try {
                   const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
                   const token = btoa(JSON.stringify(payload));
-                  await fetch(`${BACKEND_HTTP_URL}/profile/friends/chat/send`, {
-                    method: 'POST',
-                    headers: {
-                      'Content-Type': 'application/json',
-                      'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({
-                      friendId: activeChatFriend.id,
-                      text
-                    })
-                  });
+                  await apiRequest('POST', `${BACKEND_HTTP_URL}/profile/friends/chat/send`, {
+                    friendId: activeChatFriend.id,
+                    text
+                  }, token);
                 } catch (err) {
                   console.error('[Friends] Send message failed:', err);
                 }
