@@ -10637,29 +10637,53 @@ function App() {
                 try {
                   const authPayload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
                   const token = btoa(JSON.stringify(authPayload));
+                  const url = `${BACKEND_HTTP_URL}/profile/support`;
+                  const bodyPayload = {
+                    name: supportName.trim(),
+                    email: supportEmail.trim(),
+                    userId: userProfile.id,
+                    subject: supportSubject.trim(),
+                    description: supportDescription.trim()
+                  };
 
-                  const res = await fetch(`${BACKEND_HTTP_URL}/profile/support`, {
-                    method: 'POST',
-                    headers: {
-                      'Content-Type': 'application/json',
-                      'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({
-                      name: supportName.trim(),
-                      email: supportEmail.trim(),
-                      userId: userProfile.id,
-                      subject: supportSubject.trim(),
-                      description: supportDescription.trim()
-                    })
-                  });
+                  let ok = false;
+                  let errMessage = 'Server error';
 
-                  if (res.ok) {
+                  if (Capacitor.isNativePlatform()) {
+                    const response = await CapacitorHttp.post({
+                      url,
+                      headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                      },
+                      data: bodyPayload
+                    });
+                    ok = response.status === 200 || response.status === 201;
+                    if (!ok) {
+                      errMessage = response.data?.message || errMessage;
+                    }
+                  } else {
+                    const res = await fetch(url, {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                      },
+                      body: JSON.stringify(bodyPayload)
+                    });
+                    ok = res.ok;
+                    if (!ok) {
+                      const err = await res.json().catch(() => ({}));
+                      errMessage = err.message || errMessage;
+                    }
+                  }
+
+                  if (ok) {
                     triggerSound('success');
                     showToast("Support Ticket Submitted successfully! We will get back to you soon.", 'success');
                     setIsSupportOpen(false);
                   } else {
-                    const err = await res.json().catch(() => ({}));
-                    showToast(`Failed to submit support request: ${err.message || 'Server error'}`, 'error');
+                    showToast(`Failed to submit support request: ${errMessage}`, 'error');
                   }
                 } catch (err) {
                   console.error('Support ticket error:', err);
