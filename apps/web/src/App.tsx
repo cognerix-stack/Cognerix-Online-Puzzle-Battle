@@ -3310,6 +3310,8 @@ function App() {
         // Capture opponent name from ref
         const savedOpponentName = opponentNameRef.current;
 
+        const savedRoomId = roomRef.current?.roomId || (roomRef.current as any)?.id || undefined;
+
         let triviaDetails = undefined;
         // Use `puzzleType` (the startMatchmaking parameter) instead of `activeGame`/`queuedPuzzle`
         // state variables, which are stale closures from when the room was created.
@@ -3333,7 +3335,7 @@ function App() {
           forfeit: data.forfeit,
           triviaDetails,
           bothDefeated: data.bothDefeated,
-          roomId: roomRef.current?.roomId || undefined
+          roomId: savedRoomId
         };
 
         if (puzzleType === PuzzleType.MENTAL_MATH && !data.forfeit) {
