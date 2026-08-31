@@ -2057,23 +2057,47 @@ function App() {
       const token = btoa(JSON.stringify(authPayload));
 
       console.log('[Report] Submitting report to:', `${BACKEND_HTTP_URL}/profile/report`);
-      const res = await fetch(`${BACKEND_HTTP_URL}/profile/report`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(payload)
-      });
+      const url = `${BACKEND_HTTP_URL}/profile/report`;
 
-      if (res.ok) {
+      let ok = false;
+      let errMessage = 'Server error';
+
+      if (Capacitor.isNativePlatform()) {
+        const response = await CapacitorHttp.post({
+          url,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          data: payload
+        });
+        ok = response.status === 200 || response.status === 201;
+        if (!ok) {
+          errMessage = response.data?.message || errMessage;
+        }
+      } else {
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(payload)
+        });
+        ok = res.ok;
+        if (!ok) {
+          const errData = await res.json().catch(() => ({}));
+          errMessage = errData.message || errMessage;
+        }
+      }
+
+      if (ok) {
         showToast("Report Submitted. Thank you for helping keep Cognerix safe.", 'success');
         setIsReportModalOpen(false);
         setReportDescription('');
         setReportReason('Violence in Chat');
       } else {
-        const errData = await res.json().catch(() => ({}));
-        showToast(`Failed to submit report: ${errData.message || 'Server error'}`, 'error');
+        showToast(`Failed to submit report: ${errMessage}`, 'error');
       }
     } catch (err) {
       console.error('Error submitting report:', err);
