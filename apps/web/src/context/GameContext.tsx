@@ -9,6 +9,7 @@ import {
   Tournament 
 } from '@puzzle-verse/shared';
 import { BACKEND_HTTP_URL } from '../services/multiplayer';
+import { Capacitor, CapacitorHttp } from '@capacitor/core';
 
 interface GameContextType {
   userProfile: UserProfile;
@@ -1062,9 +1063,25 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       await syncLocalScoresToServer(userProfile.id, userProfile.username);
     }
     try {
-      const response = await fetch(`${BACKEND_HTTP_URL}/leaderboard/global`);
-      if (response.ok) {
-        const data = await response.json();
+      const url = `${BACKEND_HTTP_URL}/leaderboard/global`;
+      let ok = false;
+      let data: any = null;
+
+      if (Capacitor.isNativePlatform()) {
+        const response = await CapacitorHttp.get({ url });
+        ok = response.status === 200 || response.status === 201;
+        if (ok) {
+          data = response.data;
+        }
+      } else {
+        const response = await fetch(url);
+        ok = response.ok;
+        if (ok) {
+          data = await response.json();
+        }
+      }
+
+      if (ok) {
         if (Array.isArray(data) && data.length > 0) {
           // Merge local higher scores with server scores so they never drop or flicker
           const merged = [...data];
