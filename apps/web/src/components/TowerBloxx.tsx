@@ -678,8 +678,6 @@ export const TowerBloxx: React.FC<TowerBloxxProps> = ({ onGameWin, onClose, onPr
 
               setLives(l => {
                 const nextLives = l - 1;
-                playMobileSound(370, 0.08, 0.15);
-                setTimeout(() => playMobileSound(370, 0.08, 0.15), 100);
                 if (nextLives <= 0) {
                   state.isGameOver = true;
                   setIsGameOver(true);
