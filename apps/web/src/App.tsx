@@ -2009,7 +2009,7 @@ function App() {
         nickname: reportNickname.trim(),
         reason: reportReason,
         description: reportReason === 'Other' ? reportDescription.trim() : undefined,
-        sessionId: lastRoomId || undefined
+        sessionId: lastRoomIdRef.current || undefined
       };
 
       const authPayload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
@@ -2101,7 +2101,7 @@ function App() {
   }, [playerProgress, activeGame, opponentInfo]);
 
   const [matchResult, setMatchResult] = useState<{ isWinner: boolean; winnerName: string; opponentName?: string; opponentNameColor?: string; opponentBadges?: string[]; opponentId?: string; forfeit?: boolean; isSolo?: boolean; isDisconnect?: boolean; bothDefeated?: boolean; triviaDetails?: { playerCorrect: number; opponentCorrect: number }; roomId?: string } | null>(null);
-  const [lastRoomId, setLastRoomId] = useState<string | undefined>(undefined);
+  const lastRoomIdRef = useRef<string | undefined>(undefined);
   const [delayedMatchResult, setDelayedMatchResult] = useState<any>(null);
   const confettiCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -3166,7 +3166,7 @@ function App() {
       }
       roomRef.current = room;
       savedRoomIdRef.current = room.roomId || (room as any).id || undefined;
-      setLastRoomId(room.roomId || (room as any).id || undefined);
+      lastRoomIdRef.current = room.roomId || (room as any).id || undefined;
 
       room.onLeave((code: number) => {
         console.log("Left matchmaking room. Code:", code);
