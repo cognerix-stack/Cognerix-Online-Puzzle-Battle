@@ -959,7 +959,7 @@ function App() {
   const [activeGame, setActiveGame] = useState<PuzzleType | null>(null);
   const [isMuted, setIsMuted] = useState<boolean>(false);
   const [soundVolume, setSoundVolume] = useState<number>(0.5);
-  const [isMusicOn] = useState<boolean>(false);
+  const [isMusicOn, setIsMusicOn] = useState<boolean>(false);
   const [customStatusInput, setCustomStatusInput] = useState<string>(userProfile.status || '');
 
   // Manage ambient music lifecycle
@@ -6783,6 +6783,18 @@ function App() {
                       {isMuted ? '🔇 Muted' : '🔊 Sound On'}
                     </button>
 
+                    <button
+                      onClick={() => {
+                        const nextState = !isMusicOn;
+                        setIsMusicOn(nextState);
+                        triggerSound('click');
+                      }}
+                      className={`btn ${!isMusicOn ? 'btn-glass' : 'btn-primary'}`}
+                      style={{ fontSize: '13px', padding: '8px 16px', cursor: 'pointer' }}
+                    >
+                      {isMusicOn ? '🎵 Music On' : '🎵 Background Music'}
+                    </button>
+
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Volume:</span>
                       <input
@@ -6809,47 +6821,33 @@ function App() {
                   </div>
                 </div>
 
-                {/* 🎵 Background Music Toggle */}
+                                {/* 🎵 Background Music Toggle */}
                 <div style={{ 
                   display: 'flex', 
                   justifyContent: 'space-between', 
                   alignItems: 'center', 
                   flexWrap: 'wrap', 
-                  gap: '12px',
-                  opacity: 0.5,
-                  pointerEvents: 'none',
-                  userSelect: 'none'
+                  gap: '12px'
                 }}>
                   <div>
                     <h4 style={{ fontSize: '15px', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      🎵 Background Music (Disabled)
+                      🎵 Background Music
                     </h4>
                     <p style={{ color: 'var(--text-muted)', fontSize: '12px', marginTop: '2px' }}>
-                      Ambient music is currently disabled.
+                      {isMusicOn ? 'Procedural ambient music is playing.' : 'Procedural ambient music is off.'}
                     </p>
                   </div>
-                  <div
-                    style={{
-                      width: '52px',
-                      height: '28px',
-                      borderRadius: '14px',
-                      background: 'rgba(255,255,255,0.05)',
-                      cursor: 'not-allowed',
-                      position: 'relative',
-                      flexShrink: 0
+                  <button
+                    onClick={() => {
+                      const nextState = !isMusicOn;
+                      setIsMusicOn(nextState);
+                      triggerSound('click');
                     }}
+                    className={`btn ${!isMusicOn ? 'btn-glass' : 'btn-primary'}`}
+                    style={{ fontSize: '13px', padding: '8px 16px', cursor: 'pointer' }}
                   >
-                    <div style={{
-                      width: '22px',
-                      height: '22px',
-                      borderRadius: '50%',
-                      background: '#888',
-                      position: 'absolute',
-                      top: '3px',
-                      left: '3px',
-                      boxShadow: 'none'
-                    }} />
-                  </div>
+                    {isMusicOn ? '🎵 Music On' : '🎵 Music Off'}
+                  </button>
                 </div>
 
                 <div style={{ width: '100%', height: '1px', background: 'var(--border-glass)' }} />
