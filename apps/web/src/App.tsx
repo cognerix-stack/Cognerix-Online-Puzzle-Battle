@@ -2009,7 +2009,7 @@ function App() {
         nickname: reportNickname.trim(),
         reason: reportReason,
         description: reportReason === 'Other' ? reportDescription.trim() : undefined,
-        sessionId: matchResult?.roomId || undefined
+        sessionId: lastRoomId || undefined
       };
 
       const authPayload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
@@ -2101,6 +2101,7 @@ function App() {
   }, [playerProgress, activeGame, opponentInfo]);
 
   const [matchResult, setMatchResult] = useState<{ isWinner: boolean; winnerName: string; opponentName?: string; opponentNameColor?: string; opponentBadges?: string[]; opponentId?: string; forfeit?: boolean; isSolo?: boolean; isDisconnect?: boolean; bothDefeated?: boolean; triviaDetails?: { playerCorrect: number; opponentCorrect: number }; roomId?: string } | null>(null);
+  const [lastRoomId, setLastRoomId] = useState<string | undefined>(undefined);
   const [delayedMatchResult, setDelayedMatchResult] = useState<any>(null);
   const confettiCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -3165,6 +3166,7 @@ function App() {
       }
       roomRef.current = room;
       savedRoomIdRef.current = room.roomId || (room as any).id || undefined;
+      setLastRoomId(room.roomId || (room as any).id || undefined);
 
       room.onLeave((code: number) => {
         console.log("Left matchmaking room. Code:", code);
@@ -9566,6 +9568,11 @@ function App() {
                               <span style={{ fontSize: '10px', color: 'var(--text-secondary)', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
                                 Reason: {report.reason}
                               </span>
+                              {report.roomId && (
+                                <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+                                  🔑 Room ID: {report.roomId}
+                                </span>
+                              )}
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
                               {openedReports.has(report.id) && (
