@@ -11583,10 +11583,10 @@ function App() {
 
       {/* ⚔️ CHOOSE GAME DIFFICULTY MODAL OVERLAY */}
       {difficultyModal && !matchResult && (
-        <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(5, 3, 10, 0.85)', zIndex: 2100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px', backdropFilter: 'blur(8px)' }}>
-          <div className="glass-panel difficulty-selection-modal" style={{ width: '100%', maxWidth: '420px', padding: '28px', border: isLightMode ? '1px solid #000000' : '1px solid rgba(255,255,255,0.15)', background: isLightMode ? '#ffffff' : 'var(--bg-glass)', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(5, 3, 10, 0.85)', zIndex: 2100, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', padding: '12px 24px', paddingTop: '12px', paddingBottom: '12px', overflowY: 'auto', backdropFilter: 'blur(8px)' }}>
+          <div className="glass-panel difficulty-selection-modal" style={{ width: '100%', maxWidth: '420px', maxHeight: '90vh', overflowY: 'auto', padding: '16px', border: isLightMode ? '1px solid #000000' : '1px solid rgba(255,255,255,0.15)', background: isLightMode ? '#ffffff' : 'var(--bg-glass)', display: 'flex', flexDirection: 'column', gap: '12px' }}>
             <div style={{ textAlign: 'center' }}>
-              <h3 style={{ fontSize: '20px', color: 'var(--text-primary)', fontFamily: 'var(--font-display)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+              <h3 style={{ fontSize: '17px', color: 'var(--text-primary)', fontFamily: 'var(--font-display)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
                 ⚔️ {t('choose_game_mode')}
               </h3>
               <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '6px' }}>
@@ -11624,7 +11624,7 @@ function App() {
               <button 
                 className="glass-panel"
                 style={{ 
-                  padding: '16px', 
+                  padding: '12px', 
                   textAlign: 'left', 
                   border: '1px solid rgba(6,182,212,0.4)',
                   background: 'rgba(6,182,212,0.1)', 
@@ -11656,7 +11656,7 @@ function App() {
               <button 
                 className="glass-panel"
                 style={{ 
-                  padding: '16px', 
+                  padding: '12px', 
                   textAlign: 'left', 
                   border: '1px solid rgba(139,92,246,0.4)',
                   background: 'rgba(139,92,246,0.1)', 
@@ -11697,7 +11697,7 @@ function App() {
                         boxShadow: isLightMode ? '0 4px 12px rgba(0, 0, 0, 0.05)' : undefined,
                         borderRadius: '12px',
                         color: 'var(--text-primary)',
-                        padding: '12px 16px',
+                        padding: '10px 12px',
                         textAlign: 'left',
                         display: 'flex',
                         justifyContent: 'space-between',
