@@ -1027,6 +1027,7 @@ function App() {
   const searchIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const matchSolveIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const roomRef = useRef<Room<any> | null>(null);
+  const savedRoomIdRef = useRef<string | undefined>(undefined);
   const isIntentionalLeaveRef = useRef<boolean>(false);
   const playerHasWonBotMatchRef = useRef<boolean>(false);
   const gameStartedRef = useRef<boolean>(false);
@@ -3163,6 +3164,7 @@ function App() {
         room = await MultiplayerService.joinDuel(userProfile.id, userProfile.username, puzzleType, userProfile.nameColor, userProfile.badges, userProfile.rank, userProfile.avatar, userProfile.frame);
       }
       roomRef.current = room;
+      savedRoomIdRef.current = room.roomId || (room as any).id || undefined;
 
       room.onLeave((code: number) => {
         console.log("Left matchmaking room. Code:", code);
@@ -3310,8 +3312,6 @@ function App() {
         // Capture opponent name from ref
         const savedOpponentName = opponentNameRef.current;
 
-        const savedRoomId = roomRef.current?.roomId || (roomRef.current as any)?.id || undefined;
-
         let triviaDetails = undefined;
         // Use `puzzleType` (the startMatchmaking parameter) instead of `activeGame`/`queuedPuzzle`
         // state variables, which are stale closures from when the room was created.
@@ -3335,7 +3335,7 @@ function App() {
           forfeit: data.forfeit,
           triviaDetails,
           bothDefeated: data.bothDefeated,
-          roomId: savedRoomId
+          roomId: savedRoomIdRef.current
         };
 
         if (puzzleType === PuzzleType.MENTAL_MATH && !data.forfeit) {
