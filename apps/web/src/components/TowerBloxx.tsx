@@ -1047,7 +1047,6 @@ export const TowerBloxx: React.FC<TowerBloxxProps> = ({ onGameWin, onClose, onPr
               className="btn btn-primary" 
               style={{ flex: 1 }} 
               onClick={() => {
-                playMobileSound(450, 0.05, 0.06);
                 startNewGame();
               }}
             >
@@ -1057,7 +1056,6 @@ export const TowerBloxx: React.FC<TowerBloxxProps> = ({ onGameWin, onClose, onPr
               className="btn btn-glass" 
               style={{ flex: 1 }} 
               onClick={() => {
-                playMobileSound(450, 0.05, 0.06);
                 if (onClose) {
                   onClose();
                 } else {
