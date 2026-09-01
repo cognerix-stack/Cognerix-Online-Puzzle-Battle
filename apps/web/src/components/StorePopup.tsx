@@ -212,8 +212,11 @@ export const StorePopup: React.FC<StorePopupProps> = ({
       background: 'rgba(0, 0, 0, 0.65)',
       backdropFilter: 'blur(10px)',
       display: 'flex',
-      alignItems: 'center',
+      alignItems: 'flex-start',
       justifyContent: 'center',
+      paddingTop: '12px',
+      paddingBottom: '12px',
+      overflowY: 'auto',
       zIndex: 2000,
       opacity: isClosing ? 0 : 1,
       transition: 'opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1)'
@@ -223,18 +226,19 @@ export const StorePopup: React.FC<StorePopupProps> = ({
         position: 'relative',
         width: '90%',
         maxWidth: '750px',
+        maxHeight: '90vh',
+        overflowY: 'auto',
         background: themeBg,
         border: themeBorder,
         boxShadow: themeBoxShadow,
         borderRadius: '24px',
-        padding: '30px',
+        padding: '16px',
         color: themeTextColor,
         display: 'flex',
         flexDirection: 'column',
-        gap: '20px',
+        gap: '12px',
         transform: isClosing ? 'scale(0.92)' : 'scale(1)',
-        transition: 'transform 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
-        overflow: 'hidden'
+        transition: 'transform 0.25s cubic-bezier(0.4, 0, 0.2, 1)'
       }}>
         {/* Glow Spheres */}
         {!isLightMode && (
@@ -281,11 +285,11 @@ export const StorePopup: React.FC<StorePopupProps> = ({
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px',
-                padding: '10px 20px',
+                padding: '8px 12px',
                 borderRadius: '11px',
                 border: 'none',
                 fontWeight: 'bold',
-                fontSize: '14px',
+                fontSize: '12px',
                 cursor: 'pointer',
                 background: activeTab === 'coins' ? 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' : 'transparent',
                 color: activeTab === 'coins' ? '#fff' : (isLightMode ? 'rgba(0,0,0,0.6)' : 'rgba(255,255,255,0.6)'),
@@ -301,11 +305,11 @@ export const StorePopup: React.FC<StorePopupProps> = ({
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px',
-                padding: '10px 20px',
+                padding: '8px 12px',
                 borderRadius: '11px',
                 border: 'none',
                 fontWeight: 'bold',
-                fontSize: '14px',
+                fontSize: '12px',
                 cursor: 'pointer',
                 background: activeTab === 'gems' ? 'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)' : 'transparent',
                 color: activeTab === 'gems' ? '#fff' : (isLightMode ? 'rgba(0,0,0,0.6)' : 'rgba(255,255,255,0.6)'),
@@ -322,7 +326,7 @@ export const StorePopup: React.FC<StorePopupProps> = ({
         <div style={{
           background: activeTab === 'coins' ? 'rgba(245,158,11,0.06)' : 'rgba(6,182,212,0.06)',
           border: `1px solid ${activeTab === 'coins' ? 'rgba(245,158,11,0.2)' : 'rgba(6,182,212,0.2)'}`,
-          padding: '14px 20px',
+          padding: '10px 14px',
           borderRadius: '14px',
           zIndex: 10
         }}>
@@ -337,8 +341,8 @@ export const StorePopup: React.FC<StorePopupProps> = ({
         {/* Grid List */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))',
-          gap: '12px',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(90px, 1fr))',
+          gap: '8px',
           padding: '16px 8px 12px 8px',
           zIndex: 10
         }}>
@@ -351,7 +355,7 @@ export const StorePopup: React.FC<StorePopupProps> = ({
                 background: cardBg,
                 border: cardBorder,
                 borderRadius: '16px',
-                padding: '16px 12px',
+                padding: '12px 8px',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
