@@ -960,6 +960,7 @@ function App() {
   const [isMuted, setIsMuted] = useState<boolean>(false);
   const [soundVolume, setSoundVolume] = useState<number>(0.5);
   const [isMusicOn, setIsMusicOn] = useState<boolean>(false);
+  const [gameCount, setGameCount] = useState<number>(0);
   const [customStatusInput, setCustomStatusInput] = useState<string>(userProfile.status || '');
 
   // Manage ambient music lifecycle
@@ -2112,6 +2113,15 @@ function App() {
         lastPlayedMatchResultRef.current = matchResult;
         triggerSound(matchResult.isWinner ? 'victory' : 'defeat');
         showScreenBanners();
+        // Interstitial ad every 3rd game
+        const newCount = gameCount + 1;
+        setGameCount(newCount);
+        if (newCount % 3 === 0 && Capacitor.isNativePlatform()) {
+          AdMob.prepareInterstitial({
+            adId: 'ca-app-pub-3940256099942544/1033173712',
+            isTesting: true
+          }).then(() => AdMob.showInterstitial()).catch(() => {});
+        }
       }
     } else {
       lastPlayedMatchResultRef.current = null;
