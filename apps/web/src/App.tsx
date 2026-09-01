@@ -7210,7 +7210,7 @@ function App() {
                     });
                     setFriendSearchInput('');
                   }}
-                  style={{ display: 'flex', gap: '12px' }}
+                  style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}
                 >
                   <input 
                     type="text" 
@@ -7219,7 +7219,8 @@ function App() {
                     placeholder="Enter opponent's username..."
                     maxLength={20}
                     style={{
-                      flex: 1,
+                      minWidth: '0',
+                      flex: '1 1 200px',
                       background: 'var(--bg-glass)',
                       border: '1px solid var(--border-glass)',
                       color: 'var(--text-primary)',
@@ -7229,7 +7230,7 @@ function App() {
                       outline: 'none'
                     }}
                   />
-                  <button type="submit" className="btn btn-primary" style={{ padding: '12px 24px', borderRadius: '12px', fontSize: '14px' }}>
+                  <button type="submit" className="btn btn-primary" style={{ padding: '12px 24px', borderRadius: '12px', fontSize: '14px', flexShrink: 0, whiteSpace: 'nowrap' }}>
                     Add Friend
                   </button>
                 </form>
