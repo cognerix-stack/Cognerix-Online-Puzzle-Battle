@@ -881,6 +881,7 @@ function App() {
       StatusBar.hide();
     }
     if (Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'android') {
+      document.documentElement.style.setProperty('--safe-top', '32px');
       AdMob.initialize()
         .then(() => console.log('[AdMob] Initialized successfully'))
         .catch(err => console.error('[AdMob] Initialization failed:', err));
@@ -4418,7 +4419,7 @@ function App() {
         minHeight: '100vh', 
         display: 'flex', 
         position: 'relative',
-        paddingTop: 'env(safe-area-inset-top, 0px)',
+        paddingTop: 'var(--safe-top, env(safe-area-inset-top, 0px))',
         ...getAccessibilityStyle()
       }}
     >
