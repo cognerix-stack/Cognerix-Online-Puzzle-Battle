@@ -960,7 +960,7 @@ function App() {
   const [isMuted, setIsMuted] = useState<boolean>(false);
   const [soundVolume, setSoundVolume] = useState<number>(0.5);
   const [isMusicOn, setIsMusicOn] = useState<boolean>(false);
-  const [gameCount, setGameCount] = useState<number>(0);
+  const gameCountRef = useRef<number>(0);
   const [customStatusInput, setCustomStatusInput] = useState<string>(userProfile.status || '');
 
   // Manage ambient music lifecycle
@@ -2114,8 +2114,8 @@ function App() {
         triggerSound(matchResult.isWinner ? 'victory' : 'defeat');
         showScreenBanners();
         // Interstitial ad every 3rd game
-        const newCount = gameCount + 1;
-        setGameCount(newCount);
+        gameCountRef.current += 1;
+        const newCount = gameCountRef.current;
         if (newCount % 3 === 0 && Capacitor.isNativePlatform()) {
           AdMob.prepareInterstitial({
             adId: 'ca-app-pub-3940256099942544/1033173712',
