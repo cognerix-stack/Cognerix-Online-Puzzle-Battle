@@ -4418,6 +4418,7 @@ function App() {
         minHeight: '100vh', 
         display: 'flex', 
         position: 'relative',
+        paddingTop: 'env(safe-area-inset-top, 0px)',
         ...getAccessibilityStyle()
       }}
     >
