@@ -26,7 +26,6 @@ import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
 import { AdMob, RewardAdPluginEvents, BannerAdSize, BannerAdPosition } from '@capacitor-community/admob';
 import { Network } from '@capacitor/network';
 import { StatusBar } from '@capacitor/status-bar';
-import { NavigationBar } from '@capawesome/capacitor-navigation-bar';
 import { StorePopup } from './components/StorePopup';
 
 const apiRequest = async (method: 'GET' | 'POST' | 'DELETE', url: string, body?: object, token?: string) => {
@@ -880,7 +879,6 @@ function App() {
   useEffect(() => {
     if (Capacitor.isNativePlatform()) {
       StatusBar.hide();
-      NavigationBar.hide();
     }
     if (Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'android') {
       AdMob.initialize()
