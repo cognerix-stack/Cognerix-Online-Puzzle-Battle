@@ -16,6 +16,7 @@
     "@capacitor/core": "^6.2.1",
     "@capacitor/network": "^6.0.4",
     "@capacitor/status-bar": "^6.0.3",
+    "@capawesome/capacitor-navigation-bar": "^8.0.1",
     "@codetrix-studio/capacitor-google-auth": "^3.4.0-rc.4",
     "@puzzle-verse/shared": "file:../../packages/shared",
     "colyseus.js": "^0.16.22",
