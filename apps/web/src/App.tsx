@@ -881,7 +881,6 @@ function App() {
       StatusBar.hide();
     }
     if (Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'android') {
-      document.documentElement.style.setProperty('--safe-top', '32px');
       AdMob.initialize()
         .then(() => console.log('[AdMob] Initialized successfully'))
         .catch(err => console.error('[AdMob] Initialization failed:', err));

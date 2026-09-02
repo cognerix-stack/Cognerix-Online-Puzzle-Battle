@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
+import android.view.DisplayCutout;
 import com.getcapacitor.BridgeActivity;
 
 public class MainActivity extends BridgeActivity {
@@ -11,14 +12,28 @@ public class MainActivity extends BridgeActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         hideSystemUI();
+        getWindow().getDecorView().setOnApplyWindowInsetsListener((v, insets) -> {
+            int cutoutHeight = 0;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+                DisplayCutout cutout = insets.getDisplayCutout();
+                if (cutout != null) {
+                    cutoutHeight = cutout.getSafeInsetTop();
+                }
+            }
+            final int finalCutout = cutoutHeight;
+            getBridge().getWebView().post(() ->
+                getBridge().getWebView().evaluateJavascript(
+                    "document.documentElement.style.setProperty('--safe-top', '" + finalCutout + "px')", null
+                )
+            );
+            return insets;
+        });
     }
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        if (hasFocus) {
-            hideSystemUI();
-        }
+        if (hasFocus) hideSystemUI();
     }
 
     private void hideSystemUI() {
