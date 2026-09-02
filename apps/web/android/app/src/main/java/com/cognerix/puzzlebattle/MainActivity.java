@@ -20,7 +20,12 @@ public class MainActivity extends BridgeActivity {
                     cutoutHeight = cutout.getSafeInsetTop();
                 }
             }
-            final int finalCutout = cutoutHeight;
+            int statusBarHeight = 0;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+                statusBarHeight = insets.getInsets(WindowInsets.Type.statusBars()).top;
+            }
+            int safeTop = Math.max(cutoutHeight, statusBarHeight);
+            final int finalCutout = safeTop;
             getBridge().getWebView().post(() ->
                 getBridge().getWebView().evaluateJavascript(
                     "document.documentElement.style.setProperty('--safe-top', '" + finalCutout + "px')", null
