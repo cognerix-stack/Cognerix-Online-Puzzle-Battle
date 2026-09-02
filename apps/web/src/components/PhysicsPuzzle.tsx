@@ -680,53 +680,53 @@ export const PhysicsPuzzle: React.FC<PhysicsPuzzleProps> = ({ onGameWin, onClose
   const isLight = document.documentElement.classList.contains('light-theme');
 
   return (
-    <div className="glass-panel" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <div className="glass-panel" style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
         <div>
-          <h3 style={{ fontSize: '20px', color: 'var(--text-primary)', fontFamily: 'var(--font-display)', display: 'flex', alignItems: 'center' }}>
+          <h3 style={{ fontSize: '16px', color: 'var(--text-primary)', fontFamily: 'var(--font-display)', display: 'flex', alignItems: 'center' }}>
             {t('physics_name')}
-            {headerActions}
           </h3>
-          <p style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{t('physics_desc')}</p>
+          <p style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '2px' }}>{t('physics_desc')}</p>
         </div>
-        <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
           {/* Level Selector */}
           {seed ? (
-            <div style={{ background: 'rgba(16, 185, 129, 0.15)', padding: '6px 12px', borderRadius: '8px', border: '1px solid rgba(16, 185, 129, 0.3)', fontSize: '12px', color: 'var(--color-success)', fontWeight: 'bold' }}>
-              🏆 {t('level')} {currentLevelIdx + 1} ({t('seeded_duel')})
+            <div style={{ background: 'rgba(16, 185, 129, 0.15)', padding: '4px 10px', borderRadius: '8px', border: '1px solid rgba(16, 185, 129, 0.3)', fontSize: '11px', color: 'var(--color-success)', fontWeight: 'bold' }}>
+              🎯 {t('level')} {currentLevelIdx + 1} ({t('seeded_duel')})
             </div>
           ) : (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.05)', padding: '6px 12px', borderRadius: '8px', border: '1px solid var(--border-glass)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(255,255,255,0.05)', padding: '4px 10px', borderRadius: '8px', border: '1px solid var(--border-glass)' }}>
               <button 
                 disabled={levelIdx === 0} 
                 onClick={() => setLevelIdx(prev => prev - 1)}
                 className="btn-glass"
-                style={{ border: 'none', background: 'transparent', color: levelIdx === 0 ? 'var(--text-muted)' : 'var(--text-primary)', cursor: levelIdx === 0 ? 'not-allowed' : 'pointer', fontSize: '14px', padding: '2px 6px', fontWeight: 'bold' }}
+                style={{ border: 'none', background: 'transparent', color: levelIdx === 0 ? 'var(--text-muted)' : 'var(--text-primary)', cursor: levelIdx === 0 ? 'not-allowed' : 'pointer', fontSize: '12px', padding: '2px 4px', fontWeight: 'bold' }}
               >
                 ◀
               </button>
-              <span style={{ fontSize: '13px', color: 'var(--text-primary)', fontWeight: 'bold' }}>
+              <span style={{ fontSize: '12px', color: 'var(--text-primary)', fontWeight: 'bold' }}>
                 {t('level')} {levelIdx + 1} / 15
               </span>
               <button 
                 disabled={levelIdx === LEVEL_CONFIGS.length - 1} 
                 onClick={() => setLevelIdx(prev => prev + 1)}
                 className="btn-glass"
-                style={{ border: 'none', background: 'transparent', color: levelIdx === LEVEL_CONFIGS.length - 1 ? 'var(--text-muted)' : 'var(--text-primary)', cursor: levelIdx === LEVEL_CONFIGS.length - 1 ? 'not-allowed' : 'pointer', fontSize: '14px', padding: '2px 6px', fontWeight: 'bold' }}
+                style={{ border: 'none', background: 'transparent', color: levelIdx === LEVEL_CONFIGS.length - 1 ? 'var(--text-muted)' : 'var(--text-primary)', cursor: levelIdx === LEVEL_CONFIGS.length - 1 ? 'not-allowed' : 'pointer', fontSize: '12px', padding: '2px 4px', fontWeight: 'bold' }}
               >
                 ▶
               </button>
             </div>
           )}
 
-          <div style={{ textAlign: 'right' }}>
-            <p style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{t('launch_retries')}</p>
-            <h4 style={{ fontSize: '18px', color: 'var(--color-primary)', fontFamily: 'var(--font-display)', marginTop: '2px' }}>
+          <div style={{ fontSize: '12px', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <span>{t('launch_retries')}:</span>
+            <span style={{ color: 'var(--color-primary)', fontWeight: 'bold', fontFamily: 'var(--font-display)' }}>
               {attempts} {t('attempts').toLowerCase()}
-            </h4>
+            </span>
           </div>
         </div>
       </div>
+      {headerActions && <div>{headerActions}</div>}
 
       <div ref={containerRef} style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
         <canvas
