@@ -1174,8 +1174,9 @@ function App() {
 
   const showScreenBanners = async () => {
     if (Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'android') {
+      // Small delay to ensure AdMob is ready
+      await new Promise(resolve => setTimeout(resolve, 500));
       try {
-        console.log('[AdMob] Showing top banner');
         await AdMob.showBanner({
           adId: 'ca-app-pub-3940256099942544/9214589741',
           adSize: BannerAdSize.ADAPTIVE_BANNER,
@@ -1187,7 +1188,6 @@ function App() {
         console.error('Error showing top banner:', e);
       }
       try {
-        console.log('[AdMob] Showing bottom banner');
         await AdMob.showBanner({
           adId: 'ca-app-pub-3940256099942544/9214589741',
           adSize: BannerAdSize.ADAPTIVE_BANNER,
