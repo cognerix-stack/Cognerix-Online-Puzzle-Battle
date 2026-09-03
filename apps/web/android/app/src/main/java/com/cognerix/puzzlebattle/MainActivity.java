@@ -12,15 +12,6 @@ public class MainActivity extends BridgeActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         hideSystemUI();
-        getWindow().getDecorView().postDelayed(() -> {
-            float density = getResources().getDisplayMetrics().density;
-            int statusBarResId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-            int statusBarHeight = statusBarResId > 0 ? getResources().getDimensionPixelSize(statusBarResId) : (int)(24 * density);
-            float dp = statusBarHeight / density;
-            getBridge().getWebView().evaluateJavascript(
-                "document.documentElement.style.setProperty('--safe-top', '" + dp + "px')", null
-            );
-        }, 500);
         getWindow().getDecorView().setOnApplyWindowInsetsListener((v, insets) -> {
             int cutoutHeight = 0;
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
