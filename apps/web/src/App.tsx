@@ -4419,7 +4419,7 @@ function App() {
         minHeight: '100vh', 
         display: 'flex', 
         position: 'relative',
-        paddingTop: 'calc(var(--safe-top, env(safe-area-inset-top, 0px)) + 12px)',
+        paddingTop: 'calc(var(--safe-top, env(safe-area-inset-top, 0px)) + 4px)',
         ...getAccessibilityStyle()
       }}
     >
@@ -4712,14 +4712,14 @@ function App() {
 
         {/* 🎮 FLOATING ACTIVE GAME MODAL SCREEN */}
         {activeGame && (
-          <div className={`active-game-modal ${isGameHidden ? 'hidden' : ''}`} style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: isLightMode ? 'rgba(240, 244, 248, 0.98)' : 'rgba(4, 2, 9, 0.95)', zIndex: 1000, display: isGameHidden ? 'none' : 'flex', alignItems: 'center', justifyContent: 'center', padding: 'calc(var(--safe-top, 0px) + 12px) 16px 16px 16px', backdropFilter: 'blur(8px)' }}>
+          <div className={`active-game-modal ${isGameHidden ? 'hidden' : ''}`} style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: isLightMode ? 'rgba(240, 244, 248, 0.98)' : 'rgba(4, 2, 9, 0.95)', zIndex: 1000, display: isGameHidden ? 'none' : 'flex', alignItems: 'center', justifyContent: 'center', padding: 'calc(var(--safe-top, 0px) + 4px) 16px 16px 16px', backdropFilter: 'blur(8px)' }}>
             <div className="game-container" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', height: '100%', boxSizing: 'border-box' }}>
             
             {/* Sticky Header Bar containing Menu Button and Live Duel Hub */}
             <div className="active-game-header" style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '100%', zIndex: 2000 }}>
 
               {/* ☰ Floating Top Left Game Menu Button */}
-              <div className="active-game-menu-btn-wrapper" style={{ position: 'absolute', top: 'calc(var(--safe-top, 0px) + 12px)', left: '20px', zIndex: 2000 }}>
+              <div className="active-game-menu-btn-wrapper" style={{ position: 'absolute', top: 'calc(var(--safe-top, 0px) + 4px)', left: '20px', zIndex: 2000 }}>
               <button
                 onClick={() => { triggerSound('click'); setIsGameMenuOpen(!isGameMenuOpen); }}
                 className="btn btn-glass"
@@ -4805,7 +4805,7 @@ function App() {
             {matchmakingState === 'playing' && opponentInfo && (
               isLiveDuelHubExpanded ? (
                 /* EXPANDED STATE (A button to collapse) */
-                <div className="live-duel-hub-panel live-duel-hub-expanded" style={{ position: 'absolute', top: 'calc(var(--safe-top, 0px) + 12px)', left: '50%', transform: 'translateX(-50%)', width: '90%', maxWidth: '600px', display: 'flex', gap: '20px', background: isLightMode ? '#ffffff' : 'rgba(10, 6, 26, 0.95)', padding: '16px 20px', borderRadius: '16px', border: isLightMode ? '1px solid #cbd5e1' : '1px solid rgba(255,255,255,0.1)', boxShadow: isLightMode ? '0 4px 12px rgba(0, 0, 0, 0.05)' : 'none', zIndex: 1010 }}>
+                <div className="live-duel-hub-panel live-duel-hub-expanded" style={{ position: 'absolute', top: 'calc(var(--safe-top, 0px) + 4px)', left: '50%', transform: 'translateX(-50%)', width: '90%', maxWidth: '600px', display: 'flex', gap: '20px', background: isLightMode ? '#ffffff' : 'rgba(10, 6, 26, 0.95)', padding: '16px 20px', borderRadius: '16px', border: isLightMode ? '1px solid #cbd5e1' : '1px solid rgba(255,255,255,0.1)', boxShadow: isLightMode ? '0 4px 12px rgba(0, 0, 0, 0.05)' : 'none', zIndex: 1010 }}>
                   
                   {/* Left Side: Stats and Parallel Progress Bars */}
                   <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -5119,7 +5119,7 @@ function App() {
                 </div>
               ) : (
                 /* COLLAPSED STATE (V button to expand) */
-                <div className="live-duel-hub-panel live-duel-hub-collapsed" style={{ position: 'absolute', top: 'calc(var(--safe-top, 0px) + 12px)', left: '50%', transform: 'translateX(-50%)', width: '90%', maxWidth: '600px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: isLightMode ? '#ffffff' : 'rgba(10, 6, 26, 0.95)', padding: '10px 20px', borderRadius: '16px', border: isLightMode ? '1px solid #cbd5e1' : '1px solid rgba(255,255,255,0.1)', boxShadow: isLightMode ? '0 4px 12px rgba(0, 0, 0, 0.05)' : 'none', zIndex: 1010 }}>
+                <div className="live-duel-hub-panel live-duel-hub-collapsed" style={{ position: 'absolute', top: 'calc(var(--safe-top, 0px) + 4px)', left: '50%', transform: 'translateX(-50%)', width: '90%', maxWidth: '600px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: isLightMode ? '#ffffff' : 'rgba(10, 6, 26, 0.95)', padding: '10px 20px', borderRadius: '16px', border: isLightMode ? '1px solid #cbd5e1' : '1px solid rgba(255,255,255,0.1)', boxShadow: isLightMode ? '0 4px 12px rgba(0, 0, 0, 0.05)' : 'none', zIndex: 1010 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 'bold' }}>LIVE DUEL HUB</span>
                     <button
