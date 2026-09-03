@@ -16,9 +16,10 @@ public class MainActivity extends BridgeActivity {
         int statusBarPx = statusBarResId > 0 ? getResources().getDimensionPixelSize(statusBarResId) : (int)(24 * density);
         final float[] safeTopDp = { statusBarPx / density };
 
-        getWindow().getDecorView().post(() -> {
+        new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
-                android.view.DisplayCutout cutout = getWindow().getDecorView().getRootWindowInsets().getDisplayCutout();
+                android.view.DisplayCutout cutout = getWindow().getDecorView().getRootWindowInsets() != null ?
+                    getWindow().getDecorView().getRootWindowInsets().getDisplayCutout() : null;
                 if (cutout != null && cutout.getSafeInsetTop() > 0) {
                     safeTopDp[0] = cutout.getSafeInsetTop() / density;
                 }
@@ -27,7 +28,7 @@ public class MainActivity extends BridgeActivity {
             getBridge().getWebView().post(() -> getBridge().getWebView().evaluateJavascript(
                 "document.documentElement.style.setProperty('--safe-top', '" + safeTopDp[0] + "px')", null
             ));
-        });
+        }, 800);
     }
 
     @Override
