@@ -12,8 +12,8 @@ const getAudioContext = () => {
   return globalAudioContext;
 };
 
-const playInstantKeySound = (isMuted?: boolean) => {
-  if (isMuted) return;
+const playInstantKeySound = () => {
+  if ((window as any).__cognerixMuted) return;
   const ctx = getAudioContext();
   if (ctx.state === 'suspended') {
     ctx.resume().catch(() => {});
@@ -31,7 +31,6 @@ const playInstantKeySound = (isMuted?: boolean) => {
 };
 
 interface WordPuzzleProps {
-  isMuted?: boolean;
   onClose?: (isQuit?: boolean) => void;
   onProgress?: (progress: number) => void;
   onGameWin?: (puzzleType: PuzzleType, timeInSec: number, score: number) => void;

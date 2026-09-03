@@ -958,6 +958,7 @@ function App() {
   const [showLevelUpModal, setShowLevelUpModal] = useState<number | null>(null);
   const [activeGame, setActiveGame] = useState<PuzzleType | null>(null);
   const [isMuted, setIsMuted] = useState<boolean>(false);
+  (window as any).__cognerixMuted = false;
   const isMutedRef = useRef(isMuted);
   useEffect(() => { isMutedRef.current = isMuted; }, [isMuted]);
   const [soundVolume, setSoundVolume] = useState<number>(0.5);
@@ -4514,7 +4515,7 @@ function App() {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{t('mute_sounds')}</span>
             <button 
-              onClick={() => { triggerSound('click'); setIsMuted(!isMuted); }}
+              onClick={() => { const nextMute = !isMuted; (window as any).__cognerixMuted = nextMute; setIsMuted(nextMute); triggerSound('click'); }}
               className="btn btn-glass" 
               style={{ padding: '6px', borderRadius: '50%' }}
             >
@@ -5182,7 +5183,6 @@ function App() {
                   onGridSizeChange={setCurrentSlidingGridSize}
                   room={roomRef.current}
                   username={userProfile.username}
-                  isMuted={isMutedRef.current}
                   headerActions={renderHeaderActions()}
                   onPlaySound={triggerSound}
                 />
@@ -5198,7 +5198,6 @@ function App() {
                     }
                   }}
                   room={roomRef.current}
-                  isMuted={isMutedRef.current}
                   headerActions={renderHeaderActions()}
                   isBotMatch={opponentInfo !== null && !roomRef.current}
                   onPlaySound={triggerSound}
@@ -5222,7 +5221,6 @@ function App() {
                   seed={gameSeed}
                   isOnline={selectedDifficultyRef.current === 'online' || selectedDifficultyRef.current === 'private_create' || selectedDifficultyRef.current === 'private_join'}
                   room={roomRef.current}
-                  isMuted={isMutedRef.current}
                   headerActions={renderHeaderActions()}
                   onPlaySound={triggerSound}
                 />
@@ -5238,7 +5236,6 @@ function App() {
                     }
                   }}
                   room={roomRef.current}
-                  isMuted={isMutedRef.current}
                   headerActions={renderHeaderActions()}
                   onPlaySound={triggerSound}
                 />
@@ -5254,7 +5251,6 @@ function App() {
                     }
                   }}
                   room={roomRef.current}
-                  isMuted={isMutedRef.current}
                   headerActions={renderHeaderActions()}
                   isOnline={selectedDifficultyRef.current === 'online' || selectedDifficultyRef.current === 'private_create' || selectedDifficultyRef.current === 'private_join'}
                   onPlaySound={triggerSound}
@@ -5291,7 +5287,6 @@ function App() {
                   }}
                   seed={selectedDifficultyRef.current === 'solo' ? undefined : gameSeed}
                   room={roomRef.current}
-                  isMuted={isMutedRef.current}
                   headerActions={renderHeaderActions()}
                   isOnline={selectedDifficultyRef.current === 'online' || selectedDifficultyRef.current === 'private_create' || selectedDifficultyRef.current === 'private_join'}
                   onPlaySound={triggerSound}
@@ -5308,7 +5303,6 @@ function App() {
                     }
                   }}
                   room={roomRef.current}
-                  isMuted={isMutedRef.current}
                   headerActions={renderHeaderActions()}
                   onPlaySound={triggerSound}
                 />
@@ -5324,7 +5318,6 @@ function App() {
                     }
                   }}
                   room={roomRef.current}
-                  isMuted={isMutedRef.current}
                   headerActions={renderHeaderActions()}
                   onPlaySound={triggerSound}
                 />
@@ -5340,7 +5333,6 @@ function App() {
                     }
                   }}
                   room={roomRef.current}
-                  isMuted={isMutedRef.current}
                   headerActions={renderHeaderActions()}
                   onPlaySound={triggerSound}
                 />

@@ -12,8 +12,8 @@ const getAudioContext = () => {
   return globalAudioContext;
 };
 
-const playInstantSlingshotSound = (isMuted?: boolean) => {
-  if (isMuted) return;
+const playInstantSlingshotSound = () => {
+  if ((window as any).__cognerixMuted) return;
   const ctx = getAudioContext();
   if (ctx.state === 'suspended') ctx.resume();
   const osc1 = ctx.createOscillator();
@@ -31,7 +31,6 @@ const playInstantSlingshotSound = (isMuted?: boolean) => {
 };
 
 interface PhysicsPuzzleProps {
-  isMuted?: boolean;
   onGameWin: (puzzleType: PuzzleType, timeInSec: number, score: number) => void;
   onClose?: (isQuit?: boolean) => void;
   onProgress?: (progress: number) => void;

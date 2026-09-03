@@ -12,8 +12,8 @@ const getAudioContext = () => {
   return globalAudioContext;
 };
 
-const playInstantLogicSound = (isMuted?: boolean) => {
-  if (isMuted) return;
+const playInstantLogicSound = () => {
+  if ((window as any).__cognerixMuted) return;
   const ctx = getAudioContext();
   if (ctx.state === 'suspended') ctx.resume();
   const osc = ctx.createOscillator();
@@ -356,7 +356,6 @@ const getQuestionIndex = (seedStr: string | undefined) => {
 };
 
 interface LogicPuzzleProps {
-  isMuted?: boolean;
   onGameWin: (puzzleType: PuzzleType, timeInSec: number, score: number) => void;
   onClose?: (isQuit?: boolean) => void;
   onProgress?: (progress: number) => void;

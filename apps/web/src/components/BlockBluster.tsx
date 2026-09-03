@@ -4,8 +4,8 @@ import { RefreshCcw, Award, Zap, Grid } from 'lucide-react';
 import { useGame } from '../context/GameContext';
 import { translate } from '../utils/translations';
 
-const playMobileSound = (frequency: number, duration: number, volume: number = 0.3, isMuted?: boolean) => {
-  if (isMuted) return;
+const playMobileSound = (frequency: number, duration: number, volume: number = 0.3) => {
+  if ((window as any).__cognerixMuted) return;
   try {
     const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
     const osc = ctx.createOscillator();
@@ -23,7 +23,6 @@ const playMobileSound = (frequency: number, duration: number, volume: number = 0
 };
 
 interface BlockBlusterProps {
-  isMuted?: boolean;
   onGameWin: (puzzleType: PuzzleType, timeInSec: number, score: number) => void;
   onClose?: (isQuit?: boolean) => void;
   onProgress?: (progress: number) => void;
