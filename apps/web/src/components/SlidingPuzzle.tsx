@@ -12,7 +12,8 @@ const getAudioContext = () => {
   return globalAudioContext;
 };
 
-const playInstantSound = () => {
+const playInstantSound = (isMuted?: boolean) => {
+  if (isMuted) return;
   const ctx = getAudioContext();
   if (ctx.state === 'suspended') {
     ctx.resume().catch(() => {});
@@ -30,6 +31,7 @@ const playInstantSound = () => {
 };
 
 interface SlidingPuzzleProps {
+  isMuted?: boolean;
   onGameWin: (puzzleType: PuzzleType, timeInSec: number, score: number) => void;
   onClose?: (isQuit?: boolean) => void;
   onProgress?: (progress: number) => void;

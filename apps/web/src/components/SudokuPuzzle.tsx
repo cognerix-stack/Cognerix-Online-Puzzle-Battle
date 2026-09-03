@@ -12,7 +12,8 @@ const getAudioContext = () => {
   return globalAudioContext;
 };
 
-const playInstantCellSound = () => {
+const playInstantCellSound = (isMuted?: boolean) => {
+  if (isMuted) return;
   const ctx = getAudioContext();
   if (ctx.state === 'suspended') ctx.resume();
   const osc = ctx.createOscillator();
@@ -28,6 +29,7 @@ const playInstantCellSound = () => {
 };
 
 interface SudokuPuzzleProps {
+  isMuted?: boolean;
   onGameWin: (puzzleType: PuzzleType, timeInSec: number, score: number) => void;
   onClose?: (isQuit?: boolean) => void;
   onProgress?: (progress: number) => void;

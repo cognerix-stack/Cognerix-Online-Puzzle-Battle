@@ -12,7 +12,8 @@ const getAudioContext = () => {
   return globalAudioContext;
 };
 
-const playInstantAnswerSound = () => {
+const playInstantAnswerSound = (isMuted?: boolean) => {
+  if (isMuted) return;
   const ctx = getAudioContext();
   if (ctx.state === 'suspended') {
     ctx.resume().catch(() => {});
@@ -30,6 +31,7 @@ const playInstantAnswerSound = () => {
 };
 
 interface TriviaQuizProps {
+  isMuted?: boolean;
   onClose?: (isQuit?: boolean) => void;
   onProgress?: (progress: number, correctAnswers?: number) => void;
   onGameWin?: (puzzleType: PuzzleType, timeInSec: number, score: number, correctAnswersCount: number) => void;

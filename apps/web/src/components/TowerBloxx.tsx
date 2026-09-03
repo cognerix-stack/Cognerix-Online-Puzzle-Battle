@@ -5,7 +5,8 @@ import { useGame } from '../context/GameContext';
 import { translate } from '../utils/translations';
 import { MultiplayerService } from '../services/multiplayer';
 
-const playMobileSound = (frequency: number, duration: number, volume: number = 0.3) => {
+const playMobileSound = (frequency: number, duration: number, volume: number = 0.3, isMuted?: boolean) => {
+  if (isMuted) return;
   try {
     const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
     const osc = ctx.createOscillator();
@@ -23,6 +24,7 @@ const playMobileSound = (frequency: number, duration: number, volume: number = 0
 };
 
 interface TowerBloxxProps {
+  isMuted?: boolean;
   onGameWin: (puzzleType: PuzzleType, timeInSec: number, score: number) => void;
   onClose?: (isQuit?: boolean) => void;
   onProgress?: (progress: number) => void;

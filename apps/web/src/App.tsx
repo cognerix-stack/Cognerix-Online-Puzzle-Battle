@@ -5180,6 +5180,7 @@ function App() {
                   onGridSizeChange={setCurrentSlidingGridSize}
                   room={roomRef.current}
                   username={userProfile.username}
+                  isMuted={isMuted}
                   headerActions={renderHeaderActions()}
                   onPlaySound={triggerSound}
                 />
@@ -5195,6 +5196,7 @@ function App() {
                     }
                   }}
                   room={roomRef.current}
+                  isMuted={isMuted}
                   headerActions={renderHeaderActions()}
                   isBotMatch={opponentInfo !== null && !roomRef.current}
                   onPlaySound={triggerSound}
@@ -5218,6 +5220,7 @@ function App() {
                   seed={gameSeed}
                   isOnline={selectedDifficultyRef.current === 'online' || selectedDifficultyRef.current === 'private_create' || selectedDifficultyRef.current === 'private_join'}
                   room={roomRef.current}
+                  isMuted={isMuted}
                   headerActions={renderHeaderActions()}
                   onPlaySound={triggerSound}
                 />
@@ -5233,6 +5236,7 @@ function App() {
                     }
                   }}
                   room={roomRef.current}
+                  isMuted={isMuted}
                   headerActions={renderHeaderActions()}
                   onPlaySound={triggerSound}
                 />
@@ -5248,6 +5252,7 @@ function App() {
                     }
                   }}
                   room={roomRef.current}
+                  isMuted={isMuted}
                   headerActions={renderHeaderActions()}
                   isOnline={selectedDifficultyRef.current === 'online' || selectedDifficultyRef.current === 'private_create' || selectedDifficultyRef.current === 'private_join'}
                   onPlaySound={triggerSound}
@@ -5284,6 +5289,7 @@ function App() {
                   }}
                   seed={selectedDifficultyRef.current === 'solo' ? undefined : gameSeed}
                   room={roomRef.current}
+                  isMuted={isMuted}
                   headerActions={renderHeaderActions()}
                   isOnline={selectedDifficultyRef.current === 'online' || selectedDifficultyRef.current === 'private_create' || selectedDifficultyRef.current === 'private_join'}
                   onPlaySound={triggerSound}
@@ -5300,6 +5306,7 @@ function App() {
                     }
                   }}
                   room={roomRef.current}
+                  isMuted={isMuted}
                   headerActions={renderHeaderActions()}
                   onPlaySound={triggerSound}
                 />
@@ -5315,6 +5322,7 @@ function App() {
                     }
                   }}
                   room={roomRef.current}
+                  isMuted={isMuted}
                   headerActions={renderHeaderActions()}
                   onPlaySound={triggerSound}
                 />
@@ -5330,6 +5338,7 @@ function App() {
                     }
                   }}
                   room={roomRef.current}
+                  isMuted={isMuted}
                   headerActions={renderHeaderActions()}
                   onPlaySound={triggerSound}
                 />
