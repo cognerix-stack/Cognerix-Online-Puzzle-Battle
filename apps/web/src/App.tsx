@@ -958,7 +958,9 @@ function App() {
   const [showLevelUpModal, setShowLevelUpModal] = useState<number | null>(null);
   const [activeGame, setActiveGame] = useState<PuzzleType | null>(null);
   const [isMuted, setIsMuted] = useState<boolean>(false);
-  (window as any).__cognerixMuted = false;
+  useEffect(() => {
+    (window as any).__cognerixMuted = isMuted;
+  }, [isMuted]);
   const isMutedRef = useRef(isMuted);
   useEffect(() => { isMutedRef.current = isMuted; }, [isMuted]);
   const [soundVolume, setSoundVolume] = useState<number>(0.5);
