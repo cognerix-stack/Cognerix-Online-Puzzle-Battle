@@ -4,34 +4,31 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
-import android.view.DisplayCutout;
 import com.getcapacitor.BridgeActivity;
 
 public class MainActivity extends BridgeActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        // Get status bar height BEFORE hiding
+        int statusBarResId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        float density = getResources().getDisplayMetrics().density;
+        int statusBarPx = statusBarResId > 0 ? getResources().getDimensionPixelSize(statusBarResId) : (int)(24 * density);
+        float statusBarDp = statusBarPx / density;
+        
         hideSystemUI();
-        getWindow().getDecorView().setOnApplyWindowInsetsListener((v, insets) -> {
-            int cutoutHeight = 0;
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
-                DisplayCutout cutout = insets.getDisplayCutout();
-                if (cutout != null) {
-                    cutoutHeight = cutout.getSafeInsetTop();
-                }
+        
+        // Inject after WebView ready
+        getBridge().getWebView().addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+            @Override
+            public void onViewAttachedToWindow(View v) {
+                v.post(() -> getBridge().getWebView().evaluateJavascript(
+                    "document.documentElement.style.setProperty('--safe-top', '" + statusBarDp + "px')", null
+                ));
             }
-            int statusBarHeight = 0;
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
-                statusBarHeight = insets.getInsets(WindowInsets.Type.statusBars()).top;
-            }
-            int safeTop = Math.max(cutoutHeight, statusBarHeight);
-            final int finalCutout = safeTop;
-            getBridge().getWebView().post(() ->
-                getBridge().getWebView().evaluateJavascript(
-                    "document.documentElement.style.setProperty('--safe-top', '" + finalCutout + "px')", null
-                )
-            );
-            return insets;
+            @Override
+            public void onViewDetachedFromWindow(View v) {}
         });
     }
 
