@@ -10,25 +10,23 @@ public class MainActivity extends BridgeActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
-        // Get status bar height BEFORE hiding
+
         int statusBarResId = getResources().getIdentifier("status_bar_height", "dimen", "android");
         float density = getResources().getDisplayMetrics().density;
         int statusBarPx = statusBarResId > 0 ? getResources().getDimensionPixelSize(statusBarResId) : (int)(24 * density);
-        float statusBarDp = statusBarPx / density;
-        
-        hideSystemUI();
-        
-        // Inject after WebView ready
-        getBridge().getWebView().addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
-            @Override
-            public void onViewAttachedToWindow(View v) {
-                v.post(() -> getBridge().getWebView().evaluateJavascript(
-                    "document.documentElement.style.setProperty('--safe-top', '" + statusBarDp + "px')", null
-                ));
+        final float[] safeTopDp = { statusBarPx / density };
+
+        getWindow().getDecorView().post(() -> {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+                android.view.DisplayCutout cutout = getWindow().getDecorView().getRootWindowInsets().getDisplayCutout();
+                if (cutout != null && cutout.getSafeInsetTop() > 0) {
+                    safeTopDp[0] = cutout.getSafeInsetTop() / density;
+                }
             }
-            @Override
-            public void onViewDetachedFromWindow(View v) {}
+            hideSystemUI();
+            getBridge().getWebView().post(() -> getBridge().getWebView().evaluateJavascript(
+                "document.documentElement.style.setProperty('--safe-top', '" + safeTopDp[0] + "px')", null
+            ));
         });
     }
 
