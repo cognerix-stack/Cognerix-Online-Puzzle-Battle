@@ -958,6 +958,8 @@ function App() {
   const [showLevelUpModal, setShowLevelUpModal] = useState<number | null>(null);
   const [activeGame, setActiveGame] = useState<PuzzleType | null>(null);
   const [isMuted, setIsMuted] = useState<boolean>(false);
+  const isMutedRef = useRef(isMuted);
+  useEffect(() => { isMutedRef.current = isMuted; }, [isMuted]);
   const [soundVolume, setSoundVolume] = useState<number>(0.5);
   const [isMusicOn, setIsMusicOn] = useState<boolean>(false);
   const gameCountRef = useRef<number>(0);
@@ -5180,7 +5182,7 @@ function App() {
                   onGridSizeChange={setCurrentSlidingGridSize}
                   room={roomRef.current}
                   username={userProfile.username}
-                  isMuted={isMuted}
+                  isMuted={isMutedRef.current}
                   headerActions={renderHeaderActions()}
                   onPlaySound={triggerSound}
                 />
@@ -5196,7 +5198,7 @@ function App() {
                     }
                   }}
                   room={roomRef.current}
-                  isMuted={isMuted}
+                  isMuted={isMutedRef.current}
                   headerActions={renderHeaderActions()}
                   isBotMatch={opponentInfo !== null && !roomRef.current}
                   onPlaySound={triggerSound}
@@ -5220,7 +5222,7 @@ function App() {
                   seed={gameSeed}
                   isOnline={selectedDifficultyRef.current === 'online' || selectedDifficultyRef.current === 'private_create' || selectedDifficultyRef.current === 'private_join'}
                   room={roomRef.current}
-                  isMuted={isMuted}
+                  isMuted={isMutedRef.current}
                   headerActions={renderHeaderActions()}
                   onPlaySound={triggerSound}
                 />
@@ -5236,7 +5238,7 @@ function App() {
                     }
                   }}
                   room={roomRef.current}
-                  isMuted={isMuted}
+                  isMuted={isMutedRef.current}
                   headerActions={renderHeaderActions()}
                   onPlaySound={triggerSound}
                 />
@@ -5252,7 +5254,7 @@ function App() {
                     }
                   }}
                   room={roomRef.current}
-                  isMuted={isMuted}
+                  isMuted={isMutedRef.current}
                   headerActions={renderHeaderActions()}
                   isOnline={selectedDifficultyRef.current === 'online' || selectedDifficultyRef.current === 'private_create' || selectedDifficultyRef.current === 'private_join'}
                   onPlaySound={triggerSound}
@@ -5289,7 +5291,7 @@ function App() {
                   }}
                   seed={selectedDifficultyRef.current === 'solo' ? undefined : gameSeed}
                   room={roomRef.current}
-                  isMuted={isMuted}
+                  isMuted={isMutedRef.current}
                   headerActions={renderHeaderActions()}
                   isOnline={selectedDifficultyRef.current === 'online' || selectedDifficultyRef.current === 'private_create' || selectedDifficultyRef.current === 'private_join'}
                   onPlaySound={triggerSound}
@@ -5306,7 +5308,7 @@ function App() {
                     }
                   }}
                   room={roomRef.current}
-                  isMuted={isMuted}
+                  isMuted={isMutedRef.current}
                   headerActions={renderHeaderActions()}
                   onPlaySound={triggerSound}
                 />
@@ -5322,7 +5324,7 @@ function App() {
                     }
                   }}
                   room={roomRef.current}
-                  isMuted={isMuted}
+                  isMuted={isMutedRef.current}
                   headerActions={renderHeaderActions()}
                   onPlaySound={triggerSound}
                 />
@@ -5338,7 +5340,7 @@ function App() {
                     }
                   }}
                   room={roomRef.current}
-                  isMuted={isMuted}
+                  isMuted={isMutedRef.current}
                   headerActions={renderHeaderActions()}
                   onPlaySound={triggerSound}
                 />
