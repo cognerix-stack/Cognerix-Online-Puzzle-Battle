@@ -214,7 +214,7 @@ export const StorePopup: React.FC<StorePopupProps> = ({
       display: 'flex',
       alignItems: 'flex-start',
       justifyContent: 'center',
-      paddingTop: '12px',
+      paddingTop: 'calc(var(--safe-top, 0px) + 4px)',
       paddingBottom: '12px',
       overflowY: 'auto',
       zIndex: 2000,
