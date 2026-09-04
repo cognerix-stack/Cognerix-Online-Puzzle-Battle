@@ -5540,16 +5540,18 @@ function App() {
               <div 
                 className="glass-panel" 
                 style={{ 
-                  padding: '20px', 
+                  padding: '12px', 
                   background: 'linear-gradient(135deg, rgba(139,92,246,0.15), rgba(6,182,212,0.15))',
                   border: '1px solid rgba(139,92,246,0.3)',
                   display: 'flex', 
                   justifyContent: 'space-between', 
-                  alignItems: 'center' 
+                  alignItems: 'center',
+                  flexWrap: 'wrap',
+                  gap: '10px'
                 }}
               >
                 <div>
-                  <h3 style={{ fontSize: '18px', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <h3 style={{ fontSize: '14px', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
                     {matchmakingState === 'searching' && <span className="animate-float">🛰️</span>}
                     {matchmakingState === 'searching' 
                       ? (privatePin 
@@ -5561,7 +5563,7 @@ function App() {
                         )
                       : 'Opponent Found! Connecting...'}
                   </h3>
-                  <p style={{ color: 'var(--text-secondary)', fontSize: '13px', marginTop: '4px' }}>
+                  <p style={{ color: 'var(--text-secondary)', fontSize: '11px', marginTop: '4px' }}>
                     {matchmakingState === 'searching' 
                       ? (privatePin 
                         ? (isFriendChallengeDuel
@@ -5575,7 +5577,7 @@ function App() {
                   </p>
                 </div>
                 {matchmakingState === 'searching' && (
-                  <button className="btn btn-danger" onClick={cancelMatchmaking}>
+                  <button className="btn btn-danger" onClick={cancelMatchmaking} style={{ flexShrink: 0, fontSize: '12px', padding: '8px 12px' }}>
                     Cancel Search
                   </button>
                 )}
