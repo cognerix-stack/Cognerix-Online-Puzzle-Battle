@@ -1581,10 +1581,20 @@ function App() {
         }
       };
 
-      fetchBanned();
-      fetchUsers();
-      fetchAnnouncementHistory();
-      fetchAdminReports();
+      const loadAdminData = async () => {
+        fetchBanned();
+        fetchUsers();
+        fetchAnnouncementHistory();
+        fetchAdminReports();
+        // Retry after 3s in case Railway was waking up
+        setTimeout(() => {
+          fetchBanned();
+          fetchUsers();
+          fetchAnnouncementHistory();
+          fetchAdminReports();
+        }, 3000);
+      };
+      loadAdminData();
     }
   }, [isMailboxOpen, isAdmin]);
 
