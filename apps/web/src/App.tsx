@@ -4423,11 +4423,6 @@ function App() {
         ...getAccessibilityStyle()
       }}
     >
-      {Capacitor.isNativePlatform() && (
-        <div style={{ position: 'fixed', top: 0, left: 0, background: 'red', color: 'white', fontSize: '10px', zIndex: 9999, padding: '2px' }}>
-          safe-top: {getComputedStyle(document.documentElement).getPropertyValue('--safe-top')}
-        </div>
-      )}
       
       {/* 🧭 SIDEBAR NAVIGATION PANEL */}
       <aside className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
