@@ -3560,7 +3560,7 @@ function App() {
         >
           🤩
         </button>
-        {roomRef.current && (
+        {false && (
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -5353,7 +5353,7 @@ function App() {
                 />
               )}
               {/* In-game Chat pop-up overlay */}
-              {isInGameChatOpen && (
+              {false && isInGameChatOpen && (
                 <div style={{
                   position: 'absolute',
                   bottom: '24px',
