@@ -9,5 +9,18 @@ export default defineConfig({
     alias: {
       '@puzzle-verse/shared': path.resolve(__dirname, '../../packages/shared/src/index.ts')
     }
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor': ['react', 'react-dom'],
+          'colyseus': ['colyseus.js'],
+          'icons': ['lucide-react'],
+          'capacitor': ['@capacitor/core', '@capacitor/network', '@capacitor/status-bar'],
+        }
+      }
+    }
   }
 })
+
