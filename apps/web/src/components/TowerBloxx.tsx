@@ -953,10 +953,10 @@ export const TowerBloxx: React.FC<TowerBloxxProps> = ({ onGameWin, onClose, onPr
       </div>
 
       {/* Main Action Buttons Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '10px', width: '100%' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', width: '100%' }}>
         <button 
           className="btn btn-primary" 
-          style={{ padding: '14px', fontSize: '15px', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
+          style={{ padding: '10px 8px', fontSize: '11px', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
           onClick={() => {
             if (!dropSoundPlayedRef.current) {
               playMobileSound(350, 0.06);
@@ -972,14 +972,14 @@ export const TowerBloxx: React.FC<TowerBloxxProps> = ({ onGameWin, onClose, onPr
           disabled={isGameOver}
         >
           <Building2 size={18} />
-          DROP ANIMAL HOUSE (SPACEBAR)
+          DROP ANIMAL HOUSE
         </button>
 
         <button 
           className="btn btn-glass" 
           style={{
-            padding: '12px 8px',
-            fontSize: '12px',
+            padding: '10px 6px',
+            fontSize: '11px',
             fontWeight: 'bold',
             display: 'flex',
             flexDirection: 'column',
