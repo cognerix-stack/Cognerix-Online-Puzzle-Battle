@@ -834,11 +834,11 @@ export const TowerBloxx: React.FC<TowerBloxxProps> = ({ onGameWin, onClose, onPr
   const isLight = document.documentElement.classList.contains('light-theme');
 
   return (
-    <div className="glass-panel animate-fade-in" style={{ maxWidth: '460px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '16px', position: 'relative', padding: '20px', userSelect: 'none', touchAction: 'none' }}>
+    <div className="glass-panel animate-fade-in" style={{ maxWidth: '460px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '6px', position: 'relative', padding: '10px', userSelect: 'none', touchAction: 'none' }}>
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
-          <h2 style={{ fontSize: '22px', color: 'var(--text-primary)', fontFamily: 'var(--font-display)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <h2 style={{ fontSize: '16px', color: 'var(--text-primary)', fontFamily: 'var(--font-display)', display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Building2 color="var(--color-primary)" size={24} />
             {t('tower_bloxx_name')}
             {headerActions}
@@ -862,11 +862,11 @@ export const TowerBloxx: React.FC<TowerBloxxProps> = ({ onGameWin, onClose, onPr
       </div>
 
       {/* Stats Header Bar */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', background: isLight ? '#f1f5f9' : 'rgba(255,255,255,0.03)', padding: '10px 16px', borderRadius: '12px', border: '1px solid var(--border-glass)', fontSize: '14px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', background: isLight ? '#f1f5f9' : 'rgba(255,255,255,0.03)', padding: '10px 16px', borderRadius: '12px', border: '1px solid var(--border-glass)', fontSize: '12px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
           <Zap size={16} color="var(--color-warning)" />
           <span style={{ color: 'var(--text-secondary)' }}>{t('score')}:</span>
-          <strong style={{ fontFamily: 'var(--font-display)', color: 'var(--text-primary)', fontSize: '16px' }}>{score}</strong>
+          <strong style={{ fontFamily: 'var(--font-display)', color: 'var(--text-primary)', fontSize: '14px' }}>{score}</strong>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
           <Building2 size={16} color="var(--color-primary)" />
@@ -956,7 +956,7 @@ export const TowerBloxx: React.FC<TowerBloxxProps> = ({ onGameWin, onClose, onPr
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', width: '100%' }}>
         <button 
           className="btn btn-primary" 
-          style={{ padding: '10px 8px', fontSize: '11px', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
+          style={{ padding: '8px', fontSize: '11px', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
           onClick={() => {
             if (!dropSoundPlayedRef.current) {
               playMobileSound(350, 0.06);
@@ -978,7 +978,7 @@ export const TowerBloxx: React.FC<TowerBloxxProps> = ({ onGameWin, onClose, onPr
         <button 
           className="btn btn-glass" 
           style={{
-            padding: '10px 6px',
+            padding: '8px 6px',
             fontSize: '11px',
             fontWeight: 'bold',
             display: 'flex',
