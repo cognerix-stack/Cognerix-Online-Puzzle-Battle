@@ -119,7 +119,7 @@ const AVAILABLE_AVATARS = [
   { id: 'av_starborn_hero', char: '🌟', label: 'Starborn Hero', costCoins: 3500, costGems: 300 },
   { id: 'av_chess_emperor', char: '♟️', label: 'Chess Emperor', costCoins: 4000, costGems: 350 },
   { id: 'av_puzzle_overlord', char: '🧩', label: 'Puzzle Overlord', costCoins: 4500, costGems: 400 },
-  { id: 'av_pv_legend', char: '👑', label: 'Cognerix Legend', costCoins: 5000, costGems: 500 }
+  { id: 'av_pv_legend', char: '🏆', label: 'Cognerix Legend', costCoins: 5000, costGems: 500 }
 ];
 
 const AVAILABLE_FRAMES = [
