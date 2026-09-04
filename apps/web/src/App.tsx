@@ -6074,26 +6074,28 @@ function App() {
             <div className="glass-panel">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                 <h3 style={{ fontSize: '20px', color: 'var(--text-primary)', margin: 0 }}>{t('leaderboard_title')}</h3>
-                <button 
-                  onClick={() => {
-                    triggerSound('click');
-                    refreshLeaderboard();
-                  }}
-                  className="btn btn-glass"
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    padding: '8px 12px',
-                    borderRadius: '10px',
-                    fontSize: '12px',
-                    color: 'var(--text-secondary)',
-                    border: '1px solid var(--border-glass)',
-                    cursor: 'pointer'
-                  }}
-                >
-                  <RotateCw size={14} /> Refresh Ranks
-                </button>
+                {false && (
+                  <button 
+                    onClick={() => {
+                      triggerSound('click');
+                      refreshLeaderboard();
+                    }}
+                    className="btn btn-glass"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      padding: '8px 12px',
+                      borderRadius: '10px',
+                      fontSize: '12px',
+                      color: 'var(--text-secondary)',
+                      border: '1px solid var(--border-glass)',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    <RotateCw size={14} /> Refresh Ranks
+                  </button>
+                )}
               </div>
 
               <div style={{ overflowX: 'auto' }}>
