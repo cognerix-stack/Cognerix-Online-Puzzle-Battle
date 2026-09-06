@@ -3125,7 +3125,7 @@ function App() {
       const ranks = [RankName.BRONZE, RankName.SILVER, RankName.GOLD, RankName.PLATINUM, RankName.DIAMOND, RankName.MASTER];
       const botRank = ranks[Math.floor(Math.random() * ranks.length)];
 
-      let aiMode = undefined;
+      let aiMode: string | undefined = 'bot';
       if (puzzleType === PuzzleType.SLIDING || puzzleType === PuzzleType.JIGSAW) {
         if (mode === 'easy') {
           aiMode = Math.random() < 0.5 ? '3x3' : '4x4';
