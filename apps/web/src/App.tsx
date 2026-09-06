@@ -5694,10 +5694,10 @@ function App() {
                       display: 'flex', 
                       flexDirection: 'column', 
                       justifyContent: 'space-between', 
-                      gap: '20px',
+                      gap: '12px',
                       borderTop: `3px solid ${puzzle.color}`,
                       background: 'var(--bg-glass)',
-                      padding: '24px'
+                      padding: '16px'
                     }}
                   >
                     <div>
@@ -5725,10 +5725,10 @@ function App() {
                           })()}
                         </div>
                       </div>
-                      <h4 style={{ fontSize: '18px', color: 'var(--text-primary)', marginTop: '14px', fontFamily: 'var(--font-display)' }}>
+                      <h4 style={{ fontSize: '15px', color: 'var(--text-primary)', marginTop: '8px', fontFamily: 'var(--font-display)' }}>
                         {puzzle.name}
                       </h4>
-                      <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginTop: '8px', lineHeight: '1.5' }}>
+                      <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '4px', lineHeight: '1.5' }}>
                         {puzzle.desc}
                       </p>
                     </div>
