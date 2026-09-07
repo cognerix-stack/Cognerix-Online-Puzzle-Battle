@@ -3616,7 +3616,7 @@ function App() {
     return (
       <div style={{
         position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
-        background: '#ffffff',
+        background: isLightMode ? '#ffffff' : 'radial-gradient(circle at center, #0e0720, #040209)',
         display: 'flex', flexDirection: 'column', alignItems: 'center',
         justifyContent: 'center', gap: '24px', zIndex: 99999,
         paddingTop: 'var(--safe-top, 0px)'
@@ -3628,10 +3628,10 @@ function App() {
         <div style={{ width: '260px', height: '8px', background: 'rgba(0,0,0,0.06)', borderRadius: '4px', overflow: 'hidden', marginTop: '16px' }}>
           <div style={{ height: '100%', background: 'linear-gradient(to right, var(--color-primary), var(--color-secondary))', borderRadius: '4px', animation: 'loading-bar 6s ease-in-out forwards' }} />
         </div>
-        <p style={{ fontSize: '12px', color: 'rgba(139,92,246,0.7)', fontWeight: 'bold' }}>
+        <p style={{ fontSize: '12px', color: isLightMode ? 'rgba(139,92,246,0.8)' : 'rgba(139,92,246,1)', fontWeight: 'bold' }}>
           {Math.min(loadingProgress, 100)}%
         </p>
-        <p style={{ fontSize: '12px', color: 'rgba(0,0,0,0.4)', letterSpacing: '2px', textTransform: 'uppercase' }}>Loading...</p>
+        <p style={{ fontSize: '12px', color: isLightMode ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.4)', letterSpacing: '2px', textTransform: 'uppercase' }}>Loading...</p>
       </div>
     );
   }
