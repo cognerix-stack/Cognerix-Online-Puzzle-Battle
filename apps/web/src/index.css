@@ -1,4 +1,4 @@
-/* PuzzleVerse Custom Premium Design System */
+﻿/* PuzzleVerse Custom Premium Design System */
 
 :root {
   /* Colors */
@@ -1209,4 +1209,10 @@ button, .btn {
 /* Ensure active-game-modal hidden class overrides all display rules on all viewports */
 .active-game-modal.hidden {
   display: none !important;
+}
+
+
+@keyframes loading-bar {
+  from { width: 0%; }
+  to { width: 100%; }
 }

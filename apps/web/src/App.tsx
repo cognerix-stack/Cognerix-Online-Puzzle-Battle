@@ -873,6 +873,12 @@ function App() {
   }, [toast]);
   const { activeEntranceAnimation } = useGame();
   const [appliedEntranceClass, setAppliedEntranceClass] = useState<string>('');
+  const [isAppLoading, setIsAppLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsAppLoading(false), 2500);
+    return () => clearTimeout(timer);
+  }, []);
   const prevTabRef = useRef(activeTab);
   const prevActiveAnimRef = useRef(activeEntranceAnimation);
   useEffect(() => {
@@ -3594,6 +3600,27 @@ function App() {
     
     return filterValues.length > 0 ? { filter: filterValues.join(' ') } : {};
   };
+  if (isAppLoading) {
+    return (
+      <div style={{
+        position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
+        background: 'radial-gradient(circle at top left, #0e0720, #040209)',
+        display: 'flex', flexDirection: 'column', alignItems: 'center',
+        justifyContent: 'center', gap: '24px', zIndex: 99999,
+        paddingTop: 'var(--safe-top, 0px)'
+      }}>
+        <img src="/cognerix-logo.png" alt="Cognerix" style={{ width: '120px', height: '120px', objectFit: 'contain', animation: 'pulse-scale 1s ease-in-out infinite' }} />
+        <h1 style={{ fontSize: '28px', fontFamily: 'var(--font-display)', background: 'linear-gradient(to right, var(--color-primary), var(--color-secondary))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+          COGNERIX
+        </h1>
+        <div style={{ width: '200px', height: '4px', background: 'rgba(255,255,255,0.1)', borderRadius: '2px', overflow: 'hidden' }}>
+          <div style={{ height: '100%', background: 'linear-gradient(to right, var(--color-primary), var(--color-secondary))', borderRadius: '2px', animation: 'loading-bar 2.5s ease-in-out forwards' }} />
+        </div>
+        <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.4)', letterSpacing: '2px', textTransform: 'uppercase' }}>Loading...</p>
+      </div>
+    );
+  }
+
   if (!isLoggedIn) {
     return (
       <div 
