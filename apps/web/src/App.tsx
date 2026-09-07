@@ -26,7 +26,6 @@ import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
 import { AdMob, RewardAdPluginEvents, BannerAdSize, BannerAdPosition } from '@capacitor-community/admob';
 import { Network } from '@capacitor/network';
 import { StorePopup } from './components/StorePopup';
-
 const apiRequest = async (method: 'GET' | 'POST' | 'DELETE', url: string, body?: object, token?: string) => {
   const headers: Record<string, string> = { 'Content-Type': 'application/json' };
   if (token) headers['Authorization'] = `Bearer ${token}`;
@@ -39,7 +38,6 @@ const apiRequest = async (method: 'GET' | 'POST' | 'DELETE', url: string, body?:
     return { ok: res.ok, status: res.status, data };
   }
 };
-
 const EMOJI_LIST = [
   "😊", "😂", "🤣", "😍", "😒", "👌", "😁", "👍",
   "✌️", "🤞", "😉", "😎",
@@ -49,7 +47,6 @@ const EMOJI_LIST = [
   "🥹", "🤩", "😤", "😠", "🫢", "🥴", "😵", "🤑", "😈",
   "⚡", "💀", "🎯", "🎮", "🏅", "🥇", "💥", "⚔️"
 ];
-
 const AVAILABLE_AVATARS = [
   { id: 'av_default', char: '👤', label: 'Default Client', costCoins: 0, costGems: 0 },
   { id: 'av_cyberfox', char: '🦊', label: 'Cyber Fox', costCoins: 100, costGems: 0 },
@@ -92,7 +89,6 @@ const AVAILABLE_AVATARS = [
   { id: 'av_beaver', char: '🦫', label: 'Builder Beaver', costCoins: 120, costGems: 1 },
   { id: 'av_peacock', char: '🦚', label: 'Royal Peacock', costCoins: 160, costGems: 4 },
   { id: 'av_parrot', char: '🦜', label: 'Talkative Parrot', costCoins: 110, costGems: 0 },
-
   // --- NEW MASCOT ICONS ---
   { id: 'av_gm_king', char: '👑', label: 'Grandmaster King', costCoins: 500, costGems: 20 },
   { id: 'av_royal_emblem', char: '⚜️', label: 'Royal Emblem', costCoins: 600, costGems: 25 },
@@ -121,7 +117,6 @@ const AVAILABLE_AVATARS = [
   { id: 'av_puzzle_overlord', char: '🧩', label: 'Puzzle Overlord', costCoins: 4500, costGems: 400 },
   { id: 'av_pv_legend', char: '🏆', label: 'Cognerix Legend', costCoins: 5000, costGems: 500 }
 ];
-
 const AVAILABLE_FRAMES = [
   { id: 'none', label: 'No Frame', border: undefined, boxShadow: undefined, animation: undefined, costCoins: 0, costGems: 0 },
   
@@ -138,7 +133,6 @@ const AVAILABLE_FRAMES = [
   { id: 'fr_mystic_moss', label: 'Mystic Moss', border: '3px solid #84cc16', boxShadow: '0 0 10px #84cc16', animation: undefined, costCoins: 140, costGems: 0 },
   { id: 'fr_silver_pulse', label: 'Silver Pulse', border: '3px solid #94a3b8', boxShadow: '0 0 12px #94a3b8', animation: undefined, costCoins: 150, costGems: 0 },
   { id: 'fr_soft_aurora', label: 'Soft Aurora', border: '3px solid #38bdf8', boxShadow: '0 0 12px #c084fc', animation: undefined, costCoins: 150, costGems: 0 },
-
   // --- RARE (150–300 Coins + 1–5 💎) ---
   { id: 'fr_crimson_halo', label: 'Crimson Halo', border: '3px solid #ef4444', boxShadow: '0 0 14px #ef4444', animation: undefined, costCoins: 160, costGems: 1 },
   { id: 'fr_royal_violet', label: 'Royal Violet', border: '3px solid #8b5cf6', boxShadow: '0 0 14px #8b5cf6', animation: undefined, costCoins: 170, costGems: 1 },
@@ -155,7 +149,6 @@ const AVAILABLE_FRAMES = [
   { id: 'fr_neon_flash', label: 'Neon Flash', border: '3px solid #f43f5e', boxShadow: '0 0 16px #f43f5e', animation: undefined, costCoins: 280, costGems: 5 },
   { id: 'fr_electric_wave', label: 'Electric Wave', border: '3px solid #a855f7', boxShadow: '0 0 16px #38bdf8', animation: undefined, costCoins: 290, costGems: 5 },
   { id: 'fr_twilight_aura', label: 'Twilight Aura', border: '3px solid #c084fc', boxShadow: '0 0 16px #ec4899', animation: undefined, costCoins: 300, costGems: 5 },
-
   // --- EPIC (300–700 Coins + 5–20 💎) ---
   { id: 'fr_galaxy_core', label: 'Galaxy Core', border: '3px double #a855f7', boxShadow: '0 0 18px #a855f7', animation: undefined, costCoins: 320, costGems: 6 },
   { id: 'fr_plasma_ring', label: 'Plasma Ring', border: '3px solid #ec4899', boxShadow: '0 0 18px #38bdf8', animation: undefined, costCoins: 350, costGems: 7 },
@@ -172,7 +165,6 @@ const AVAILABLE_FRAMES = [
   { id: 'fr_crystal_nova', label: 'Crystal Nova', border: '3px solid #e0f2fe', boxShadow: '0 0 20px #38bdf8', animation: undefined, costCoins: 650, costGems: 19 },
   { id: 'fr_infinity_loop', label: 'Infinity Loop', border: '3px double #ec4899', boxShadow: '0 0 22px #8b5cf6', animation: undefined, costCoins: 680, costGems: 20 },
   { id: 'fr_gravity_well', label: 'Gravity Well', border: '3px solid #4c1d95', boxShadow: '0 0 22px #8b5cf6', animation: undefined, costCoins: 700, costGems: 20 },
-
   // --- LEGENDARY (700–1500 Coins + 20–60 💎) ---
   { id: 'fr_eternal_flame', label: 'Eternal Flame', border: '3px solid #dc2626', boxShadow: '0 0 24px #f97316', animation: undefined, costCoins: 750, costGems: 22 },
   { id: 'fr_celestial_crown', label: 'Celestial Crown', border: '3px double #fbbf24', boxShadow: '0 0 24px #fef08a', animation: undefined, costCoins: 800, costGems: 25 },
@@ -189,7 +181,6 @@ const AVAILABLE_FRAMES = [
   { id: 'fr_omega_ring', label: 'Omega Ring', border: '3px solid #0284c7', boxShadow: '0 0 28px #38bdf8', animation: undefined, costCoins: 1350, costGems: 52 },
   { id: 'fr_ancient_relic', label: 'Ancient Relic', border: '3px double #d97706', boxShadow: '0 0 28px #b45309', animation: undefined, costCoins: 1400, costGems: 55 },
   { id: 'fr_time_rift', label: 'Time Rift', border: '3px solid #10b981', boxShadow: '0 0 28px #06b6d4', animation: undefined, costCoins: 1500, costGems: 60 },
-
   // --- MYTHIC (1500–5000 Coins + 60–300 💎) ---
   { id: 'fr_creators_aura', label: "Creator's Aura", border: '3px solid #ffffff', boxShadow: '0 0 30px #fef08a', animation: undefined, costCoins: 1600, costGems: 70 },
   { id: 'fr_universe_core', label: 'Universe Core', border: '3px double #8b5cf6', boxShadow: '0 0 30px #38bdf8', animation: undefined, costCoins: 1800, costGems: 85 },
@@ -207,7 +198,6 @@ const AVAILABLE_FRAMES = [
   { id: 'fr_cosmic_ascension', label: 'Cosmic Ascension', border: '3px solid #fbbf24', boxShadow: '0 0 38px #38bdf8', animation: undefined, costCoins: 4800, costGems: 290 },
   { id: 'fr_pv_legend_frame', label: 'Cognerix Legend', border: '3px double #fef08a', boxShadow: '0 0 40px #fbbf24', animation: undefined, costCoins: 5000, costGems: 300 }
 ];
-
 const renderAvatar = (avatar: string = '👤', frame: string = 'none', size: number = 64) => {
   const selectedFrame = AVAILABLE_FRAMES.find(f => f.id === frame) || AVAILABLE_FRAMES[0];
   
@@ -231,7 +221,6 @@ const renderAvatar = (avatar: string = '👤', frame: string = 'none', size: num
     </div>
   );
 };
-
 // 🎵 Ambient Background Music Engine (Procedural - No external files needed)
 class AmbientMusicEngine {
   private ctx: AudioContext | null = null;
@@ -241,7 +230,6 @@ class AmbientMusicEngine {
   private intervalIds: ReturnType<typeof setInterval>[] = [];
   private oscillators: OscillatorNode[] = [];
   private gains: GainNode[] = [];
-
   // Calm puzzle-game chord progressions in C major / A minor
   private chords = [
     [261.63, 329.63, 392.00], // C major
@@ -253,14 +241,12 @@ class AmbientMusicEngine {
     [349.23, 440.00, 523.25], // F major (high)
     [329.63, 392.00, 493.88], // E minor (high)
   ];
-
   start(volume: number = 0.3) {
     if (this.isPlaying) return;
     try {
       this.ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
       this.masterGain = this.ctx.createGain();
       this.masterGain.gain.setValueAtTime(volume * 0.5, this.ctx.currentTime);
-
       // Create a dynamics compressor to act as a limiter to prevent any clipping/distortion
       this.compressor = this.ctx.createDynamicsCompressor();
       this.compressor.threshold.setValueAtTime(-16, this.ctx.currentTime);
@@ -268,11 +254,9 @@ class AmbientMusicEngine {
       this.compressor.ratio.setValueAtTime(12, this.ctx.currentTime);
       this.compressor.attack.setValueAtTime(0.003, this.ctx.currentTime);
       this.compressor.release.setValueAtTime(0.25, this.ctx.currentTime);
-
       // Connect: Signal -> Compressor -> Master Gain -> Destination
       this.compressor.connect(this.masterGain);
       this.masterGain.connect(this.ctx.destination);
-
       this.isPlaying = true;
       this.playPadLayer();
       this.playArpLayer();
@@ -281,7 +265,6 @@ class AmbientMusicEngine {
       console.warn('[AmbientMusic] Failed to start:', e);
     }
   }
-
   stop() {
     this.isPlaying = false;
     this.intervalIds.forEach(id => clearInterval(id));
@@ -297,39 +280,31 @@ class AmbientMusicEngine {
     this.masterGain = null;
     this.compressor = null;
   }
-
   setVolume(volume: number) {
     if (this.masterGain && this.ctx) {
       this.masterGain.gain.setValueAtTime(volume * 0.5, this.ctx.currentTime);
     }
   }
-
   get playing() { return this.isPlaying; }
-
   // Slow evolving pad chords
   private playPadLayer() {
     if (!this.ctx || !this.compressor) return;
     let chordIdx = 0;
-
     const playChord = () => {
       if (!this.ctx || !this.compressor || !this.isPlaying) return;
       const chord = this.chords[chordIdx % this.chords.length];
       chordIdx++;
-
       chord.forEach((freq, i) => {
         const osc = this.ctx!.createOscillator();
         const gain = this.ctx!.createGain();
         const filter = this.ctx!.createBiquadFilter();
-
         osc.type = 'sine';
         osc.frequency.value = freq * 0.5; // One octave lower for warmth
         // Slight detuning for richness
         osc.detune.value = (i - 1) * 4;
-
         filter.type = 'lowpass';
         filter.frequency.value = 600;
         filter.Q.value = 1;
-
         // Establish a clean initial state anchor to avoid pop click distortion
         gain.gain.setValueAtTime(0, this.ctx!.currentTime);
         // Slow fade in (gain 0.08 per voice to guarantee headroom)
@@ -338,17 +313,13 @@ class AmbientMusicEngine {
         gain.gain.setValueAtTime(0.08, this.ctx!.currentTime + 5.0);
         // Slow fade out before the 8.0 second mark
         gain.gain.linearRampToValueAtTime(0, this.ctx!.currentTime + 7.8);
-
         osc.connect(filter);
         filter.connect(gain);
         gain.connect(this.compressor!);
-
         osc.start();
         osc.stop(this.ctx!.currentTime + 8);
-
         this.oscillators.push(osc);
         this.gains.push(gain);
-
         // Cleanup
         osc.onended = () => {
           const oi = this.oscillators.indexOf(osc);
@@ -358,7 +329,6 @@ class AmbientMusicEngine {
         };
       });
     };
-
     playChord();
     const id = setInterval(() => {
       if (!this.isPlaying) return;
@@ -366,43 +336,32 @@ class AmbientMusicEngine {
     }, 8000); // New chord every 8 seconds
     this.intervalIds.push(id);
   }
-
   // Gentle arpeggio sparkles
   private playArpLayer() {
     if (!this.ctx || !this.compressor) return;
     const pentatonic = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25, 587.33, 659.25];
     let noteIdx = 0;
-
     const playNote = () => {
       if (!this.ctx || !this.compressor || !this.isPlaying) return;
-
       // Only play ~40% of the time for sparse sparkle effect
       if (Math.random() > 0.4) return;
-
       const freq = pentatonic[noteIdx % pentatonic.length] * (Math.random() > 0.5 ? 1 : 2);
       noteIdx++;
-
       const osc = this.ctx!.createOscillator();
       const gain = this.ctx!.createGain();
-
       osc.type = 'sine';
       osc.frequency.value = freq;
-
       // Safe anchor starting volume
       const targetVolume = 0.04 + Math.random() * 0.03;
       gain.gain.setValueAtTime(0, this.ctx!.currentTime);
       gain.gain.linearRampToValueAtTime(targetVolume, this.ctx!.currentTime + 0.1);
       gain.gain.exponentialRampToValueAtTime(0.001, this.ctx!.currentTime + 1.5 + Math.random() * 1.0);
-
       osc.connect(gain);
       gain.connect(this.compressor!);
-
       osc.start();
       osc.stop(this.ctx!.currentTime + 2.5);
-
       this.oscillators.push(osc);
       this.gains.push(gain);
-
       osc.onended = () => {
         const oi = this.oscillators.indexOf(osc);
         if (oi > -1) this.oscillators.splice(oi, 1);
@@ -410,51 +369,40 @@ class AmbientMusicEngine {
         if (gi > -1) this.gains.splice(gi, 1);
       };
     };
-
     const id = setInterval(() => {
       if (!this.isPlaying) return;
       playNote();
     }, 1200 + Math.random() * 800); // Every ~1.2-2s
     this.intervalIds.push(id);
   }
-
   // Deep subtle sub-bass pulse
   private playSubBass() {
     if (!this.ctx || !this.compressor) return;
     const bassNotes = [65.41, 55.00, 73.42, 61.74]; // C2, A1, D2, B1
     let bassIdx = 0;
-
     const playBass = () => {
       if (!this.ctx || !this.compressor || !this.isPlaying) return;
       const freq = bassNotes[bassIdx % bassNotes.length];
       bassIdx++;
-
       const osc = this.ctx!.createOscillator();
       const gain = this.ctx!.createGain();
       const filter = this.ctx!.createBiquadFilter();
-
       osc.type = 'sine';
       osc.frequency.value = freq;
-
       filter.type = 'lowpass';
       filter.frequency.value = 150;
-
       // Safe, deep sub volume (0.06 to avoid overdrive distortion)
       gain.gain.setValueAtTime(0, this.ctx!.currentTime);
       gain.gain.linearRampToValueAtTime(0.06, this.ctx!.currentTime + 3.0);
       gain.gain.setValueAtTime(0.06, this.ctx!.currentTime + 10.0);
       gain.gain.linearRampToValueAtTime(0, this.ctx!.currentTime + 15.8);
-
       osc.connect(filter);
       filter.connect(gain);
       gain.connect(this.compressor!);
-
       osc.start();
       osc.stop(this.ctx!.currentTime + 16);
-
       this.oscillators.push(osc);
       this.gains.push(gain);
-
       osc.onended = () => {
         const oi = this.oscillators.indexOf(osc);
         if (oi > -1) this.oscillators.splice(oi, 1);
@@ -462,7 +410,6 @@ class AmbientMusicEngine {
         if (gi > -1) this.gains.splice(gi, 1);
       };
     };
-
     playBass();
     const id = setInterval(() => {
       if (!this.isPlaying) return;
@@ -471,15 +418,12 @@ class AmbientMusicEngine {
     this.intervalIds.push(id);
   }
 }
-
 const ambientMusic = new AmbientMusicEngine();
-
 // Synthesized Audio Engine (No external sound files required)
 const synthSound = (type: 'click' | 'success' | 'fail' | 'levelUp' | 'correct' | 'search' | 'slide' | 'sudoku' | 'logic' | 'jigsaw' | 'slingshot' | 'bluster' | 'block_place' | 'wind' | 'wind_alert' | 'check' | 'victory' | 'defeat', isMuted: boolean, volume: number = 0.5) => {
   if (isMuted) return;
   try {
     const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
-
     if (type === 'click') {
       // 🌟 Clean high-quality soft pop click
       const osc = ctx.createOscillator();
@@ -570,7 +514,6 @@ const synthSound = (type: 'click' | 'success' | 'fail' | 'levelUp' | 'correct' |
       gain1.connect(ctx.destination);
       osc1.start();
       osc1.stop(ctx.currentTime + 0.15);
-
       const osc2 = ctx.createOscillator();
       const gain2 = ctx.createGain();
       osc2.type = 'sine';
@@ -750,7 +693,6 @@ const synthSound = (type: 'click' | 'success' | 'fail' | 'levelUp' | 'correct' |
       filter1.frequency.exponentialRampToValueAtTime(500, ctx.currentTime + 1.2);
       filter1.frequency.exponentialRampToValueAtTime(850, ctx.currentTime + 1.8);
       filter1.frequency.exponentialRampToValueAtTime(150, ctx.currentTime + 2.5);
-
       const filter2 = ctx.createBiquadFilter();
       filter2.type = 'bandpass';
       filter2.Q.setValueAtTime(8, ctx.currentTime);
@@ -788,7 +730,6 @@ const synthSound = (type: 'click' | 'success' | 'fail' | 'levelUp' | 'correct' |
         o.start(time);
         o.stop(time + 0.11);
       });
-
       const bufferSize = ctx.sampleRate * 2.0;
       const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
       const data = buffer.getChannelData(0);
@@ -871,7 +812,6 @@ const synthSound = (type: 'click' | 'success' | 'fail' | 'levelUp' | 'correct' |
     console.error("Audio Context playback failed", e);
   }
 };
-
 function App() {
   const { 
     userProfile, leaderboard, storeItems, 
@@ -879,10 +819,8 @@ function App() {
     buyStoreItem, equipCosmetic, updateStatus, updateAvatarAndFrame, buyAvatarOrFrame, spendGems, changeUsername, refreshLeaderboard,
     language, setLanguage, saveProfile, isProfileLoaded, getLastLocalMutationTime
   } = useGame();
-
   const t = (key: string) => translate(key, language);
   const isAdmin = userProfile?.email?.toLowerCase() === 'admin.cognerix@gmail.com';
-
   useEffect(() => {
     if (Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'android') {
       AdMob.initialize()
@@ -890,7 +828,6 @@ function App() {
         .catch(err => console.error('[AdMob] Initialization failed:', err));
     }
   }, []);
-
   const getPuzzleName = (pType: string | null | undefined): string => {
     if (!pType) return 'Puzzle Arena';
     if (pType === PuzzleType.SLIDING) return t('sliding_name');
@@ -906,13 +843,11 @@ function App() {
     if (pType === PuzzleType.MENTAL_MATH) return t('mental_math_name');
     return 'Puzzle Arena';
   };
-
   const [playerEmojiBubble, setPlayerEmojiBubble] = useState<string | null>(null);
   const [opponentEmojiBubble, setOpponentEmojiBubble] = useState<string | null>(null);
   const playerEmojiTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const opponentEmojiTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const botReactedThresholds = useRef<Record<number, boolean>>({});
-
   const [activeTab, setActiveTab] = useState<'home' | 'profile' | 'store' | 'leaderboard' | 'avatars' | 'battlepass' | 'settings' | 'friends'>('home');
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'info' | 'error' } | null>(null);
   const [shopConfirm, setShopConfirm] = useState<{
@@ -925,11 +860,9 @@ function App() {
     message: string;
     onConfirm: () => void;
   } | null>(null);
-
   const showToast = (message: string, type: 'success' | 'info' | 'error' = 'success') => {
     setToast({ message, type });
   };
-
   useEffect(() => {
     if (toast) {
       const timer = setTimeout(() => {
@@ -938,20 +871,15 @@ function App() {
       return () => clearTimeout(timer);
     }
   }, [toast]);
-
   const { activeEntranceAnimation } = useGame();
   const [appliedEntranceClass, setAppliedEntranceClass] = useState<string>('');
-
   const prevTabRef = useRef(activeTab);
   const prevActiveAnimRef = useRef(activeEntranceAnimation);
-
   useEffect(() => {
     const tabChanged = prevTabRef.current !== activeTab;
     const animTriggered = activeEntranceAnimation !== '' && prevActiveAnimRef.current !== activeEntranceAnimation;
-
     prevTabRef.current = activeTab;
     prevActiveAnimRef.current = activeEntranceAnimation;
-
     if (tabChanged || animTriggered) {
       const anim = activeEntranceAnimation || userProfile.lobbyEntranceAnimation || 'animate-fade-in';
       setAppliedEntranceClass(anim);
@@ -961,7 +889,6 @@ function App() {
       return () => clearTimeout(timer);
     }
   }, [activeTab, activeEntranceAnimation, userProfile.lobbyEntranceAnimation]);
-
   const entranceClass = appliedEntranceClass;
   const [showLevelUpModal, setShowLevelUpModal] = useState<number | null>(null);
   const [activeGame, setActiveGame] = useState<PuzzleType | null>(null);
@@ -975,7 +902,6 @@ function App() {
   const [isMusicOn, setIsMusicOn] = useState<boolean>(false);
   const gameCountRef = useRef<number>(0);
   const [customStatusInput, setCustomStatusInput] = useState<string>(userProfile.status || '');
-
   // Manage ambient music lifecycle
   useEffect(() => {
     if (isMusicOn && !isMuted) {
@@ -985,7 +911,6 @@ function App() {
     }
     return () => { ambientMusic.stop(); };
   }, [isMusicOn, isMuted]);
-
   // Sync music volume when soundVolume changes
   useEffect(() => {
     if (isMusicOn && !isMuted) {
@@ -995,7 +920,6 @@ function App() {
   const [isEditingStatus, setIsEditingStatus] = useState<boolean>(false);
   const [newNameInput, setNewNameInput] = useState<string>(userProfile.username);
   const [isEditingName, setIsEditingName] = useState<boolean>(false);
-
   // Responsive Drawer and Game Menu states
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
   const [isGameMenuOpen, setIsGameMenuOpen] = useState<boolean>(false);
@@ -1004,19 +928,16 @@ function App() {
   const [gameSeed, setGameSeed] = useState<string>('');
   const [botTriviaCorrect, setBotTriviaCorrect] = useState<number>(0);
   const [playerCorrectCount, setPlayerCorrectCount] = useState<number>(0);
-
   // 3-Round Physics Match tracking
   const [currentRound, setCurrentRound] = useState<number>(1);
   const [playerRoundWins, setPlayerRoundWins] = useState<number>(0);
   const [opponentRoundWins, setOpponentRoundWins] = useState<number>(0);
   const [, setRoundWinnerMessage] = useState<string | null>(null);
-
   // Light/Dark Theme State
   const [isLightMode, setIsLightMode] = useState<boolean>(() => {
     const saved = localStorage.getItem('puzzle_verse_light_mode');
     return saved === null ? true : saved === 'true';
   });
-
   useEffect(() => {
     if (isLightMode) {
       document.documentElement.classList.add('light-theme');
@@ -1025,12 +946,10 @@ function App() {
     }
     localStorage.setItem('puzzle_verse_light_mode', String(isLightMode));
   }, [isLightMode]);
-
   // Reset grid size when active game changes or is closed
   useEffect(() => {
     setCurrentSlidingGridSize(3);
   }, [activeGame]);
-
   // Real Online Matchmaking
   const [matchmakingState, setMatchmakingState] = useState<'idle' | 'searching' | 'found' | 'playing' | 'waiting_opponent'>('idle');
   const [triviaPauseTimerLeft, setTriviaPauseTimerLeft] = useState<number>(-1);
@@ -1057,7 +976,6 @@ function App() {
   const [reportReason, setReportReason] = useState<'Nickname Violation' | 'Violence in Chat' | 'Other'>('Violence in Chat');
   const [reportDescription, setReportDescription] = useState<string>('');
   const [isSubmittingReport, setIsSubmittingReport] = useState<boolean>(false);
-
   useEffect(() => {
     if (isReportModalOpen && userProfile?.username) {
       setReportNickname(userProfile.username);
@@ -1076,7 +994,6 @@ function App() {
   const [inGameChatPosition, setInGameChatPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const isInGameChatDragging = useRef<boolean>(false);
   const inGameChatDragStart = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
-
   const [friendsList, setFriendsList] = useState<{ id: string; username: string; avatar: string; frame: string; rank: string; status: 'online' | 'in_game' | 'offline' }[]>([]);
   const [friendSearchInput, setFriendSearchInput] = useState<string>('');
   const [challengeTargetFriend, setChallengeTargetFriend] = useState<{ id: string; username: string } | null>(null);
@@ -1097,12 +1014,10 @@ function App() {
       }
     })()
   );
-
   const saveLastReadTimestamps = (updated: Record<string, number>) => {
     lastReadTimestamps.current = updated;
     localStorage.setItem('puzzle_verse_last_read_chats', JSON.stringify(updated));
   };
-
   const [roomBlocks, setRoomBlocks] = useState<Record<string, string[]>>({});
   const roomBlocksRef = useRef<Record<string, string[]>>({});
   const [isMailboxOpen, setIsMailboxOpen] = useState<boolean>(false);
@@ -1118,7 +1033,6 @@ function App() {
     return saved ? parseInt(saved, 10) : 0;
   });
   const [cooldownTick, setCooldownTick] = useState<number>(0);
-
   const claimFreeReward = () => {
     const newCoins = 700;
     const newGems = 100;
@@ -1136,7 +1050,6 @@ function App() {
     try { triggerSound('success'); } catch (e) {}
     setShowRewardCollectScreen(true);
   };
-
   const watchRealAd = async () => {
     // Check internet
     const status = await Network.getStatus();
@@ -1144,7 +1057,6 @@ function App() {
       showToast('No internet connection. Ad unavailable.', 'error');
       return; // no reward, no simulated ad
     }
-
     try {
       const rewardListener = await AdMob.addListener(RewardAdPluginEvents.Rewarded, () => {
         rewardListener.remove();
@@ -1152,13 +1064,11 @@ function App() {
         failedListener.remove();
         claimFreeReward();
       });
-
       const dismissListener = await AdMob.addListener(RewardAdPluginEvents.Dismissed, () => {
         rewardListener.remove();
         dismissListener.remove();
         failedListener.remove();
       });
-
       const failedListener = await AdMob.addListener(RewardAdPluginEvents.FailedToLoad, (err) => {
         console.error('[AdMob] Failed to load ad:', err);
         rewardListener.remove();
@@ -1167,7 +1077,6 @@ function App() {
         showToast('Failed to load ad. Try again later.', 'error');
         // no runSimulatedAd(), no reward
       });
-
       await AdMob.prepareRewardVideoAd({
         adId: 'ca-app-pub-3940256099942544/5224354917',
         isTesting: true
@@ -1179,12 +1088,10 @@ function App() {
       // no runSimulatedAd(), no reward
     }
   };
-
   const runSimulatedAd = () => {
     setIsWatchingAd(true);
     setAdTimeLeft(5);
   };
-
   const showScreenBanners = async () => {
     if (Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'android') {
       // Small delay to ensure AdMob is ready
@@ -1213,7 +1120,6 @@ function App() {
       }
     }
   };
-
   const hideScreenBanners = async () => {
     if (Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'android') {
       try {
@@ -1224,7 +1130,6 @@ function App() {
       }
     }
   };
-
   const showLevelUpInterstitial = async () => {
     if (!Capacitor.isNativePlatform()) return;
     try {
@@ -1237,7 +1142,6 @@ function App() {
       console.error('[AdMob] Interstitial failed:', e);
     }
   };
-
   useEffect(() => {
     let timer: any;
     if (isWatchingAd && adTimeLeft > 0) {
@@ -1250,7 +1154,6 @@ function App() {
     }
     return () => clearTimeout(timer);
   }, [isWatchingAd, adTimeLeft, userProfile]);
-
   useEffect(() => {
     let interval: any;
     const checkCooldown = () => {
@@ -1276,7 +1179,6 @@ function App() {
       if (interval) clearInterval(interval);
     };
   }, [lastRewardClaimedTime]);
-
   const [isRulesModalOpen, setIsRulesModalOpen] = useState<boolean>(false);
   const [unreadMailCount, setUnreadMailCount] = useState<number>(2);
   const [mailboxItems, setMailboxItems] = useState<{ id: string; type: 'announcement' | 'gift'; title: string; content: string; rewardCoins?: number; rewardGems?: number; claimed: boolean; date: string }[]>(() => [
@@ -1323,7 +1225,6 @@ function App() {
   const [adminFriendsLoading, setAdminFriendsLoading] = useState<boolean>(false);
   const [isOnboardingLangDropdownOpen, setIsOnboardingLangDropdownOpen] = useState<boolean>(false);
   const [isSettingsLangDropdownOpen, setIsSettingsLangDropdownOpen] = useState<boolean>(false);
-
   const fetchAdminFriends = async (targetUserId: string) => {
     setAdminFriendsLoading(true);
     setAdminFriendsList([]);
@@ -1341,7 +1242,6 @@ function App() {
       setAdminFriendsLoading(false);
     }
   };
-
   const [adminSearchProfileId, setAdminSearchProfileId] = useState<string>('');
   const [isUserViewBoxOpen, setIsUserViewBoxOpen] = useState<boolean>(false);
   const [adminSearchHistoryId, setAdminSearchHistoryId] = useState<string>('');
@@ -1350,7 +1250,6 @@ function App() {
   const [adminHistorySearched, setAdminHistorySearched] = useState<boolean>(false);
   const [copiedProfileId, setCopiedProfileId] = useState<boolean>(false);
   const [copiedIpAddress, setCopiedIpAddress] = useState<boolean>(false);
-
   const copyToClipboard = (text: string, type: 'id' | 'ip') => {
     navigator.clipboard.writeText(text);
     try { triggerSound('click'); } catch (e) {}
@@ -1362,7 +1261,6 @@ function App() {
       setTimeout(() => setCopiedIpAddress(false), 1500);
     }
   };
-
   const fetchPlayerHistory = async (playerId: string) => {
     if (!playerId.trim()) return;
     setAdminHistoryLoading(true);
@@ -1387,7 +1285,6 @@ function App() {
       setAdminHistoryLoading(false);
     }
   };
-
   const [expandedMatchChats, setExpandedMatchChats] = useState<Set<string>>(new Set());
   const toggleMatchChat = (roomId: string) => {
     setExpandedMatchChats(prev => {
@@ -1397,12 +1294,10 @@ function App() {
       return next;
     });
   };
-
   const [adminSearchChatUserId, setAdminSearchChatUserId] = useState<string>('');
   const [adminChatHistoryList, setAdminChatHistoryList] = useState<any[]>([]);
   const [adminChatHistoryLoading, setAdminChatHistoryLoading] = useState<boolean>(false);
   const [adminChatHistorySearched, setAdminChatHistorySearched] = useState<boolean>(false);
-
   const fetchPlayerChatHistory = async (playerId: string) => {
     if (!playerId.trim()) return;
     setAdminChatHistoryLoading(true);
@@ -1427,26 +1322,22 @@ function App() {
       setAdminChatHistoryLoading(false);
     }
   };
-
   // Room ID Lookup states
   const [adminRoomLookupId, setAdminRoomLookupId] = useState<string>('');
   const [adminRoomLookupResult, setAdminRoomLookupResult] = useState<any>(null);
   const [adminRoomLookupLoading, setAdminRoomLookupLoading] = useState<boolean>(false);
   const [adminRoomLookupSearched, setAdminRoomLookupSearched] = useState<boolean>(false);
-
   // Player Reports states
   const [adminReports, setAdminReports] = useState<any[]>([]);
   const [adminReportsLoading, setAdminReportsLoading] = useState<boolean>(false);
   const [selectedReport, setSelectedReport] = useState<any | null>(null);
   const [openedReports, setOpenedReports] = useState<Set<string>>(() => new Set(JSON.parse(localStorage.getItem('openedReports') || '[]')));
-
   const formatReportTimestamp = (iso: string) => {
     if (!iso) return 'N/A';
     const d = new Date(iso);
     if (isNaN(d.getTime())) return 'N/A';
     return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`;
   };
-
   const deleteAdminReport = async (reportId: string) => {
     if (!window.confirm('Are you sure you want to delete this report?')) return;
     try {
@@ -1462,7 +1353,6 @@ function App() {
       console.error('[AdminReports] Failed to delete report:', e);
     }
   };
-
   const fetchAdminReports = async () => {
     setAdminReportsLoading(true);
     console.log('[AdminReports] Fetching reports...');
@@ -1484,7 +1374,6 @@ function App() {
       setAdminReportsLoading(false);
     }
   };
-
   const fetchRoomLookup = async (roomId: string) => {
     if (!roomId.trim()) return;
     setAdminRoomLookupLoading(true);
@@ -1508,7 +1397,6 @@ function App() {
       setAdminRoomLookupLoading(false);
     }
   };
-
   // Help & Support Form states
   const [isSupportOpen, setIsSupportOpen] = useState<boolean>(false);
   const [supportName, setSupportName] = useState<string>('');
@@ -1517,7 +1405,6 @@ function App() {
   const [supportDescription, setSupportDescription] = useState<string>('');
   const [supportCaptchaChecked, setSupportCaptchaChecked] = useState<boolean>(false);
   const [isSubmittingSupport, setIsSubmittingSupport] = useState<boolean>(false);
-
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => localStorage.getItem('pv_logged_in') === 'true');
   const [onboardingStep, setOnboardingStep] = useState<'none' | 'language' | 'terms'>(() => {
     const accepted = localStorage.getItem('pv_terms_accepted') === 'true';
@@ -1534,7 +1421,6 @@ function App() {
   const [isLiveDuelHubExpanded, setIsLiveDuelHubExpanded] = useState<boolean>(true);
   const googleButtonRef = useRef<HTMLDivElement>(null);
   const { loginUser, logoutUser } = useGame();
-
   useEffect(() => {
     if (isSupportOpen && userProfile) {
       setSupportName(userProfile.username || '');
@@ -1544,7 +1430,6 @@ function App() {
       setSupportCaptchaChecked(false);
     }
   }, [isSupportOpen, userProfile]);
-
   useEffect(() => {
     if (isMailboxOpen && isAdmin) {
       const fetchBanned = async () => {
@@ -1560,7 +1445,6 @@ function App() {
           console.warn('[Mailbox] Failed to fetch banned players:', e);
         }
       };
-
       const fetchUsers = async () => {
         try {
           const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
@@ -1574,7 +1458,6 @@ function App() {
           console.warn('[Mailbox] Failed to fetch users:', e);
         }
       };
-
       const fetchAnnouncementHistory = async () => {
         try {
           const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
@@ -1588,7 +1471,6 @@ function App() {
           console.warn('[Mailbox] Failed to fetch announcement history:', e);
         }
       };
-
       const loadAdminData = async () => {
         fetchBanned();
         fetchUsers();
@@ -1605,7 +1487,6 @@ function App() {
       loadAdminData();
     }
   }, [isMailboxOpen, isAdmin]);
-
   useEffect(() => {
     if (!isProfileLoaded || !userProfile?.id) return;
     console.log('[AUTH DEBUG] userProfile set:', JSON.stringify({
@@ -1623,7 +1504,6 @@ function App() {
               setIsUserBanned(true);
               const reason = (data.banReasons && data.banReasons[userProfile.id]) || 'No reason specified.';
               setUserBanReason(reason);
-
               // Locally inject a ban notification in mailbox so they see it
               const personalKey = `puzzle_verse_mailbox_${userProfile.id}`;
               const savedPersonal = localStorage.getItem(personalKey);
@@ -1664,7 +1544,6 @@ function App() {
     const interval = setInterval(checkBanStatus, 30000);
     return () => clearInterval(interval);
   }, [isProfileLoaded, userProfile?.id]);
-
   useEffect(() => {
     if (!isProfileLoaded || !userProfile?.id) return;
     const personalKey = `puzzle_verse_mailbox_${userProfile.id}`;
@@ -1698,7 +1577,6 @@ function App() {
         }
       ];
     }
-
     const savedGlobal = localStorage.getItem('puzzle_verse_global_mailbox');
     let globalItems: any[] = [];
     if (savedGlobal) {
@@ -1708,7 +1586,6 @@ function App() {
         globalItems = [];
       }
     }
-
     let modified = false;
     globalItems.forEach(globalItem => {
       if (!personalItems.some(item => item.id === globalItem.id)) {
@@ -1716,15 +1593,12 @@ function App() {
         modified = true;
       }
     });
-
     if (modified || !savedPersonal) {
       localStorage.setItem(personalKey, JSON.stringify(personalItems));
     }
-
     setMailboxItems(personalItems);
     const unclaimedCount = personalItems.filter(item => !item.claimed).length;
     setUnreadMailCount(unclaimedCount);
-
     // Poll server-side mailbox
     const checkMailbox = async () => {
       try {
@@ -1753,7 +1627,6 @@ function App() {
         console.warn('[Mailbox] Backend pull failed, using local storage:', e);
       }
     };
-
     const checkPopupAnnouncements = async () => {
       try {
         const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
@@ -1776,7 +1649,6 @@ function App() {
         console.warn('[PopupAnnouncements] Failed to fetch:', e);
       }
     };
-
     checkMailbox();
     checkPopupAnnouncements();
     const interval = setInterval(() => {
@@ -1785,7 +1657,6 @@ function App() {
     }, 3000);
     return () => clearInterval(interval);
   }, [userProfile?.id, isProfileLoaded]);
-
   // Real-time Matchmaking Queues connection
   useEffect(() => {
     if (!isLoggedIn || !userProfile?.id) {
@@ -1795,10 +1666,8 @@ function App() {
       }
       return;
     }
-
     let isSubscribed = true;
     let reconnectTimeout: any = null;
-
     const fetchInitialQueues = async () => {
       try {
         const res = await apiRequest('GET', `${BACKEND_HTTP_URL}/profile/matchmaking/queues`);
@@ -1812,7 +1681,6 @@ function App() {
         console.warn("[Lobby] Failed to fetch initial queues:", e);
       }
     };
-
     const connectLobby = async () => {
       try {
         console.log("[Lobby] Connecting to lobby_room...");
@@ -1824,17 +1692,14 @@ function App() {
           room.leave();
           return;
         }
-
         lobbyRoomRef.current = room;
         console.log("[Lobby] Connected to lobby_room:", room.roomId);
-
         room.onMessage("queue_update", (counts: Record<string, number>) => {
           if (isSubscribed && counts) {
             console.log("[Lobby] Queue count update received:", counts);
             setMatchmakingQueues(counts);
           }
         });
-
         room.onLeave((code) => {
           console.log("[Lobby] Left lobby_room. Code:", code);
           lobbyRoomRef.current = null;
@@ -1842,7 +1707,6 @@ function App() {
             reconnectTimeout = setTimeout(connectLobby, 5000);
           }
         });
-
       } catch (e) {
         console.warn("[Lobby] Lobby connection failed:", e);
         if (isSubscribed) {
@@ -1850,10 +1714,8 @@ function App() {
         }
       }
     };
-
     fetchInitialQueues();
     connectLobby();
-
     return () => {
       isSubscribed = false;
       if (reconnectTimeout) clearTimeout(reconnectTimeout);
@@ -1863,7 +1725,6 @@ function App() {
       }
     };
   }, [isLoggedIn, userProfile?.id]);
-
   const handleGuestLogin = () => {
     if (!guestUser.trim()) {
       showToast(t('error_username_empty'), 'error');
@@ -1883,7 +1744,6 @@ function App() {
       setOnboardingStep('none');
     }
   };
-
   // --- Real Google Sign-In: Fetch client ID and load GIS script ---
   useEffect(() => {
     console.log('[Capacitor] isNativePlatform:', Capacitor.isNativePlatform());
@@ -1923,7 +1783,6 @@ function App() {
       })
       .catch(() => setGoogleClientId(''));
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
   const initializeGoogleButton = (clientId: string) => {
     const g = (window as any).google;
     if (!g || !g.accounts || !googleButtonRef.current) {
@@ -1943,7 +1802,6 @@ function App() {
       shape: 'pill',
     });
   };
-
   const handleGoogleCredentialResponse = async (response: any) => {
     if (!response.credential) {
       showToast('Google Sign-In failed. Please try again.', 'error');
@@ -1980,7 +1838,6 @@ function App() {
       setGoogleLoginLoading(false);
     }
   };
-
   const handleNativeGoogleSignIn = async () => {
     try {
       setGoogleLoginLoading(true);
@@ -2011,8 +1868,6 @@ function App() {
       setGoogleLoginLoading(false);
     }
   };
-
-
   const handleReportSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!reportNickname.trim()) {
@@ -2023,7 +1878,6 @@ function App() {
       showToast("Detailed description is required when 'Other' is selected.", 'error');
       return;
     }
-
     setIsSubmittingReport(true);
     try {
       const payload = {
@@ -2035,15 +1889,11 @@ function App() {
         description: reportReason === 'Other' ? reportDescription.trim() : undefined,
         sessionId: lastRoomIdRef.current || undefined
       };
-
       const authPayload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
       const token = btoa(JSON.stringify(authPayload));
-
       console.log('[Report] Submitting report to:', `${BACKEND_HTTP_URL}/profile/report`);
       const url = `${BACKEND_HTTP_URL}/profile/report`;
-
       const res = await apiRequest('POST', url, payload, token);
-
       if (res.ok) {
         showToast("Report Submitted. Thank you for helping keep Cognerix safe.", 'success');
         setIsReportModalOpen(false);
@@ -2060,7 +1910,6 @@ function App() {
       setIsSubmittingReport(false);
     }
   };
-
   const triggerPlayerEmoji = (emoji: string) => {
     if (opponentInfo) {
       const oppId = opponentInfo.id || '';
@@ -2073,7 +1922,6 @@ function App() {
         return;
       }
     }
-
     if (roomRef.current) {
       MultiplayerService.sendEmoji(roomRef.current, emoji);
     } else {
@@ -2082,7 +1930,6 @@ function App() {
       playerEmojiTimeoutRef.current = setTimeout(() => {
         setPlayerEmojiBubble(null);
       }, 2500);
-
       if (opponentInfo && Math.random() > 0.5) {
         setTimeout(() => {
           const reactions = ["😊", "😂", "🤣", "😒", "👍", "🤷‍♂️", "🤷‍♀️", "😉", "😎", "🤖"];
@@ -2092,7 +1939,6 @@ function App() {
       }
     }
   };
-
   const triggerOpponentEmoji = (emoji: string) => {
     if (opponentInfo) {
       const oppId = opponentInfo.id || '';
@@ -2108,7 +1954,6 @@ function App() {
       setOpponentEmojiBubble(null);
     }, 2500);
   };
-
   useEffect(() => {
     if (activeGame && opponentInfo && selectedDifficultyRef.current !== 'online') {
       if (playerProgress >= 40 && !botReactedThresholds.current[40]) {
@@ -2123,12 +1968,10 @@ function App() {
       }
     }
   }, [playerProgress, activeGame, opponentInfo]);
-
   const [matchResult, setMatchResult] = useState<{ isWinner: boolean; winnerName: string; opponentName?: string; opponentNameColor?: string; opponentBadges?: string[]; opponentId?: string; forfeit?: boolean; isSolo?: boolean; isDisconnect?: boolean; bothDefeated?: boolean; triviaDetails?: { playerCorrect: number; opponentCorrect: number }; roomId?: string } | null>(null);
   const lastRoomIdRef = useRef<string | undefined>(undefined);
   const [delayedMatchResult, setDelayedMatchResult] = useState<any>(null);
   const confettiCanvasRef = useRef<HTMLCanvasElement | null>(null);
-
   // Confetti Launcher Effect & Match Result Sounds
   useEffect(() => {
     if (matchResult) {
@@ -2150,14 +1993,12 @@ function App() {
       lastPlayedMatchResultRef.current = null;
       hideScreenBanners();
     }
-
     if (matchResult && matchResult.isWinner && confettiCanvasRef.current) {
       const canvasEl = confettiCanvasRef.current;
       const ctx = canvasEl.getContext('2d');
       if (!ctx) return;
       canvasEl.width = window.innerWidth;
       canvasEl.height = window.innerHeight;
-
       const particles: Array<{
         x: number;
         y: number;
@@ -2168,9 +2009,7 @@ function App() {
         rotation: number;
         rotationSpeed: number;
       }> = [];
-
       const colors = ['#8b5cf6', '#06b6d4', '#ec4899', '#10b981', '#f59e0b', '#ef4444'];
-
       for (let i = 0; i < 150; i++) {
         particles.push({
           x: Math.random() * canvasEl.width,
@@ -2183,22 +2022,17 @@ function App() {
           rotationSpeed: Math.random() * 4 - 2
         });
       }
-
       let animationFrameId: number;
-
       const update = () => {
         ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
         let active = false;
-
         particles.forEach(p => {
           p.y += p.speedY;
           p.x += p.speedX;
           p.rotation += p.rotationSpeed;
-
           if (p.y < canvasEl.height) {
             active = true;
           }
-
           ctx.save();
           ctx.translate(p.x, p.y);
           ctx.rotate((p.rotation * Math.PI) / 180);
@@ -2206,33 +2040,26 @@ function App() {
           ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
           ctx.restore();
         });
-
         if (active) {
           animationFrameId = requestAnimationFrame(update);
         }
       };
-
       update();
-
       return () => {
         cancelAnimationFrame(animationFrameId);
       };
     }
   }, [matchResult]);
-
   // Accessibility States
   const [colorBlindMode] = useState<'none' | 'protanopia' | 'deuteranopia' | 'tritanopia'>('none');
-
   // Watch profile changes for leveling up sounds and notification modal
   const prevLevelRef = useRef<number | null>(null);
   useEffect(() => {
     if (!isProfileLoaded) return;
-
     if (prevLevelRef.current === null) {
       prevLevelRef.current = userProfile.level;
       return;
     }
-
     if (userProfile.level > prevLevelRef.current) {
       synthSound('levelUp', isMuted, soundVolume);
       showLevelUpInterstitial().then(() => {
@@ -2243,12 +2070,10 @@ function App() {
       prevLevelRef.current = userProfile.level;
     }
   }, [userProfile.level, isProfileLoaded, isMuted, soundVolume]);
-
   // Audio helper local wrapper
   const triggerSound = (type: 'click' | 'success' | 'fail' | 'levelUp' | 'correct' | 'search' | 'slide' | 'sudoku' | 'logic' | 'jigsaw' | 'slingshot' | 'bluster' | 'block_place' | 'wind' | 'wind_alert' | 'check' | 'victory' | 'defeat') => {
     synthSound(type, isMuted, soundVolume);
   };
-
   const handleTabChange = (tab: typeof activeTab) => {
     triggerSound('click');
     setActiveTab(tab);
@@ -2262,16 +2087,13 @@ function App() {
       refreshLeaderboard();
     }
   };
-
   const sendFriendRequestToServer = async (friendUsername?: string, friendId?: string) => {
     if (!userProfile) return { success: false };
     try {
       const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
       const token = btoa(JSON.stringify(payload));
       const url = `${BACKEND_HTTP_URL}/profile/friends/request`;
-
       const res = await apiRequest('POST', url, { friendUsername, friendId }, token);
-
       if (res.ok) {
         triggerSound('success');
         if (friendId) {
@@ -2292,7 +2114,6 @@ function App() {
       return { success: false, error: e.message };
     }
   };
-
   const handleCloseChat = async () => {
     if (!activeChatFriend || !userProfile) return;
     const friendId = activeChatFriend.id;
@@ -2300,7 +2121,6 @@ function App() {
     setActiveChatFriend(null);
     setChatHistory([]);
     setFriendChatInput('');
-
     try {
       const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
       const token = btoa(JSON.stringify(payload));
@@ -2309,8 +2129,6 @@ function App() {
       console.error('[Friends] Clear chat failed on close:', e);
     }
   };
-
-
   // Close active puzzle board
   // skipRoomLeave: when called from game_over handler, we leave the room separately
   //                to avoid onLeave racing with state updates
@@ -2319,7 +2137,6 @@ function App() {
     setRoomBlocks({});
     roomBlocksRef.current = {};
     const endedGame = activeGame;
-
     if (matchmakingState === 'playing' && !skipRoomLeave && roomRef.current) {
       if (delayedMatchResult) {
         if (!skipMatchResult) {
@@ -2333,7 +2150,6 @@ function App() {
         setIsGameHidden(false);
         return;
       }
-
       if (!skipMatchResult) {
         setMatchResult({
           isWinner: false,
@@ -2352,7 +2168,6 @@ function App() {
       setIsGameHidden(false);
       return;
     }
-
     if (delayedMatchResult) {
       if (!skipMatchResult) {
         setMatchResult(delayedMatchResult);
@@ -2384,7 +2199,6 @@ function App() {
         }
       }
     }
-
     setActiveGame(null);
     setIsGameHidden(false);
     if (!skipRoomLeave && roomRef.current) {
@@ -2411,7 +2225,6 @@ function App() {
     setPlayerRoundWins(0);
     setOpponentRoundWins(0);
     setRoundWinnerMessage(null);
-
     setPlayerEmojiBubble(null);
     setOpponentEmojiBubble(null);
     setChatMessages([]);
@@ -2421,12 +2234,10 @@ function App() {
     if (playerEmojiTimeoutRef.current) clearTimeout(playerEmojiTimeoutRef.current);
     if (opponentEmojiTimeoutRef.current) clearTimeout(opponentEmojiTimeoutRef.current);
     botReactedThresholds.current = {};
-
     if (endedGame) {
       setDifficultyModal({ puzzleType: endedGame });
     }
   };
-
   const handleInGameChatMouseDown = (e: React.MouseEvent) => {
     if (e.button !== 0) return;
     isInGameChatDragging.current = true;
@@ -2435,13 +2246,11 @@ function App() {
       y: e.clientY - inGameChatPosition.y
     };
   };
-
   const getBotSpeedConfig = (puzzleType: PuzzleType, mode: string) => {
     // Default values
     let tickRate = 1500;
     let solveMin = 3;
     let solveMax = 6;
-
     switch (puzzleType) {
       case PuzzleType.SUDOKU:
         if (mode === 'easy') {
@@ -2461,7 +2270,6 @@ function App() {
           solveMax = 3;
         }
         break;
-
       case PuzzleType.JIGSAW:
         if (mode === 'easy') {
           // Target: 135s
@@ -2480,7 +2288,6 @@ function App() {
           solveMax = 3;
         }
         break;
-
       case PuzzleType.SLIDING:
         if (mode === 'easy') {
           // Target: 100s
@@ -2499,7 +2306,6 @@ function App() {
           solveMax = 4;
         }
         break;
-
       case PuzzleType.WORD_SEARCH:
         if (mode === 'easy') {
           // Target: 125s
@@ -2518,7 +2324,6 @@ function App() {
           solveMax = 3;
         }
         break;
-
       case PuzzleType.TOWER_BLOXX:
         if (mode === 'easy') {
           // Target: 120s
@@ -2537,7 +2342,6 @@ function App() {
           solveMax = 3;
         }
         break;
-
       case PuzzleType.BLOCK_BLUSTER:
         if (mode === 'easy') {
           // Target: 135s
@@ -2556,7 +2360,6 @@ function App() {
           solveMax = 3;
         }
         break;
-
       case PuzzleType.WORD:
       case PuzzleType.LOGIC:
         if (mode === 'easy') {
@@ -2576,7 +2379,6 @@ function App() {
           solveMax = 4;
         }
         break;
-
       case PuzzleType.EIGHT_BALL_QUIZ:
         if (mode === 'easy') {
           // Target: 50s
@@ -2595,7 +2397,6 @@ function App() {
           solveMax = 5;
         }
         break;
-
       case PuzzleType.PHYSICS:
         if (mode === 'easy') {
           // Target: 60s per round (avgIncrement: 4.0, tickRate: 2400ms)
@@ -2614,7 +2415,6 @@ function App() {
           solveMax = 6;
         }
         break;
-
       case PuzzleType.MENTAL_MATH:
         if (mode === 'easy') {
           // Target: 22s
@@ -2633,7 +2433,6 @@ function App() {
           solveMax = 7;
         }
         break;
-
       default:
         if (mode === 'easy') {
           tickRate = 1800;
@@ -2649,10 +2448,8 @@ function App() {
           solveMax = 6;
         }
     }
-
     return { tickRate, solveMin, solveMax };
   };
-
   const startOnlineFallbackBotSolver = (
     botName: string, 
     botCorrectCount: number, 
@@ -2664,17 +2461,13 @@ function App() {
     if (matchSolveIntervalRef.current) {
       clearInterval(matchSolveIntervalRef.current);
     }
-
     const diffMode = selectedDifficultyRef.current || 'medium';
     const config = getBotSpeedConfig(pType, diffMode);
-
     let tickRate = 1000;
     let avgIncrement = 1;
     let isOnlineFallback = diffMode === 'online';
-
     let solveMin = passedSolveMin !== undefined ? passedSolveMin : config.solveMin;
     let solveMax = passedSolveMax !== undefined ? passedSolveMax : config.solveMax;
-
     if (isOnlineFallback) {
       // AI Solve duration config: target random duration between 30 and 90 seconds
       const targetSeconds = Math.floor(Math.random() * (90 - 30 + 1)) + 30; // 30 to 90 seconds
@@ -2684,7 +2477,6 @@ function App() {
       // Use config from getBotSpeedConfig
       tickRate = passedTickRate !== undefined ? passedTickRate : config.tickRate;
     }
-
     let botProgress = 0;
     matchSolveIntervalRef.current = setInterval(() => {
       const oldProg = botProgress;
@@ -2698,7 +2490,6 @@ function App() {
         // Use standard range-based random increment
         botProgress += Math.floor(Math.random() * (solveMax - solveMin + 1)) + solveMin;
       }
-
       if (oldProg < 30 && botProgress >= 30) {
         const reactions = ["😂", "🤣", "😋", "✌️", "👌"];
         triggerOpponentEmoji(reactions[Math.floor(Math.random() * reactions.length)]);
@@ -2709,12 +2500,10 @@ function App() {
         const reactions = ["🤣", "😋", "🤖", "😎"];
         triggerOpponentEmoji(reactions[Math.floor(Math.random() * reactions.length)]);
       }
-
       if (botProgress >= 100) {
         botProgress = 100;
         clearInterval(matchSolveIntervalRef.current!);
         botFinishedTimeRef.current = Date.now();
-
         if (pType === PuzzleType.PHYSICS) {
           // Three rounds mode for online fallback bot
           setOpponentRoundWins(prevWins => {
@@ -2749,7 +2538,6 @@ function App() {
           closeGame();
         }
       }
-
       setOpponentInfo(prev => prev ? { 
         ...prev, 
         progress: Math.min(100, Math.floor(botProgress)),
@@ -2757,7 +2545,6 @@ function App() {
       } : null);
     }, tickRate);
   };
-
   const syncProfileWithServer = async (overrideProfile?: typeof userProfile) => {
     const profileToSync = overrideProfile || userProfile;
     if (!profileToSync || profileToSync.id.startsWith('90')) return;
@@ -2767,19 +2554,16 @@ function App() {
       
       const lastMutationTime = getLastLocalMutationTime ? getLastLocalMutationTime() : 0;
       const wasMutatedRecently = Date.now() - lastMutationTime < 5000;
-
       if (wasMutatedRecently || overrideProfile) {
         // --- PUSH LOCAL STATE TO SERVER ---
         // Calculate global score to sync as points (pts)
         const globalScore = leaderboard
           .filter(e => e.userId === profileToSync.id && e.puzzleType !== 'GLOBAL')
           .reduce((sum, entry) => sum + entry.score, 0);
-
         const res = await apiRequest('POST', `${BACKEND_HTTP_URL}/profile/sync`, {
           ...profileToSync,
           score: globalScore
         }, token);
-
         if (res.status === 401) {
           const errData = res.data || {};
           if (errData.message && errData.message.includes('deleted')) {
@@ -2791,7 +2575,6 @@ function App() {
             return;
           }
         }
-
         if (res.ok) {
           const data = res.data;
           if (data.deleted) {
@@ -2806,7 +2589,6 @@ function App() {
       } else {
         // --- PULL SERVER STATE TO LOCAL ---
         const res = await apiRequest('GET', `${BACKEND_HTTP_URL}/profile/me`, undefined, token);
-
         if (res.ok) {
           const serverProfile = res.data;
           if (serverProfile) {
@@ -2821,7 +2603,6 @@ function App() {
               serverProfile.nameColor !== profileToSync.nameColor ||
               JSON.stringify(serverProfile.inventory) !== JSON.stringify(profileToSync.inventory) ||
               JSON.stringify(serverProfile.badges) !== JSON.stringify(profileToSync.badges);
-
             if (isDifferent) {
               console.log("[Sync] Stale local profile detected; applying server profile states.");
               saveProfile({
@@ -2836,7 +2617,6 @@ function App() {
       console.error('[Friends] Profile sync failed:', e);
     }
   };
-
   const handleStorePurchaseSuccess = (type: 'coins' | 'gems', amount: number) => {
     const nextProfile = {
       ...userProfile,
@@ -2846,7 +2626,6 @@ function App() {
     saveProfile(nextProfile);
     syncProfileWithServer(nextProfile);
   };
-
   const fetchFriendsList = async () => {
     if (!userProfile) return;
     try {
@@ -2861,13 +2640,11 @@ function App() {
       console.error('[Friends] Fetch failed:', e);
     }
   };
-
   useEffect(() => {
     if (isProfileLoaded && isLoggedIn && !userProfile.id.startsWith('90')) {
       syncProfileWithServer();
     }
   }, [userProfile, isProfileLoaded, isLoggedIn]);
-
   useEffect(() => {
     if (!userProfile) return;
     const checkIncomingChallenges = async () => {
@@ -2893,7 +2670,6 @@ function App() {
         console.error('[Friends] Check incoming challenges failed:', e);
       }
     };
-
     const checkIncomingFriendRequests = async () => {
       try {
         const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
@@ -2909,7 +2685,6 @@ function App() {
         console.error('[Friends] Check incoming friend requests failed:', e);
       }
     };
-
     checkIncomingChallenges();
     checkIncomingFriendRequests();
     const interval = setInterval(() => {
@@ -2918,10 +2693,8 @@ function App() {
     }, 3000);
     return () => clearInterval(interval);
   }, [userProfile]);
-
   useEffect(() => {
     if (matchmakingState !== 'searching' || !privatePin || !userProfile) return;
-
     const checkSentChallengeStatus = async () => {
       try {
         const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
@@ -2935,7 +2708,6 @@ function App() {
             // Clean/delete backend challenge record
             apiRequest('POST', `${BACKEND_HTTP_URL}/profile/friends/challenge/clear`, { senderId: userProfile.id }, token)
               .catch(e => console.error('[Friends] Clean challenge failed:', e));
-
             cancelMatchmaking();
           }
         }
@@ -2943,14 +2715,11 @@ function App() {
         console.error('[Friends] Check sent challenge status failed:', e);
       }
     };
-
     const interval = setInterval(checkSentChallengeStatus, 2000);
     return () => clearInterval(interval);
   }, [matchmakingState, privatePin, userProfile]);
-
   useEffect(() => {
     if (!activeChatFriend || !userProfile) return;
-
     const fetchChatHistory = async () => {
       try {
         const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
@@ -2964,12 +2733,10 @@ function App() {
         console.error('[Friends] Chat fetch failed:', e);
       }
     };
-
     fetchChatHistory();
     const interval = setInterval(fetchChatHistory, 2000);
     return () => clearInterval(interval);
   }, [activeChatFriend, userProfile]);
-
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (!isInGameChatDragging.current) return;
@@ -2978,11 +2745,9 @@ function App() {
         y: e.clientY - inGameChatDragStart.current.y
       });
     };
-
     const handleMouseUp = () => {
       isInGameChatDragging.current = false;
     };
-
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('mouseup', handleMouseUp);
     return () => {
@@ -2990,7 +2755,6 @@ function App() {
       window.removeEventListener('mouseup', handleMouseUp);
     };
   }, []);
-
   useEffect(() => {
     if (activeChatFriend && activeTab === 'friends' && chatHistory.length > 0) {
       const maxTs = Math.max(...chatHistory.map(m => m.timestamp || 0));
@@ -3006,11 +2770,9 @@ function App() {
       }
     }
   }, [activeChatFriend, activeTab, chatHistory]);
-
   // Background check for unread messages from all friends
   useEffect(() => {
     if (!userProfile) return;
-
     const checkNewMessages = async () => {
       let currentFriends = friendsList;
       try {
@@ -3026,12 +2788,10 @@ function App() {
       } catch (e) {
         console.error('[Friends] Background fetch friends failed:', e);
       }
-
       for (const friend of currentFriends) {
         if (activeChatFriend && activeChatFriend.id === friend.id && activeTab === 'friends') {
           continue;
         }
-
         try {
           const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
           const token = btoa(JSON.stringify(payload));
@@ -3061,19 +2821,16 @@ function App() {
         }
       }
     };
-
     const interval = setInterval(checkNewMessages, 4000);
     checkNewMessages();
     return () => clearInterval(interval);
   }, [userProfile, activeChatFriend, activeTab, friendsList.length]);
-
   useEffect(() => {
     if (!userProfile) return;
     syncProfileWithServer();
     const interval = setInterval(syncProfileWithServer, 3000);
     return () => clearInterval(interval);
   }, [userProfile]);
-
   useEffect(() => {
     if (activeTab === 'friends' && userProfile) {
       fetchFriendsList();
@@ -3081,7 +2838,6 @@ function App() {
       return () => clearInterval(interval);
     }
   }, [activeTab, userProfile]);
-
   // Matchmaking process connecting to Colyseus WebSocket Server
   const startMatchmaking = async (
     puzzleType: PuzzleType, 
@@ -3101,7 +2857,6 @@ function App() {
     setRoundWinnerMessage(null);
     playerFinishedTimeRef.current = null;
     botFinishedTimeRef.current = null;
-
     if (mode !== 'online' && mode !== 'private_create' && mode !== 'private_join') {
       // Instant Bot Match
       setMatchmakingState('playing');
@@ -3119,12 +2874,10 @@ function App() {
       }
       setBotTriviaCorrect(botCorrect);
       triggerSound('success');
-
       const bots = ['LogicSage', 'ViteFast', 'GridMaster9', 'SudokuDemon'];
       const botName = `${bots[Math.floor(Math.random() * bots.length)]} (${mode.toUpperCase()})`;
       const ranks = [RankName.BRONZE, RankName.SILVER, RankName.GOLD, RankName.PLATINUM, RankName.DIAMOND, RankName.MASTER];
       const botRank = ranks[Math.floor(Math.random() * ranks.length)];
-
       let aiMode: string | undefined = 'bot';
       if (puzzleType === PuzzleType.SLIDING || puzzleType === PuzzleType.JIGSAW) {
         if (mode === 'easy') {
@@ -3142,17 +2895,14 @@ function App() {
           aiMode = '6x6';
         }
       }
-
       const botId = `bot_${botName.replace(/\s/g, '_').toLowerCase()}_${Math.floor(Math.random() * 10000)}`;
       opponentIdRef.current = botId;
       opponentNameRef.current = botName;
       setOpponentInfo({ id: botId, username: botName, rank: botRank, progress: 0, aiMode });
-
       setTimeout(() => {
         const starts = ["🤖", "😎", "😊", "👍", "😁", "😉"];
         triggerOpponentEmoji(starts[Math.floor(Math.random() * starts.length)]);
       }, 2000);
-
       // Bot speed scaling depending on difficulty
       let tickRate = 1500;
       let solveMin = 3;
@@ -3166,12 +2916,9 @@ function App() {
         solveMin = 4;
         solveMax = 8;
       }
-
       startOnlineFallbackBotSolver(botName, botCorrect, puzzleType, solveMin, solveMax, tickRate);
-
       return;
     }
-
     // Otherwise, real online matchmaking
     setMatchmakingState('searching');
     setMatchmakingTimer(0);
@@ -3183,7 +2930,6 @@ function App() {
       setMatchmakingTimer(searchTick);
       if (searchTick % 2 === 0) triggerSound('search');
     }, 1000);
-
     try {
       let room: any;
       if (mode === 'private_create') {
@@ -3200,7 +2946,6 @@ function App() {
       roomRef.current = room;
       savedRoomIdRef.current = room.roomId || (room as any).id || undefined;
       lastRoomIdRef.current = room.roomId || (room as any).id || undefined;
-
       room.onLeave((code: number) => {
         console.log("Left matchmaking room. Code:", code);
         roomRef.current = null;
@@ -3228,7 +2973,6 @@ function App() {
           return 'idle';
         });
       });
-
       // Handle room events
       room.onStateChange((state: any) => {
         try {
@@ -3256,7 +3000,6 @@ function App() {
               }
             }
           }
-
           if (opponent) {
             setOpponentInfo({
               id: opponent.id || '',
@@ -3267,7 +3010,6 @@ function App() {
               badges: opponent.badges ? opponent.badges.split(',') : []
             });
           }
-
           if (state) {
             if (state.triviaPauseTimerLeft !== undefined) {
               setTriviaPauseTimerLeft(state.triviaPauseTimerLeft);
@@ -3289,7 +3031,6 @@ function App() {
               setOpponentRoundWins(opponent.roundWins);
             }
           }
-
           if (state.status === "PLAYING" && roomRef.current && !gameStartedRef.current) {
             // Only handle this if puzzle_start hasn't already started the game.
             // This is a fallback for edge cases; the authoritative start is via puzzle_start message.
@@ -3305,13 +3046,11 @@ function App() {
           console.error("[Colyseus] Error in onStateChange callback:", err);
         }
       });
-
       room.onMessage("emoji_receive", (data: { senderId: string, username: string, emoji: string }) => {
         // Block check
         const isBlocked = (roomBlocksRef.current[userProfile.id] || []).includes(data.senderId) ||
                           (roomBlocksRef.current[data.senderId] || []).includes(userProfile.id);
         if (isBlocked) return;
-
         if (data.senderId === userProfile.id) {
           setPlayerEmojiBubble(data.emoji);
           if (playerEmojiTimeoutRef.current) clearTimeout(playerEmojiTimeoutRef.current);
@@ -3322,7 +3061,6 @@ function App() {
           opponentEmojiTimeoutRef.current = setTimeout(() => setOpponentEmojiBubble(null), 2500);
         }
       });
-
       room.onMessage("round_over", (data: { winnerId: string; winnerName: string; round: number }) => {
         const isWinner = data.winnerId === userProfile.id;
         triggerSound(isWinner ? 'success' : 'fail');
@@ -3333,20 +3071,16 @@ function App() {
           setOpponentRoundWins(prev => prev + 1);
         }
       });
-
       room.onMessage("new_round", (data: { seed: string; round: number }) => {
         setRoundWinnerMessage(null);
         setGameSeed(data.seed);
         setCurrentRound(data.round);
         setPlayerProgress(0);
       });
-
       room.onMessage("game_over", (data: { winnerId: string; winnerName: string; forfeit?: boolean; scores?: any[]; bothDefeated?: boolean }) => {
         const isWinner = !data.bothDefeated && data.winnerId === userProfile.id;
-
         // Capture opponent name from ref
         const savedOpponentName = opponentNameRef.current;
-
         let triviaDetails = undefined;
         // Use `puzzleType` (the startMatchmaking parameter) instead of `activeGame`/`queuedPuzzle`
         // state variables, which are stale closures from when the room was created.
@@ -3359,7 +3093,6 @@ function App() {
             opponentCorrect: opScore ? opScore.correctAnswers : 0
           };
         }
-
         const resultPayload = {
           isWinner,
           winnerName: data.winnerName,
@@ -3372,7 +3105,6 @@ function App() {
           bothDefeated: data.bothDefeated,
           roomId: savedRoomIdRef.current
         };
-
         if (puzzleType === PuzzleType.MENTAL_MATH && !data.forfeit) {
           setDelayedMatchResult(resultPayload);
           if (isWinner) {
@@ -3381,14 +3113,12 @@ function App() {
           }
           return;
         }
-
         setMatchResult(resultPayload);
         
         if (isWinner) {
           // Standard online rewards (+50 coins, +5 Gems, +50 XP)
           recordGameWin(puzzleType, 60, 150, 50, 5, 50);
         }
-
         // Close the game board but skip room.leave() to avoid onLeave race;
         // then leave the room separately after state is settled
         closeGame(true);
@@ -3399,7 +3129,6 @@ function App() {
           }
         }, 100);
       });
-
       room.onMessage("match_found", (data: { opponent: any; countdown: number }) => {
         console.log("Match Found! Opponent:", data.opponent?.username);
         if (searchIntervalRef.current) {
@@ -3424,17 +3153,14 @@ function App() {
         setChatMessages([]);
         setMatchmakingState('found');
       });
-
       room.onMessage("lobby_countdown", (data: { countdown: number }) => {
         setLobbyCountdown(data.countdown);
       });
-
       room.onMessage("chat_receive", (data: { senderId: string; username: string; text: string; timestamp: number }) => {
         // Block check
         const isBlocked = (roomBlocksRef.current[userProfile.id] || []).includes(data.senderId) ||
                           (roomBlocksRef.current[data.senderId] || []).includes(userProfile.id);
         if (isBlocked) return;
-
         setChatMessages(prev => [...prev, data]);
         triggerSound('click');
         setIsInGameChatOpen(open => {
@@ -3444,7 +3170,6 @@ function App() {
           return open;
         });
       });
-
       room.onMessage("opponent_blocked_status", (data: { blockerId: string; blockedId: string; isBlocked: boolean }) => {
         setRoomBlocks(prev => {
           const currentList = prev[data.blockerId] || [];
@@ -3462,7 +3187,6 @@ function App() {
           return nextVal;
         });
       });
-
       room.onMessage("puzzle_start", (data: { seed: string; puzzleType?: string; opponent?: any }) => {
         console.log("✅ Match found! Opponent:", data.opponent?.username, "Seed:", data.seed);
         
@@ -3471,7 +3195,6 @@ function App() {
           clearInterval(searchIntervalRef.current);
           searchIntervalRef.current = null;
         }
-
         // Set opponent info from server message
         if (data.opponent) {
           opponentNameRef.current = data.opponent.username;
@@ -3487,7 +3210,6 @@ function App() {
             frame: data.opponent.frame
           });
         }
-
         // Transition to playing state
         const activePuzzle = (data.puzzleType || queuedPuzzle || PuzzleType.SLIDING) as PuzzleType;
         setGameSeed(data.seed);
@@ -3501,7 +3223,6 @@ function App() {
         recordGamePlay(activePuzzle);
         triggerSound('success');
       });
-
       // Handle live opponent progress relay from server
       room.onMessage("opponent_progress", (data: { progress: number; correctAnswers?: number }) => {
         setOpponentInfo(prev => prev ? { 
@@ -3510,13 +3231,11 @@ function App() {
           correctAnswers: data.correctAnswers !== undefined ? data.correctAnswers : prev.correctAnswers
         } : null);
       });
-
     } catch (e) {
       console.error("Matchmaking connect error:", e);
       // Wait for AI fallback to kick in if server is disconnected
     }
   };
-
   const cancelMatchmaking = () => {
     triggerSound('click');
     setRoomBlocks({});
@@ -3527,7 +3246,6 @@ function App() {
       roomRef.current.leave();
       roomRef.current = null;
     }
-
     if (privatePin && userProfile) {
       try {
         const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
@@ -3538,21 +3256,18 @@ function App() {
         // Fallback
       }
     }
-
     setMatchmakingState('idle');
     setOpponentInfo(null);
     setQueuedPuzzle(null);
     setPrivatePin(null);
     setIsFriendChallengeDuel(false);
     setPlayerCorrectCount(0);
-
     setPlayerEmojiBubble(null);
     setOpponentEmojiBubble(null);
     if (playerEmojiTimeoutRef.current) clearTimeout(playerEmojiTimeoutRef.current);
     if (opponentEmojiTimeoutRef.current) clearTimeout(opponentEmojiTimeoutRef.current);
     botReactedThresholds.current = {};
   };
-
   const renderHeaderActions = () => {
     return (
       <div style={{ display: 'inline-flex', gap: '8px', alignItems: 'center', marginLeft: '12px', position: 'relative' }}>
@@ -3616,7 +3331,6 @@ function App() {
             )}
           </button>
         )}
-
         {isEmojiPickerOpen && (
           <div 
             className="emoji-picker-container"
@@ -3667,11 +3381,9 @@ function App() {
       </div>
     );
   };
-
   // When player wins during a multiplayer session
   const handleGameWin = (puzzleType: PuzzleType, timeInSec: number, score: number) => {
     triggerSound('success');
-
     if (puzzleType === PuzzleType.MENTAL_MATH) {
       if (opponentInfo) {
         if (opponentInfo.progress >= 100) {
@@ -3764,7 +3476,6 @@ function App() {
           winnerName: userProfile.username,
           opponentId: opponentIdRef.current
         });
-
         // Scale reward based on difficulty choice
         const diff = selectedDifficultyRef.current;
         let coinReward = 30;
@@ -3795,7 +3506,6 @@ function App() {
       closeGame();
     }
   };
-
   const handleTriviaGameWin = (score: number, playerCorrect: number) => {
     playerFinishedTimeRef.current = Date.now();
     console.log('[TRIVIA DEBUG] playerFinishedTime:', playerFinishedTimeRef.current);
@@ -3811,7 +3521,6 @@ function App() {
       setMatchmakingState('waiting_opponent');
       return;
     }
-
     if (!opponentInfo) {
       // Singleplayer practice/solo mode (Grants +5 Coins and +10 XP)
       recordGameWin(PuzzleType.EIGHT_BALL_QUIZ, 60, score, 5, 0, 10);
@@ -3823,13 +3532,11 @@ function App() {
       closeGame(false, false, true);
       return;
     }
-
     // Determine winner based on trivia rules (accuracy first, completion speed second)
     const botCorrect = botTriviaCorrect;
     const playerFinishedFirst = !botFinishedTimeRef.current || 
       (playerFinishedTimeRef.current !== null && 
        playerFinishedTimeRef.current <= botFinishedTimeRef.current);
-
     let isWinner = false;
     if (playerCorrect > botCorrect) {
       isWinner = true;
@@ -3840,7 +3547,6 @@ function App() {
       isWinner = playerFinishedFirst;
     }
     const rivalName = opponentInfo ? opponentInfo.username : 'Rival Bot';
-
     setMatchResult({
       isWinner,
       winnerName: isWinner ? userProfile.username : rivalName,
@@ -3850,7 +3556,6 @@ function App() {
         opponentCorrect: botCorrect
       }
     });
-
     if (isWinner) {
       const diff = selectedDifficultyRef.current;
       let coinReward = 30;
@@ -3873,7 +3578,6 @@ function App() {
     
     closeGame(false, false, true);
   };
-
   // Update bio/status text
   const handleStatusSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -3881,7 +3585,6 @@ function App() {
     updateStatus(customStatusInput);
     setIsEditingStatus(false);
   };
-
   // Combine all accessibility filters natively using CSS filters
   const getAccessibilityStyle = () => {
     let filterValues = [];
@@ -3891,7 +3594,6 @@ function App() {
     
     return filterValues.length > 0 ? { filter: filterValues.join(' ') } : {};
   };
-
   if (!isLoggedIn) {
     return (
       <div 
@@ -3926,9 +3628,7 @@ function App() {
         >
           {/* Header */}
           <div style={{ textAlign: 'center' }}>
-            <div className="animate-pulse-scale" style={{ display: 'inline-flex', padding: '16px', borderRadius: '20px', background: 'linear-gradient(135deg, var(--color-primary), var(--color-secondary))', marginBottom: '16px', boxShadow: 'var(--glow-primary)' }}>
-              <Gamepad2 size={40} color="#ffffff" />
-            </div>
+            <img src="/cognerix-logo.png" alt="Cognerix" style={{ width: '100px', height: '100px', objectFit: 'contain' }} />
             <h1 style={{ fontSize: '32px', fontFamily: 'var(--font-display)', color: 'var(--text-primary)', background: 'linear-gradient(to right, var(--color-primary), var(--color-secondary))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
               COGNERIX
             </h1>
@@ -3936,7 +3636,6 @@ function App() {
               {t('cognerix_welcome_subtitle')}
             </p>
           </div>
-
           {/* Grid Options */}
           <div className="login-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '24px' }}>
             
@@ -3955,7 +3654,6 @@ function App() {
               <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.5' }}>
                 {t('google_desc')}
               </p>
-
               {/* Real Google Sign-In Button */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'center' }}>
                 {Capacitor.isNativePlatform() ? (
@@ -3979,7 +3677,6 @@ function App() {
                 )}
               </div>
             </div>
-
             {/* Column 2: Guest Login */}
             <div className="glass-panel" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px', border: '1px solid var(--border-glass)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -3995,7 +3692,6 @@ function App() {
               <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.5' }}>
                 {t('guest_desc')}
               </p>
-
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: 'auto' }}>
                 <label style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: 'bold' }}>{t('guest_username_label')}</label>
                 <input 
@@ -4014,7 +3710,6 @@ function App() {
                   }}
                 />
               </div>
-
               <button
                 onClick={handleGuestLogin}
                 className="btn btn-primary"
@@ -4023,13 +3718,11 @@ function App() {
                 {t('continue_guest_btn')}
               </button>
             </div>
-
           </div>
         </div>
       </div>
     );
   }
-
   if (isUserBanned) {
     return (
       <div style={{
@@ -4060,7 +3753,6 @@ function App() {
           filter: 'blur(80px)',
           pointerEvents: 'none'
         }} />
-
         <div style={{
           background: 'rgba(20, 10, 10, 0.75)',
           backdropFilter: 'blur(20px)',
@@ -4087,7 +3779,6 @@ function App() {
             height: '6px',
             background: 'linear-gradient(90deg, #ef4444, #b91c1c)'
           }} />
-
           {/* Danger Icon */}
           <div style={{
             width: '80px',
@@ -4106,7 +3797,6 @@ function App() {
               <line x1="12" y1="17" x2="12.01" y2="17"/>
             </svg>
           </div>
-
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <h2 style={{ fontSize: '28px', fontWeight: '900', color: '#ef4444', margin: 0, textTransform: 'uppercase', letterSpacing: '1px' }}>
               Access Suspended
@@ -4115,7 +3805,6 @@ function App() {
               Your account has been permanently suspended by administration for violating community guidelines.
             </p>
           </div>
-
           {/* Account Details Box */}
           <div style={{
             background: 'rgba(0, 0, 0, 0.3)',
@@ -4148,7 +3837,6 @@ function App() {
               </div>
             )}
           </div>
-
           <div style={{ fontSize: '12px', color: '#9ca3af', lineHeight: '1.5' }}>
             If you believe this suspension is an error, please report at 'cognerix.report@gmail.com' with your Profile ID.
           </div>
@@ -4156,7 +3844,6 @@ function App() {
       </div>
     );
   }
-
   if (onboardingStep !== 'none') {
     return (
       <div 
@@ -4204,7 +3891,6 @@ function App() {
                   {t('choose_language_desc')}
                 </p>
               </div>
-
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', textAlign: 'left', marginTop: '12px' }}>
                 <label style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: 'bold' }}>{t('language').toUpperCase()}</label>
                 <div style={{ position: 'relative', width: '100%' }}>
@@ -4234,7 +3920,6 @@ function App() {
                       {isOnboardingLangDropdownOpen ? '▲' : '▼'}
                     </span>
                   </div>
-
                   {/* Dropdown Menu List */}
                   {isOnboardingLangDropdownOpen && (
                     <div style={{
@@ -4315,7 +4000,6 @@ function App() {
                   )}
                 </div>
               </div>
-
               <button
                 onClick={() => {
                   triggerSound('click');
@@ -4341,7 +4025,6 @@ function App() {
                   {t('terms_review_desc')}
                 </p>
               </div>
-
               <div style={{
                 background: isLightMode ? '#f8fafc' : 'rgba(0,0,0,0.2)',
                 border: '1px solid var(--border-glass)',
@@ -4357,7 +4040,6 @@ function App() {
               }}>
                 {t('terms_text_summary')}
               </div>
-
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', marginTop: '16px' }}>
                 <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', color: 'var(--text-primary)', fontSize: '14px' }}>
                   <input
@@ -4393,7 +4075,6 @@ function App() {
                   {t('view_label')}
                 </button>
               </div>
-
               <button
                 disabled={!termsAccepted}
                 onClick={() => {
@@ -4429,7 +4110,6 @@ function App() {
       </div>
     );
   }
-
   return (
     <div 
       className="app-container"
@@ -4446,12 +4126,10 @@ function App() {
       <aside className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px', width: '100%' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{ padding: '8px', borderRadius: '10px', background: 'linear-gradient(135deg, var(--color-primary), var(--color-secondary))', boxShadow: 'var(--glow-primary)' }}>
-              <Gamepad2 size={24} color="#fff" />
-            </div>
+            <img src="/cognerix-logo.png" alt="Cognerix" style={{ width: '36px', height: '36px', objectFit: 'contain' }} />
             <div>
               <h1 style={{ fontSize: '20px', fontWeight: 'bold', color: 'var(--text-primary)' }}>
-                PuzzleVerse
+                Cognerix
               </h1>
               <span style={{ fontSize: '10px', color: 'var(--color-secondary)', letterSpacing: '2px', textTransform: 'uppercase' }}>
                 Platform v1.0
@@ -4467,7 +4145,6 @@ function App() {
             ✕
           </button>
         </div>
-
         <nav style={{ display: 'flex', flexDirection: 'column', gap: '8px', flex: 1 }}>
           {[
             { id: 'home', label: t('play_arena'), icon: Gamepad2 },
@@ -4524,7 +4201,6 @@ function App() {
             );
           })}
         </nav>
-
         {/* Footer info & audio controls */}
         <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '12px', borderTop: '1px solid var(--border-glass)', paddingTop: '16px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -4542,7 +4218,6 @@ function App() {
           </div>
         </div>
       </aside>
-
       {/* 🖥️ MAIN SCREEN PORTAL */}
       <main className="main-content" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
         
@@ -4589,7 +4264,6 @@ function App() {
               </div>
             </div>
           </div>
-
           <div className="header-right-hud" style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
             {/* 🎁 FREE REWARD BUTTON */}
             <button
@@ -4637,7 +4311,6 @@ function App() {
                 </span>
               )}
             </button>
-
             <div className="header-stat-container" style={{ display: 'flex', alignItems: 'center', gap: '10px', background: 'rgba(245,158,11,0.08)', padding: '6px 10px 6px 14px', borderRadius: '12px', border: '1px solid rgba(245,158,11,0.15)' }}>
               <Coins size={16} color="var(--color-warning)" />
               <div>
@@ -4698,7 +4371,6 @@ function App() {
                 onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
               >+</button>
             </div>
-
             {/* ☰ Hamburger Button to open Menu Popup */}
             <button 
               onClick={() => { triggerSound('click'); setIsMenuPopupOpen(true); }}
@@ -4722,7 +4394,6 @@ function App() {
             </button>
           </div>
         </header>
-
         {/* 🎮 FLOATING ACTIVE GAME MODAL SCREEN */}
         {activeGame && (
           <div className={`active-game-modal ${isGameHidden ? 'hidden' : ''}`} style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: isLightMode ? 'rgba(240, 244, 248, 0.98)' : 'rgba(4, 2, 9, 0.95)', zIndex: 1000, display: isGameHidden ? 'none' : 'flex', alignItems: 'center', justifyContent: 'center', padding: 'calc(var(--safe-top, 0px) + 4px) 16px 16px 16px', backdropFilter: 'blur(8px)', overflowY: 'auto' }}>
@@ -4730,7 +4401,6 @@ function App() {
             
             {/* Sticky Header Bar containing Menu Button and Live Duel Hub */}
             <div className="active-game-header" style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '100%', zIndex: 2000 }}>
-
               {/* ☰ Floating Top Left Game Menu Button */}
               <div className="active-game-menu-btn-wrapper" style={{ position: 'absolute', top: 'calc(var(--safe-top, 0px) + 4px)', left: '20px', zIndex: 2000 }}>
               <button
@@ -4753,7 +4423,6 @@ function App() {
               >
                 <Menu size={18} color="var(--text-primary)" />
               </button>
-
               {/* Dropdown Menu Container */}
               {isGameMenuOpen && (
                 <div 
@@ -4785,7 +4454,6 @@ function App() {
                   >
                     👤 Profile
                   </button>
-
                   <button
                     onClick={() => {
                       triggerSound('click');
@@ -4798,7 +4466,6 @@ function App() {
                   >
                     ⚙️ Settings
                   </button>
-
                   <button
                     onClick={() => {
                       triggerSound('click');
@@ -4813,7 +4480,6 @@ function App() {
                 </div>
               )}
             </div>
-
             {/* Realtime progress bar if in Multiplayer playing mode */}
             {matchmakingState === 'playing' && opponentInfo && (
               isLiveDuelHubExpanded ? (
@@ -4865,7 +4531,6 @@ function App() {
                       )}
                       <span className="ldh-badge-competitive" style={{ fontSize: '10px', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', padding: '2px 6px', borderRadius: '10px', color: 'var(--color-danger)', fontWeight: 'bold' }}>COMPETITIVE</span>
                     </div>
-
                     {/* Player Progress */}
                     <div>
                       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', marginBottom: '2px', alignItems: 'center' }}>
@@ -4932,7 +4597,6 @@ function App() {
                         <div className="ldh-progress-bar-fill" style={{ width: `${playerProgress}%`, height: '100%', background: 'linear-gradient(to right, var(--color-primary), var(--color-secondary))' }} />
                       </div>
                     </div>
-
                     {/* Opponent Progress */}
                     <div>
                       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', marginBottom: '2px', alignItems: 'center' }}>
@@ -5036,7 +4700,6 @@ function App() {
                       </div>
                     </div>
                   </div>
-
                   {/* Right Side: Visual Miniature Board Spec Cam */}
                   <div className="ldh-rival-board-wrapper" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderLeft: '1px solid var(--border-glass)', paddingLeft: '16px', minWidth: '90px' }}>
                     <span style={{ fontSize: '9px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '4px' }}>
@@ -5048,7 +4711,6 @@ function App() {
                         let boardCols = 3;
                         let boardSize = 9;
                         let tileSize = 16;
-
                         if (opponentInfo.aiMode) {
                           const match = opponentInfo.aiMode.match(/^(\d+)x\d+$/);
                           if (match) {
@@ -5063,7 +4725,6 @@ function App() {
                           if (boardCols === 4) tileSize = 12;
                           else if (boardCols === 6) tileSize = 8;
                         }
-
                         return (
                           <div style={{ display: 'grid', gridTemplateColumns: `repeat(${boardCols}, ${tileSize}px)`, gap: '2px', background: 'rgba(0,0,0,0.2)', padding: '3px', borderRadius: '4px' }}>
                             {Array.from({ length: boardSize }).map((_, idx) => {
@@ -5168,13 +4829,11 @@ function App() {
                       ▼
                     </button>
                   </div>
-
                   {(activeGame === PuzzleType.PHYSICS || activeGame?.toUpperCase() === 'PHYSICS') && (
                     <span style={{ fontSize: '11px', color: 'var(--color-primary)', fontWeight: 'bold' }}>
                       Round {currentRound} of 3
                     </span>
                   )}
-
                   <div style={{ display: 'flex', gap: '12px', fontSize: '11px', fontWeight: 'bold' }}>
                     <span style={{ color: 'var(--color-primary)' }}>You: {playerProgress}%</span>
                     <span style={{ color: 'var(--color-accent)' }}>Rival: {opponentInfo.progress}%</span>
@@ -5183,7 +4842,6 @@ function App() {
               )
             )}
             </div>
-
             <div className="active-game-body" style={{ width: '100%', maxWidth: '650px', background: 'transparent', margin: 'auto', position: 'relative' }}>
               {activeGame === PuzzleType.SLIDING && (
                 <SlidingPuzzle 
@@ -5352,7 +5010,6 @@ function App() {
                   onPlaySound={triggerSound}
                 />
               )}
-
               {activeGame === PuzzleType.MENTAL_MATH && (
                 <MentalMathChallenge 
                   onGameWin={handleGameWin}
@@ -5417,7 +5074,6 @@ function App() {
                       ✕
                     </button>
                   </div>
-
                   {/* Messages Feed */}
                   <div 
                     style={{
@@ -5477,7 +5133,6 @@ function App() {
                       })
                     )}
                   </div>
-
                   {/* Chat Input form */}
                   <form 
                     onSubmit={(e) => {
@@ -5496,7 +5151,6 @@ function App() {
                           return;
                         }
                       }
-
                       if (roomRef.current) {
                         MultiplayerService.sendChatMessage(roomRef.current, chatInput.trim());
                         setChatInput('');
@@ -5540,11 +5194,9 @@ function App() {
                 </div>
               )}
             </div>
-
             </div>
           </div>
         )}
-
         {/* 🎛️ TAB VIEW DISPATCHER */}
         
         {/* ========================================================
@@ -5601,7 +5253,6 @@ function App() {
                 )}
               </div>
             )}
-
             {/* Main Battle Arena Grid */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <div style={{ padding: '8px 4px' }}>
@@ -5613,7 +5264,6 @@ function App() {
                   {t('select_category')}
                 </p>
               </div>
-
               <div className="battle-arena-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
                 {[
                   { 
@@ -5732,7 +5382,6 @@ function App() {
                         {puzzle.desc}
                       </p>
                     </div>
-
                     <button 
                       className="btn btn-primary" 
                       style={{ width: '100%', gap: '8px', background: `linear-gradient(to right, ${puzzle.color}, rgba(0,0,0,0.1))` }}
@@ -5745,7 +5394,6 @@ function App() {
                   </div>
                 ))}
               </div>
-
               <div style={{ background: 'rgba(255,255,255,0.02)', padding: '14px', borderRadius: '12px', border: '1px solid var(--border-glass)', fontSize: '12px', color: 'var(--text-secondary)', display: 'flex', gap: '10px', alignItems: 'center', marginTop: '8px' }}>
                 <ShieldAlert size={18} color="var(--color-primary)" />
                 <span>Fair play active: disconnecting or forfeiting during active multiplayer duels registers as a rating drop.</span>
@@ -5753,7 +5401,6 @@ function App() {
             </div>
           </section>
         )}
-
         {/* ========================================================
             TAB 2: PLAYER PROFILE
             ======================================================== */}
@@ -5761,7 +5408,6 @@ function App() {
           <section className={`${entranceClass} ${activeGame && isGameHidden ? 'active-game-overlay-tab' : ''}`} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             <div className="glass-panel profile-header-card" style={{ display: 'flex', gap: '24px', alignItems: 'flex-start' }}>
               {renderAvatar(userProfile.avatar, userProfile.frame, 90)}
-
               <div style={{ flex: 1, width: '100%' }}>
                 {isEditingName ? (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '6px', background: 'var(--bg-glass)', padding: '14px', borderRadius: '12px', border: '1px solid var(--border-glass)', maxWidth: '400px' }}>
@@ -5870,7 +5516,6 @@ function App() {
                     </p>
                   )}
                 </div>
-
                 <div className="profile-badges-row" style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '8px' }}>
                   <span style={{ fontSize: '11px', color: 'var(--text-muted)', background: 'var(--bg-glass)', padding: '3px 8px', borderRadius: '8px', border: '1px solid var(--border-glass)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                     🏆 Rank: <strong style={{ color: 'var(--color-secondary)', fontWeight: 'bold' }}>{userProfile.rank || 'BRONZE'}</strong>
@@ -5904,13 +5549,11 @@ function App() {
                     {idCopied ? 'Copied!' : 'Copy'}
                   </button>
                 </div>
-
                 <div className="profile-stats-row" style={{ display: 'flex', gap: '20px', marginTop: '16px', fontSize: '13px', color: 'var(--text-muted)' }}>
                   <span>{t('games_played')}: <strong style={{ color: 'var(--text-primary)' }}>{userProfile.statistics.gamesPlayed}</strong></span>
                   <span>{t('games_won')}: <strong style={{ color: 'var(--text-primary)' }}>{userProfile.statistics.gamesWon}</strong></span>
                   <span>{t('level_progress')}: <strong style={{ color: 'var(--text-primary)' }}>{Math.floor((userProfile.xp / (userProfile.level * 100)) * 100)}%</strong></span>
                 </div>
-
                 <div style={{ marginTop: '20px', padding: '12px 16px', background: 'rgba(139, 92, 246, 0.05)', borderRadius: '12px', border: '1px solid rgba(139, 92, 246, 0.15)', fontSize: '13px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
                   <p style={{ color: 'var(--text-secondary)', margin: 0 }}>Level up in the arena to unlock premium cosmetics and coin drops.</p>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '4px', borderTop: '1px solid rgba(139, 92, 246, 0.1)', paddingTop: '6px' }}>
@@ -5937,7 +5580,6 @@ function App() {
                 </div>
               </div>
             </div>
-
             {/* Puzzle specific statistics */}
             <div>
               <h3 style={{ fontSize: '18px', color: 'var(--text-primary)', marginBottom: '14px' }}>{t('puzzle_stats')}</h3>
@@ -5971,7 +5613,6 @@ function App() {
             </div>
           </section>
         )}
-
         {/* ========================================================
             TAB 3: COSMETIC SHOP & INVENTORY
             ======================================================== */}
@@ -5983,16 +5624,13 @@ function App() {
               <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginBottom: '18px' }}>
                 {t('lobby_shop_subtitle')}
               </p>
-
               <div className="grid-3">
                 {storeItems.map(item => {
                   const isOwned = userProfile.inventory.includes(item.id);
                   let isEquipped = false;
-
                   if (item.type === 'NAME_COLOR') isEquipped = userProfile.nameColor === item.value;
                   else if (item.type === 'BADGE') isEquipped = userProfile.badges.includes(item.value);
                   else if (item.type === 'LOBBY_ANIMATION') isEquipped = userProfile.lobbyEntranceAnimation === item.value;
-
                   return (
                     <div 
                       key={item.id} 
@@ -6027,9 +5665,7 @@ function App() {
                           )
                         )}
                       </div>
-
                       <p style={{ color: 'var(--text-muted)', fontSize: '13px', flex: 1 }}>{item.description}</p>
-
                       <div style={{ display: 'flex', justifySelf: 'flex-end', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--border-glass)', paddingTop: '10px', marginTop: '6px' }}>
                         
                         {!isOwned && (
@@ -6046,7 +5682,6 @@ function App() {
                             )}
                           </div>
                         )}
-
                         {isOwned ? (
                           <button 
                             className={`btn ${isEquipped ? 'btn-secondary' : 'btn-glass'}`}
@@ -6074,7 +5709,6 @@ function App() {
                             {t('buy_item')}
                           </button>
                         )}
-
                       </div>
                     </div>
                   );
@@ -6083,7 +5717,6 @@ function App() {
             </div>
           </section>
         )}
-
         {/* ========================================================
             TAB 4: LEADERBOARDS
             ======================================================== */}
@@ -6115,7 +5748,6 @@ function App() {
                   </button>
                 )}
               </div>
-
               <div style={{ overflowX: 'auto' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '14px' }}>
                   <thead>
@@ -6139,7 +5771,6 @@ function App() {
                       });
                       const sortedLeaderboard = Array.from(bestByUser.values())
                         .sort((a, b) => b.score - a.score);
-
                       const rows = sortedLeaderboard.slice(0, 20).map((entry, idx) => {
                         const isMe = entry.userId === userProfile.id;
                         return (
@@ -6233,11 +5864,9 @@ function App() {
                           </tr>
                         );
                       });
-
                       const showMyRowAtBottom = sortedLeaderboard.findIndex(entry => entry.userId === userProfile.id) >= 20;
                       
                       const showMyRowIfNotFound = sortedLeaderboard.findIndex(entry => entry.userId === userProfile.id) === -1;
-
                       if (showMyRowAtBottom) {
                         const myIdx = sortedLeaderboard.findIndex(entry => entry.userId === userProfile.id);
                         const myEntry = sortedLeaderboard[myIdx];
@@ -6316,7 +5945,6 @@ function App() {
                           </React.Fragment>
                         );
                       }
-
                       return rows;
                     })()}
                   </tbody>
@@ -6325,7 +5953,6 @@ function App() {
             </div>
           </section>
         )}
-
         {/* ========================================================
             TAB 5: TOURNAMENTS
             ======================================================= */}
@@ -6352,7 +5979,6 @@ function App() {
                 </p>
               </div>
             </div>
-
             {/* Selector Grid */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
               
@@ -6456,7 +6082,6 @@ function App() {
                   })}
                 </div>
               </div>
-
               {/* Frame Options */}
               <div className="glass-panel" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                 <div>
@@ -6557,11 +6182,9 @@ function App() {
                   })}
                 </div>
               </div>
-
             </div>
           </section>
         )}
-
         {/* ========================================================
             TAB 6: BATTLE PASS
             ======================================================= */}
@@ -6581,7 +6204,6 @@ function App() {
                   Premium Active
                 </div>
               </div>
-
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '8px' }}>
                   <span>{t('pass_tier')}: <strong>Level {userProfile.level}</strong></span>
@@ -6592,10 +6214,8 @@ function App() {
                 </div>
               </div>
             </div>
-
             <div className="glass-panel">
               <h3 style={{ fontSize: '18px', color: 'var(--text-primary)', marginBottom: '16px' }}>{t('tier_roadmaps')}</h3>
-
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 {[
                   { tier: 1, name: 'Welcome Bonus Drop', reward: '🪙 150 Coins', levelRequired: 1 },
@@ -6627,7 +6247,6 @@ function App() {
                         </div>
                         <h4 style={{ fontSize: '15px', color: 'var(--text-primary)', marginTop: '4px' }}>{tierItem.name}</h4>
                       </div>
-
                       <div style={{ fontSize: '14px', fontWeight: 'bold', color: 'var(--color-secondary)' }}>
                         {tierItem.reward}
                       </div>
@@ -6638,7 +6257,6 @@ function App() {
             </div>
           </section>
         )}
-
         {/* ========================================================
             TAB 7: ACCESSIBILITY & AUDIO SETTINGS
             ======================================================= */}
@@ -6646,7 +6264,6 @@ function App() {
           <section className={`${entranceClass} ${activeGame && isGameHidden ? 'active-game-overlay-tab' : ''}`} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             <div className="glass-panel">
               <h3 style={{ fontSize: '20px', color: 'var(--text-primary)', marginBottom: '16px' }}>{t('accessibility_display')}</h3>
-
               <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                 
                 {/* Language Selection Selector */}
@@ -6685,7 +6302,6 @@ function App() {
                           {isSettingsLangDropdownOpen ? '▲' : '▼'}
                         </span>
                       </div>
-
                       {/* Dropdown Menu List */}
                       {isSettingsLangDropdownOpen && (
                         <div style={{
@@ -6767,9 +6383,7 @@ function App() {
                     </div>
                   </div>
                 </div>
-
                 <div style={{ width: '100%', height: '1px', background: 'var(--border-glass)' }} />
-
                 {/* Theme Settings (Light/Dark Mode Toggle) */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
                   <div>
@@ -6795,9 +6409,7 @@ function App() {
                     </button>
                   </div>
                 </div>
-
                 <div style={{ width: '100%', height: '1px', background: 'var(--border-glass)' }} />
-
                 {/* Audio & Sound Controller */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
                   <div>
@@ -6820,7 +6432,6 @@ function App() {
                     >
                       {isMuted ? '🔇 Muted' : '🔊 Sound On'}
                     </button>
-
                     <button
                       onClick={() => {
                         const nextState = !isMusicOn;
@@ -6832,7 +6443,6 @@ function App() {
                     >
                       {isMusicOn ? '🎵 Music On' : '🎵 Background Music'}
                     </button>
-
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Volume:</span>
                       <input
@@ -6858,7 +6468,6 @@ function App() {
                     </div>
                   </div>
                 </div>
-
                                 {/* 🎵 Background Music Toggle */}
                 <div style={{ 
                   display: 'flex', 
@@ -6887,9 +6496,7 @@ function App() {
                     {isMusicOn ? '🎵 Music On' : '🎵 Music Off'}
                   </button>
                 </div>
-
                 <div style={{ width: '100%', height: '1px', background: 'var(--border-glass)' }} />
-
                 {/* 🙋 Help & Support */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
                   <div>
@@ -6909,9 +6516,7 @@ function App() {
                     Contact Support
                   </button>
                 </div>
-
                 <div style={{ width: '100%', height: '1px', background: 'var(--border-glass)' }} />
-
                 {/* 📝 Terms & Conditions */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
                   <div>
@@ -6931,9 +6536,7 @@ function App() {
                     View
                   </a>
                 </div>
-
                 <div style={{ width: '100%', height: '1px', background: 'var(--border-glass)' }} />
-
                 {/* 🔒 Privacy Policy */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
                   <div>
@@ -6953,9 +6556,7 @@ function App() {
                     View
                   </a>
                 </div>
-
                 <div style={{ width: '100%', height: '1px', background: 'var(--border-glass)' }} />
-
                 <div>
                   <h4 style={{ fontSize: '15px', color: 'var(--text-secondary)', marginBottom: '12px' }}>Account</h4>
                   
@@ -6986,7 +6587,6 @@ function App() {
                       </span>
                     </div>
                   </div>
-
                   <div style={{ display: 'flex', gap: '12px' }}>
                     <button
                       onClick={() => {
@@ -7008,7 +6608,6 @@ function App() {
                     </button>
                   </div>
                 </div>
-
                 {/* 👑 Admin Console: Player History */}
                 {isAdmin && (
                   <div style={{ borderTop: '1px dashed rgba(139, 92, 246, 0.2)', paddingTop: '20px', marginTop: '10px' }}>
@@ -7069,7 +6668,6 @@ function App() {
                           {adminHistoryLoading ? 'Searching...' : 'View'}
                         </button>
                       </div>
-
                       {adminHistorySearched && (
                         <div style={{ marginTop: '10px' }}>
                           <h5 style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '8px' }}>
@@ -7161,7 +6759,6 @@ function App() {
                                         ))}
                                       </div>
                                     </div>
-
                                     {expandedMatchChats.has(game.roomId) && (() => {
                                       const chatRecord = adminChatHistoryList.find((c: any) => c.roomId === game.roomId);
                                       return (
@@ -7203,12 +6800,10 @@ function App() {
                     </div>
                   </div>
                 )}
-
               </div>
             </div>
           </section>
         )}
-
         {/* ========================================================
             TAB 8: FRIENDS & PRIVATE DUELS
             ======================================================= */}
@@ -7272,7 +6867,6 @@ function App() {
                 </form>
               )}
             </div>
-
             {/* Friends List Container */}
             <div className="glass-panel" style={{ padding: '24px' }}>
               <h3 style={{ fontSize: '20px', color: 'var(--text-primary)', marginBottom: '16px' }}>
@@ -7321,7 +6915,6 @@ function App() {
                           </div>
                         </div>
                       </div>
-
                       {/* Right: Actions */}
                       <div className="friend-actions" style={{ display: 'flex', gap: '8px' }}>
                         <button
@@ -7398,7 +6991,6 @@ function App() {
           </section>
         )}
       </main>
-
       {/* ⏳ WAITING FOR OPPONENT OVERLAY */}
       {matchmakingState === 'waiting_opponent' && (
         <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(5, 3, 10, 0.85)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(8px)' }}>
@@ -7423,7 +7015,6 @@ function App() {
           </div>
         </div>
       )}
-
       {/* 🤝 PRE-MATCH LOBBY LOBBY/COUNTDOWN OVERLAY */}
       {matchmakingState === 'found' && (
         <div style={{
@@ -7471,7 +7062,6 @@ function App() {
                 Starting in <span style={{ color: '#06b6d4', textShadow: isLightMode ? 'none' : '0 0 10px rgba(6, 182, 212, 0.4)' }}>{lobbyCountdown}s</span>
               </h2>
             </div>
-
             {/* Players Comparison Layout */}
             <div style={{
               display: 'flex',
@@ -7495,7 +7085,6 @@ function App() {
                   {userProfile.rank}
                 </span>
               </div>
-
               {/* VS Label */}
               <div style={{
                 fontSize: '18px',
@@ -7511,7 +7100,6 @@ function App() {
               }}>
                 VS
               </div>
-
               {/* Opponent */}
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1, gap: '8px' }}>
                 <div style={{ position: 'relative' }}>
@@ -7528,7 +7116,6 @@ function App() {
           </div>
         </div>
       )}
-
       {/* 🎮 CHALLENGE GAME SELECTION MODAL */}
       {challengeTargetFriend && (
         <div style={{
@@ -7561,7 +7148,6 @@ function App() {
             <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '20px', textAlign: 'center' }}>
               Select a game category to issue a private duel challenge:
             </p>
-
             {/* Grid layout of games */}
             <div style={{
               display: 'grid',
@@ -7581,7 +7167,6 @@ function App() {
                 { type: PuzzleType.BLOCK_BLUSTER, label: t('block_bluster_name'), desc: t('block_bluster_desc') },
                 { type: PuzzleType.WORD_SEARCH, label: t('word_search_name'), desc: t('word_search_desc') },
                 { type: PuzzleType.TOWER_BLOXX, label: t('tower_bloxx_name'), desc: t('tower_bloxx_desc') },
-
                 { type: PuzzleType.MENTAL_MATH, label: t('mental_math_name'), desc: t('mental_math_desc') }
               ].map((game) => (
                 <button
@@ -7604,7 +7189,6 @@ function App() {
                     } catch (e) {
                       console.error('[Friends] Block check failed:', e);
                     }
-
                     const generatedPin = Math.floor(1000 + Math.random() * 9000).toString();
                     
                     // Start matchmaking private create room
@@ -7613,7 +7197,6 @@ function App() {
                     const targetFriendId = challengeTargetFriend.id;
                     setChallengeTargetFriend(null);
                     setActiveTab('home');
-
                     // Post the challenge to the backend server so the opponent B receives it!
                     try {
                       const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
@@ -7654,7 +7237,6 @@ function App() {
                 </button>
               ))}
             </div>
-
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
               <button
                 onClick={() => { triggerSound('click'); setChallengeTargetFriend(null); }}
@@ -7667,7 +7249,6 @@ function App() {
           </div>
         </div>
       )}
-
       {/* 🔔 INCOMING CHALLENGE NOTIFICATION BANNER */}
       {incomingChallenge && (
         <div style={{
@@ -7727,10 +7308,8 @@ function App() {
                   
                   // Block challenger
                   await apiRequest('POST', `${BACKEND_HTTP_URL}/profile/friends/block`, { challengerId: incomingChallenge.senderId, durationSec: 300 }, token);
-
                   // Decline challenge
                   await apiRequest('POST', `${BACKEND_HTTP_URL}/profile/friends/challenge/decline`, { senderId: incomingChallenge.senderId }, token);
-
                   showToast(`Challenges from ${incomingChallenge.sender} will be declined for 5 minutes.`, 'info');
                 } catch (e) {
                   console.error('[Friends] Block/Decline challenge failed:', e);
@@ -7760,7 +7339,6 @@ function App() {
                 } catch (e) {
                   console.error('[Friends] Clear challenge failed:', e);
                 }
-
                 // Connect to the opponent's private room using the custom PIN!
                 startMatchmaking(incomingChallenge.puzzleType, 'private_join', incomingChallenge.pin, true);
                 setIncomingChallenge(null);
@@ -7773,7 +7351,6 @@ function App() {
           </div>
         </div>
       )}
-
       {/* 🤝 INCOMING FRIEND REQUEST NOTIFICATION BANNER */}
       {friendRequests && friendRequests.length > 0 && (() => {
         const request = friendRequests[0];
@@ -7854,7 +7431,6 @@ function App() {
           </div>
         );
       })()}
-
       {/* 🎁 FREE REWARD MODAL */}
       {isFreeRewardOpen && (
         <div style={{
@@ -7912,7 +7488,6 @@ function App() {
                 ✕
               </button>
             )}
-
             {showRewardCollectScreen ? (
               // 🎁 CLAIMED SUCCESSFULLY SCREEN
               <div style={{ textAlign: 'center', padding: '12px 0' }}>
@@ -7923,7 +7498,6 @@ function App() {
                 <p style={{ color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '24px' }}>
                   Thank you for supporting Cognerix! Your rewards have been added to your profile.
                 </p>
-
                 <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginBottom: '28px' }}>
                   <div style={{
                     background: 'rgba(245, 158, 11, 0.1)',
@@ -7948,7 +7522,6 @@ function App() {
                     <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Gems</div>
                   </div>
                 </div>
-
                 <button
                   onClick={() => { triggerSound('click'); setShowRewardCollectScreen(false); setIsFreeRewardOpen(false); }}
                   className="btn btn-primary"
@@ -7974,7 +7547,6 @@ function App() {
                 <h3 style={{ fontSize: '20px', fontWeight: '800', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
                   <span className="animate-pulse">📺</span> Watching Sponsored Video...
                 </h3>
-
                 {/* Simulated Google Ads SDK Player container */}
                 <div 
                   id="google-adsense-rewarded-video-player"
@@ -8004,7 +7576,6 @@ function App() {
                     background: 'radial-gradient(circle, rgba(139,92,246,0.15) 0%, transparent 70%)',
                     animation: 'pulse 2s infinite'
                   }} />
-
                   <span style={{ fontSize: '48px', zIndex: 1, marginBottom: '8px', animation: 'spin 4s linear infinite' }}>🧩</span>
                   
                   <div style={{ zIndex: 1, textAlign: 'center' }}>
@@ -8012,7 +7583,6 @@ function App() {
                       Google AdSense Rewarded Slot. Later, you can mount your GPT/AdSense script inside this div.
                     </p>
                   </div>
-
                   {/* Absolute positioned ad progress bar */}
                   <div style={{
                     position: 'absolute',
@@ -8024,11 +7594,9 @@ function App() {
                     transition: 'width 1s linear'
                   }} />
                 </div>
-
                 <div style={{ color: 'var(--text-secondary)', fontSize: '13px', margin: '16px 0 24px 0', fontWeight: '500' }}>
                   Reward unlocks in <strong style={{ color: 'var(--color-primary)', fontSize: '15px' }}>{adTimeLeft}</strong> seconds
                 </div>
-
                 <button
                   disabled
                   style={{
@@ -8055,7 +7623,6 @@ function App() {
                 <p style={{ color: 'var(--text-secondary)', fontSize: '14px', margin: '4px 0 16px 0', lineHeight: '1.5' }}>
                   Support Cognerix by watching a quick sponsored video. You will claim free Coins and Gems instantly!
                 </p>
-
                 {/* GOOGLE ADSENSE PLACEHOLDER SLOT */}
                 <div 
                   id="google-adsense-rewarded-slot"
@@ -8094,7 +7661,6 @@ function App() {
                     </>
                   )}
                 </div>
-
                 <div style={{
                   background: isLightMode ? '#f1f5f9' : 'rgba(255, 255, 255, 0.03)',
                   padding: '16px',
@@ -8111,7 +7677,6 @@ function App() {
                     <span style={{ fontSize: '13px', fontWeight: 'bold', color: 'var(--color-secondary)' }}>30 Seconds</span>
                   </div>
                 </div>
-
                 {Date.now() - lastRewardClaimedTime < 30000 ? (
                   // ⏳ DISABLED COOLDOWN BUTTON
                   <div style={{ marginTop: '20px' }}>
@@ -8178,7 +7743,6 @@ function App() {
           </div>
         </div>
       )}
-
       {/* 🏬 IN-GAME STORE & BILLING POPUP */}
       <StorePopup
         isOpen={isStorePopupOpen}
@@ -8189,7 +7753,6 @@ function App() {
         onPlaySound={triggerSound}
         isLightMode={isLightMode}
       />
-
       {/* 📬 MAILBOX & ANNOUNCEMENTS MODAL */}
       {isMailboxOpen && (
         <div style={{
@@ -8244,12 +7807,10 @@ function App() {
             >
               ✕
             </button>
-
             {/* Title */}
             <h3 style={{ fontSize: '22px', fontWeight: '800', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '10px' }}>
               📬 Mailbox & Announcements
             </h3>
-
             {/* Content Container (Scrollable) */}
             <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '16px', paddingRight: '4px' }}>
               
@@ -8288,7 +7849,6 @@ function App() {
                       Gift Package
                     </label>
                   </div>
-
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                     <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 'bold' }}>
                       Target Player ID (Leave blank to send to ALL players):
@@ -8309,7 +7869,6 @@ function App() {
                       }}
                     />
                   </div>
-
                   <input 
                     type="text" 
                     value={adminMailTitle}
@@ -8325,7 +7884,6 @@ function App() {
                       outline: 'none'
                     }}
                   />
-
                   <textarea 
                     value={adminMailContent}
                     onChange={(e) => setAdminMailContent(e.target.value)}
@@ -8342,7 +7900,6 @@ function App() {
                       resize: 'none'
                     }}
                   />
-
                   {adminMailType === 'gift' && (
                     <div style={{ display: 'flex', gap: '12px' }}>
                       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
@@ -8381,7 +7938,6 @@ function App() {
                       </div>
                     </div>
                   )}
-
                   <button
                     onClick={async () => {
                       const title = adminMailTitle.trim();
@@ -8403,7 +7959,6 @@ function App() {
                         claimed: false,
                         date: 'Just now'
                       };
-
                       // Sync with server backend
                       try {
                         const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
@@ -8429,7 +7984,6 @@ function App() {
                       } catch (e) {
                         console.error('[Mailbox] Backend send failed:', e);
                       }
-
                       if (targetId) {
                         // Send to specific player. Save it to their mailbox storage
                         const personalKey = `puzzle_verse_mailbox_${targetId}`;
@@ -8466,7 +8020,6 @@ function App() {
                         }
                         targetMailbox.unshift(newItem);
                         localStorage.setItem(personalKey, JSON.stringify(targetMailbox));
-
                         // If target is the logged-in admin themselves, also update state
                         if (userProfile?.id === targetId) {
                           setMailboxItems(targetMailbox);
@@ -8487,7 +8040,6 @@ function App() {
                         }
                         globalMailbox.unshift(newItem);
                         localStorage.setItem('puzzle_verse_global_mailbox', JSON.stringify(globalMailbox));
-
                         // Also add it to currently logged in admin's mailbox for immediate viewing
                         setMailboxItems(prev => [newItem, ...prev]);
                         setUnreadMailCount(c => c + 1);
@@ -8498,10 +8050,8 @@ function App() {
                           adminMailbox.unshift(newItem);
                           localStorage.setItem(adminKey, JSON.stringify(adminMailbox));
                         }
-
                         showToast("Global announcement & gift shared successfully to ALL players!", 'success');
                       }
-
                       setAdminMailTitle('');
                       setAdminMailContent('');
                       setAdminGiftCoins(0);
@@ -8513,7 +8063,6 @@ function App() {
                   >
                     Send Announcement & Gift
                   </button>
-
                   {/* Moderation / Ban Panel */}
                   <div style={{ borderTop: '1px dashed rgba(139, 92, 246, 0.2)', paddingTop: '12px', marginTop: '4px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                     <h5 style={{ fontSize: '12px', fontWeight: 'bold', color: '#ef4444', margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -8668,7 +8217,6 @@ function App() {
                         </div>
                       </div>
                     )}
-
                     {bannedPlayersList.bannedIps && bannedPlayersList.bannedIps.length > 0 && (
                       <div style={{ marginTop: '6px' }}>
                         <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 'bold' }}>
@@ -8707,7 +8255,6 @@ function App() {
                       </div>
                     )}
                   </div>
-
                                     {/* Active Players Widget */}
                   {(() => {
                     const activePlayers = adminUsersList.filter(player => {
@@ -8743,7 +8290,6 @@ function App() {
                             {activePlayers.length}
                           </span>
                         </div>
-
                         {showActivePlayersPanel && (
                           <div style={{ 
                             display: 'flex', 
@@ -8795,7 +8341,6 @@ function App() {
                       </div>
                     );
                   })()}
-
                   {/* Registered Users Section */}
                   <div style={{ borderTop: '1px dashed rgba(139, 92, 246, 0.2)', paddingTop: '12px', marginTop: '4px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                     <h5 style={{ fontSize: '12px', fontWeight: 'bold', color: 'var(--color-primary)', margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -8804,7 +8349,6 @@ function App() {
                         {adminUsersList.length}
                       </span>
                     </h5>
-
                     {/* Look up input */}
                     <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                       <input 
@@ -8912,7 +8456,6 @@ function App() {
                               </div>
                             )}
                           </div>
-
                           {/* Guest Users Sub-section */}
                           <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                             <div style={{ fontSize: '11px', fontWeight: 'bold', color: '#f59e0b', display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -8967,7 +8510,6 @@ function App() {
                       );
                     })()}
                   </div>
-
                   {/* Send Popup Announcement Section */}
                   <div style={{ borderTop: '1px dashed rgba(139, 92, 246, 0.2)', paddingTop: '12px', marginTop: '4px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                     <h5 style={{ fontSize: '12px', fontWeight: 'bold', color: '#f59e0b', margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -9056,7 +8598,6 @@ function App() {
                         Send Popup
                       </button>
                     </div>
-
                     {/* 📋 Announcement History */}
                     {adminAnnouncementHistory.length > 0 && (
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '4px' }}>
@@ -9138,7 +8679,6 @@ function App() {
                       </div>
                     )}
                   </div>
-
                   {/* Player History Section */}
                   <div style={{ borderTop: '1px dashed rgba(139, 92, 246, 0.2)', paddingTop: '12px', marginTop: '4px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                     <h5 style={{ fontSize: '12px', fontWeight: 'bold', color: 'var(--color-primary)', margin: 0 }}>
@@ -9183,7 +8723,6 @@ function App() {
                         {adminHistoryLoading ? '...' : 'View'}
                       </button>
                     </div>
-
                     {adminHistorySearched && (
                       <div style={{ marginTop: '6px', background: 'rgba(0,0,0,0.1)', padding: '8px', borderRadius: '8px' }}>
                         <h6 style={{ fontSize: '11px', color: 'var(--text-secondary)', margin: '0 0 6px 0' }}>
@@ -9271,7 +8810,6 @@ function App() {
                                       ))}
                                     </div>
                                   </div>
-
                                   {expandedMatchChats.has(game.roomId) && (() => {
                                     const chatRecord = adminChatHistoryList.find((c: any) => c.roomId === game.roomId);
                                     return (
@@ -9311,7 +8849,6 @@ function App() {
                       </div>
                     )}
                   </div>
-
                   {/* Game Chat History Section */}
                   <div style={{ borderTop: '1px dashed rgba(139, 92, 246, 0.2)', paddingTop: '12px', marginTop: '4px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                     <h5 style={{ fontSize: '12px', fontWeight: 'bold', color: 'var(--color-primary)', margin: 0 }}>
@@ -9356,7 +8893,6 @@ function App() {
                         {adminChatHistoryLoading ? '...' : 'Search'}
                       </button>
                     </div>
-
                     {adminChatHistorySearched && (
                       <div style={{ marginTop: '6px', background: 'rgba(0,0,0,0.1)', padding: '8px', borderRadius: '8px' }}>
                         <h6 style={{ fontSize: '11px', color: 'var(--text-secondary)', margin: '0 0 6px 0' }}>
@@ -9418,7 +8954,6 @@ function App() {
                       </div>
                     )}
                   </div>
-
                   {/* Room ID Lookup Section */}
                   <div style={{ borderTop: '1px dashed rgba(139, 92, 246, 0.2)', paddingTop: '12px', marginTop: '4px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                     <h5 style={{ fontSize: '12px', fontWeight: 'bold', color: 'var(--color-primary)', margin: 0 }}>
@@ -9467,13 +9002,11 @@ function App() {
                         {adminRoomLookupLoading ? '...' : '🔍 Lookup'}
                       </button>
                     </div>
-
                     {adminRoomLookupSearched && (
                       <div style={{ marginTop: '6px', background: 'rgba(0,0,0,0.1)', padding: '10px', borderRadius: '8px' }}>
                         <h6 style={{ fontSize: '11px', color: 'var(--text-secondary)', margin: '0 0 8px 0' }}>
                           Room: <span style={{ fontFamily: 'monospace', color: 'var(--text-primary)' }}>{adminRoomLookupId}</span>
                         </h6>
-
                         {!adminRoomLookupResult || (!adminRoomLookupResult.gameHistory && !adminRoomLookupResult.chatHistory) ? (
                           <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontStyle: 'italic' }}>
                             No records found for this Room ID.
@@ -9506,7 +9039,6 @@ function App() {
                                 </div>
                               );
                             })()}
-
                             {/* Game History Info */}
                             {adminRoomLookupResult.gameHistory && (
                               <div style={{
@@ -9533,7 +9065,6 @@ function App() {
                                 {adminRoomLookupResult.gameHistory.timestamp && <div>Time: {new Date(adminRoomLookupResult.gameHistory.timestamp).toLocaleString()}</div>}
                               </div>
                             )}
-
                             {/* Chat Messages */}
                             {adminRoomLookupResult.chatHistory && (
                               <div style={{
@@ -9571,7 +9102,6 @@ function App() {
                       </div>
                     )}
                   </div>
-
                   {/* Player Reports Section */}
                   <div style={{ borderTop: '1px dashed rgba(139, 92, 246, 0.2)', paddingTop: '12px', marginTop: '4px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                     <h5 style={{ fontSize: '12px', fontWeight: 'bold', color: '#ef4444', margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -9664,10 +9194,8 @@ function App() {
                       </div>
                     )}
                   </div>
-
                 </div>
               )}
-
               {/* Mailbox List */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 <h4 style={{ fontSize: '14px', fontWeight: 'bold', borderBottom: '1px solid var(--border-glass)', paddingBottom: '6px', margin: '8px 0 0 0' }}>
@@ -9703,7 +9231,6 @@ function App() {
                       <p style={{ fontSize: '12px', color: 'var(--text-secondary)', margin: 0, lineHeight: '1.4' }}>
                         {item.content}
                       </p>
-
                       {item.type === 'gift' && (
                         <div style={{
                           marginTop: '6px',
@@ -9744,7 +9271,6 @@ function App() {
                                 updatedProfile.inventory.push('fr_emerald');
                               }
                               saveProfile(updatedProfile);
-
                               // Sync with server backend
                               try {
                                 const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
@@ -9753,7 +9279,6 @@ function App() {
                               } catch (e) {
                                 console.error('[Mailbox] Backend claim failed:', e);
                               }
-
                               // Mark item as claimed
                               setMailboxItems(prev => {
                                 const updated = prev.map(m => m.id === item.id ? { ...m, claimed: true } : m);
@@ -9774,13 +9299,11 @@ function App() {
                           </button>
                         </div>
                       )}
-
                       {item.type === 'announcement' && !item.claimed && (
                         <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '6px' }}>
                           <button
                             onClick={async () => {
                               triggerSound('success');
-
                               // Sync with server backend
                               try {
                                 const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
@@ -9789,7 +9312,6 @@ function App() {
                               } catch (e) {
                                 console.error('[Mailbox] Backend claim failed:', e);
                               }
-
                               setMailboxItems(prev => {
                                 const updated = prev.map(m => m.id === item.id ? { ...m, claimed: true } : m);
                                 if (userProfile?.id) {
@@ -9811,9 +9333,7 @@ function App() {
                   ))
                 )}
               </div>
-
             </div>
-
             {/* Footer buttons */}
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '16px', borderTop: '1px solid var(--border-glass)', paddingTop: '16px' }}>
               <button
@@ -9827,7 +9347,6 @@ function App() {
           </div>
         </div>
       )}
-
       {/* 🔍 ADMIN USER DETAILS VIEW BOX MODAL */}
       {isUserViewBoxOpen && selectedAdminUser && (
         <div style={{
@@ -9880,7 +9399,6 @@ function App() {
                 ✕
               </button>
             </div>
-
             {/* Profile Avatar and Frame Display */}
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '12px 0' }}>
               <div 
@@ -9908,7 +9426,6 @@ function App() {
                 {selectedAdminUser.username}
               </span>
             </div>
-
             {/* Detailed Properties Grid */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '13px', maxHeight: '400px', overflowY: 'auto', paddingRight: '4px' }}>
               
@@ -9936,7 +9453,6 @@ function App() {
                   </button>
                 </div>
               </div>
-
               <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 12px', background: isLightMode ? 'rgba(0,0,0,0.03)' : 'rgba(0,0,0,0.2)', borderRadius: '8px' }}>
                 <span style={{ color: 'var(--text-muted)' }}>Login Method</span>
                 <span style={{ 
@@ -9949,7 +9465,6 @@ function App() {
                   {selectedAdminUser.email ? '🌐 Google Account' : '👤 Guest Player'}
                 </span>
               </div>
-
               {/* IP Address */}
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 12px', background: isLightMode ? 'rgba(0,0,0,0.03)' : 'rgba(0,0,0,0.2)', borderRadius: '8px' }}>
                 <span style={{ color: 'var(--text-muted)' }}>IP Address</span>
@@ -9977,7 +9492,6 @@ function App() {
                   )}
                 </div>
               </div>
-
               {/* Location (State & Country) */}
               <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 12px', background: isLightMode ? 'rgba(0,0,0,0.03)' : 'rgba(0,0,0,0.2)', borderRadius: '8px' }}>
                 <span style={{ color: 'var(--text-muted)' }}>Location (State & Country)</span>
@@ -9985,7 +9499,6 @@ function App() {
                   📍 {selectedAdminUser.region || 'Delhi'}, {selectedAdminUser.country || 'India'}
                 </span>
               </div>
-
               {/* Gmail / Email */}
               <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 12px', background: isLightMode ? 'rgba(59,130,246,0.04)' : 'rgba(59,130,246,0.08)', border: isLightMode ? '1px solid rgba(59,130,246,0.12)' : '1px solid rgba(59,130,246,0.15)', borderRadius: '8px' }}>
                 <span style={{ color: 'var(--text-muted)' }}>Gmail</span>
@@ -9993,7 +9506,6 @@ function App() {
                   {selectedAdminUser.email || 'N/A'}
                 </span>
               </div>
-
               {/* Last Seen Date & Time */}
               <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 12px', background: isLightMode ? 'rgba(0,0,0,0.03)' : 'rgba(0,0,0,0.2)', borderRadius: '8px' }}>
                 <span style={{ color: 'var(--text-muted)' }}>Last Seen</span>
@@ -10008,7 +9520,6 @@ function App() {
                   })() : 'N/A'}
                 </span>
               </div>
-
               {/* Active Duration */}
               <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 12px', background: isLightMode ? 'rgba(0,0,0,0.03)' : 'rgba(0,0,0,0.2)', borderRadius: '8px' }}>
                 <span style={{ color: 'var(--text-muted)' }}>Active Duration</span>
@@ -10030,7 +9541,6 @@ function App() {
                   })()}
                 </span>
               </div>
-
               {/* Friends Count (clickable to view list of friends) */}
               <div 
                 onClick={() => {
@@ -10057,7 +9567,6 @@ function App() {
                   👥 {selectedAdminUser.friendsCount !== undefined ? selectedAdminUser.friendsCount : 0} (Click to View)
                 </span>
               </div>
-
               {/* Level & XP Progress */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', padding: '10px 12px', background: isLightMode ? 'rgba(0,0,0,0.03)' : 'rgba(0,0,0,0.2)', borderRadius: '8px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -10078,21 +9587,18 @@ function App() {
                   }} />
                 </div>
               </div>
-
               <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 12px', background: isLightMode ? 'rgba(0,0,0,0.03)' : 'rgba(0,0,0,0.2)', borderRadius: '8px' }}>
                 <span style={{ color: 'var(--text-muted)' }}>Rank Tier</span>
                 <span style={{ color: 'var(--color-primary)', fontWeight: 'bold' }}>
                   🏆 {selectedAdminUser.rank || 'BRONZE'}
                 </span>
               </div>
-
               <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 12px', background: isLightMode ? 'rgba(0,0,0,0.03)' : 'rgba(0,0,0,0.2)', borderRadius: '8px' }}>
                 <span style={{ color: 'var(--text-muted)' }}>Points (pts)</span>
                 <span style={{ color: '#10b981', fontWeight: 'bold' }}>
                   ⭐ {selectedAdminUser.score || 0} pts
                 </span>
               </div>
-
               <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 12px', background: isLightMode ? 'rgba(0,0,0,0.03)' : 'rgba(0,0,0,0.2)', borderRadius: '8px' }}>
                 <span style={{ color: 'var(--text-muted)' }}>Leaderboard Rank</span>
                 <span style={{ color: '#f59e0b', fontWeight: 'bold' }}>
@@ -10102,7 +9608,6 @@ function App() {
                   })()}
                 </span>
               </div>
-
               <div style={{ display: 'flex', gap: '12px' }}>
                 <div style={{ flex: 1, display: 'flex', justifyContent: 'space-between', padding: '8px 12px', background: isLightMode ? 'rgba(234, 179, 8, 0.04)' : 'rgba(234, 179, 8, 0.08)', border: isLightMode ? '1px solid rgba(234, 179, 8, 0.15)' : '1px solid rgba(234, 179, 8, 0.2)', borderRadius: '8px' }}>
                   <span style={{ color: isLightMode ? 'rgba(150, 100, 0, 0.85)' : 'rgba(234, 179, 8, 0.8)' }}>Coins</span>
@@ -10117,7 +9622,6 @@ function App() {
                   </span>
                 </div>
               </div>
-
               {/* 🎮 GAME STATISTICS: Best Times & Time Spent */}
               {selectedAdminUser.statistics?.puzzleSpecificStats && (
                 <div style={{ marginTop: '6px' }}>
@@ -10155,9 +9659,7 @@ function App() {
                   </div>
                 </div>
               )}
-
             </div>
-
             {/* Footer Actions */}
             <div style={{ display: 'flex', gap: '10px', marginTop: '8px' }}>
               <button
@@ -10223,7 +9725,6 @@ function App() {
           </div>
         </div>
       )}
-
       {/* 👥 ADMIN VIEW FRIENDS MODAL */}
       {isAdminFriendsModalOpen && selectedAdminUser && (
         <div style={{
@@ -10272,7 +9773,6 @@ function App() {
                 ✕
               </button>
             </div>
-
             {/* List */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxHeight: '300px', overflowY: 'auto', paddingRight: '4px' }}>
               {adminFriendsLoading ? (
@@ -10329,7 +9829,6 @@ function App() {
                 ))
               )}
             </div>
-
             {/* Footer */}
             <div style={{ display: 'flex', justifyContent: 'flex-end', borderTop: isLightMode ? '1px solid #e5e7eb' : '1px solid rgba(255, 255, 255, 0.1)', paddingTop: '12px', marginTop: '4px' }}>
               <button 
@@ -10343,7 +9842,6 @@ function App() {
           </div>
         </div>
       )}
-
       {/* 🙋 HELP & SUPPORT DIALOG MODAL */}
       {isSupportOpen && (
         <div style={{
@@ -10400,14 +9898,12 @@ function App() {
             >
               ✕
             </button>
-
             {/* Header */}
             <div style={{ textAlign: 'center', marginTop: '8px' }}>
               <h3 style={{ fontSize: '22px', fontWeight: 'bold', color: 'var(--text-primary)', margin: 0 }}>
                 Get in Touch
               </h3>
             </div>
-
             {/* Form */}
             <form 
               onSubmit={async (e) => {
@@ -10432,9 +9928,7 @@ function App() {
                     subject: supportSubject.trim(),
                     description: supportDescription.trim()
                   };
-
                   const res = await apiRequest('POST', url, bodyPayload, token);
-
                   if (res.ok) {
                     triggerSound('success');
                     showToast("Support Ticket Submitted successfully! We will get back to you soon.", 'success');
@@ -10472,7 +9966,6 @@ function App() {
                   }}
                 />
               </div>
-
               {/* Email Address */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                 <label style={{ fontSize: '12px', fontWeight: 'bold', color: 'var(--text-secondary)' }}>Email Address</label>
@@ -10493,7 +9986,6 @@ function App() {
                   }}
                 />
               </div>
-
               {/* Your ID */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                 <label style={{ fontSize: '12px', fontWeight: 'bold', color: 'var(--text-secondary)' }}>Your ID</label>
@@ -10513,7 +10005,6 @@ function App() {
                   }}
                 />
               </div>
-
               {/* Subject */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                 <label style={{ fontSize: '12px', fontWeight: 'bold', color: 'var(--text-secondary)' }}>Subject</label>
@@ -10534,7 +10025,6 @@ function App() {
                   }}
                 />
               </div>
-
               {/* Describe the Issue */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                 <label style={{ fontSize: '12px', fontWeight: 'bold', color: 'var(--text-secondary)' }}>Describe the Issue</label>
@@ -10557,7 +10047,6 @@ function App() {
                   }}
                 />
               </div>
-
               {/* Captcha Placeholder Box */}
               <div style={{
                 display: 'flex',
@@ -10594,7 +10083,6 @@ function App() {
                   <span style={{ fontSize: '7px', color: 'var(--text-muted)' }}>Privacy - Terms</span>
                 </div>
               </div>
-
               {/* Submit Button */}
               <button
                 type="submit"
@@ -10617,14 +10105,12 @@ function App() {
                 {isSubmittingSupport ? 'Sending...' : 'Send Message'}
               </button>
             </form>
-
             <div style={{ textAlign: 'center', fontSize: '11px', color: 'var(--text-muted)', marginTop: '4px' }}>
               We'll get back to you as soon as possible!
             </div>
           </div>
         </div>
       )}
-
       {/* 📣 GAME POPUP ANNOUNCEMENT OVERLAY */}
       {currentDisplayPopup !== null && (
         <div style={{
@@ -10673,11 +10159,9 @@ function App() {
             }}>
               📢
             </div>
-
             <h2 style={{ fontSize: '24px', fontWeight: '900', margin: 0, background: 'linear-gradient(to right, #fbbf24, #f87171)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
               Announcement
             </h2>
-
             <p style={{ 
               fontSize: '15px', 
               color: 'var(--text-primary)', 
@@ -10691,7 +10175,6 @@ function App() {
             }}>
               {currentDisplayPopup.text}
             </p>
-
             <button
               onClick={() => {
                 triggerSound('click');
@@ -10720,7 +10203,6 @@ function App() {
           </div>
         </div>
       )}
-
       {/* 👑 LEVEL UP CONGRATULATIONS MODAL */}
       {showLevelUpModal !== null && (
         <div style={{
@@ -10771,7 +10253,6 @@ function App() {
             }}>
               👑
             </div>
-
             <h2 style={{ fontSize: '28px', fontWeight: '900', margin: 0, background: 'linear-gradient(to right, #a78bfa, #f472b6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
               🎊 Congratulations!
             </h2>
@@ -10779,11 +10260,9 @@ function App() {
             <h3 style={{ fontSize: '22px', fontWeight: '800', margin: 0, color: 'var(--text-primary)' }}>
               🎉 Level Up!
             </h3>
-
             <p style={{ fontSize: '15px', color: 'var(--text-secondary)', lineHeight: '1.6', margin: '8px 0 16px 0' }}>
               You've reached <strong style={{ color: 'var(--color-primary)', fontSize: '18px' }}>Level {showLevelUpModal}</strong>. Keep playing to earn more rewards and climb the rankings!
             </p>
-
             <button
               onClick={() => { triggerSound('click'); setShowLevelUpModal(null); }}
               className="btn btn-primary"
@@ -10802,7 +10281,6 @@ function App() {
           </div>
         </div>
       )}
-
       {/* 💬 DIRECT FRIEND CHAT MODAL */}
       {activeChatFriend && (
         <div style={{
@@ -10857,7 +10335,6 @@ function App() {
             >
               ✕
             </button>
-
             {/* Header */}
             <h3 style={{ fontSize: '18px', fontWeight: '800', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '8px' }}>
               💬 Chat with {activeChatFriend.username}
@@ -10865,7 +10342,6 @@ function App() {
             <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginBottom: '16px', fontStyle: 'italic', opacity: 0.85, fontWeight: 'bold' }}>
               Keep the chat friendly and respectful. Only the latest 5 messages are displayed.
             </div>
-
             {/* Messages Body */}
             <div style={{
               flex: 1,
@@ -10919,14 +10395,12 @@ function App() {
                 })
               )}
             </div>
-
             {/* Chat Input Deck */}
             <form
               onSubmit={async (e) => {
                 e.preventDefault();
                 const text = friendChatInput.trim();
                 if (!text) return;
-
                 const words = text.split(/\s+/).filter(w => w.length > 0);
                 if (words.length > 30) {
                   showToast("Chat limit: Messages are limited to 30 words maximum.", 'error');
@@ -10941,7 +10415,6 @@ function App() {
                 
                 triggerSound('click');
                 setFriendChatInput('');
-
                 // Append local copy instantly for fast UI feedback
                 const newMsg = {
                   senderId: userProfile.id,
@@ -10950,7 +10423,6 @@ function App() {
                   timestamp: Date.now()
                 };
                 setChatHistory(prev => [...prev, newMsg].slice(-5));
-
                 // Send message to server
                 try {
                   const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
@@ -10993,7 +10465,6 @@ function App() {
           </div>
         </div>
       )}
-
       {/* 🧭 SUBWAY SURFERS STYLE MENU POPUP */}
       {isMenuPopupOpen && (
         <div style={{ 
@@ -11056,7 +10527,6 @@ function App() {
             >
               ✕
             </button>
-
             {/* Header: Clean Elegant Menu title */}
             <div style={{ textAlign: 'center', marginBottom: '24px' }}>
               <h2 style={{
@@ -11069,7 +10539,6 @@ function App() {
                 Menu
               </h2>
             </div>
-
             {/* Bubbly navigation button list */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               {[
@@ -11128,7 +10597,6 @@ function App() {
                   borderDark: '1px solid rgba(139, 92, 246, 0.4)',
                   colorDark: '#8b5cf6'
                 },
-
                 { 
                   id: 'friends', 
                   label: 'Friends & Duels', 
@@ -11250,11 +10718,9 @@ function App() {
                 );
               })}
             </div>
-
           </div>
         </div>
       )}
-
       {/* 🏆 MATCH RESULT GLASS MODAL OVERLAY */}
       {matchResult && (
         <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: isLightMode ? 'rgba(240, 244, 248, 0.98)' : 'rgba(5, 3, 10, 0.95)', zIndex: 2000, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px', backdropFilter: 'blur(10px)' }}>
@@ -11309,7 +10775,6 @@ function App() {
                   Report
                 </button>
               )}
-
               {/* Add Friend Button */}
               {!matchResult.isSolo && matchResult.opponentId && !matchResult.opponentId.startsWith('bot_') && !friendsList.some(f => f.id === matchResult.opponentId) && (
                 <button
@@ -11361,7 +10826,6 @@ function App() {
                 </button>
               )}
             </div>
-
             <div style={{ 
               padding: '20px', 
               borderRadius: '50%', 
@@ -11393,7 +10857,6 @@ function App() {
                     : 'var(--color-danger)'
               } />
             </div>
-
             <div>
               <h2 style={{ 
                 fontSize: '28px', 
@@ -11449,7 +10912,6 @@ function App() {
                 </div>
               )}
             </div>
-
             <div style={{ display: 'flex', gap: '24px', background: isLightMode ? '#f1f5f9' : 'rgba(255,255,255,0.02)', padding: '14px 24px', borderRadius: '12px', border: '1px solid var(--border-glass)', justifyContent: 'center' }}>
               <div>
                 <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{t('league_rating').toUpperCase()}</span>
@@ -11491,9 +10953,6 @@ function App() {
                 </h4>
               </div>
             </div>
-
-
-
             <button 
               className="btn btn-primary" 
               style={{ width: '100%', padding: '12px' }}
@@ -11509,7 +10968,6 @@ function App() {
           </div>
         </div>
       )}
-
       {/* 🚨 REPORT PLAYER MODAL OVERLAY */}
       {isReportModalOpen && (
         <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(5, 3, 10, 0.85)', zIndex: 2500, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px', backdropFilter: 'blur(8px)' }}>
@@ -11522,7 +10980,6 @@ function App() {
                 Help keep Cognerix safe by reporting players who violate our community guidelines.
               </p>
             </div>
-
             <form onSubmit={handleReportSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               {/* Nickname input */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
@@ -11546,7 +11003,6 @@ function App() {
                   }}
                 />
               </div>
-
               {/* Reason dropdown */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                 <label style={{ fontSize: '12px', color: 'var(--text-secondary)', fontWeight: 'bold' }}>
@@ -11571,7 +11027,6 @@ function App() {
                   <option value="Other">Other</option>
                 </select>
               </div>
-
               {/* Free-text description input (Visible if Other is selected) */}
               {reportReason === 'Other' && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', animation: 'fadeIn 0.2s ease-out' }}>
@@ -11598,7 +11053,6 @@ function App() {
                   />
                 </div>
               )}
-
               {/* Buttons */}
               <div style={{ display: 'flex', gap: '12px', marginTop: '8px' }}>
                 <button
@@ -11626,7 +11080,6 @@ function App() {
           </div>
         </div>
       )}
-
       {/* ⚔️ CHOOSE GAME DIFFICULTY MODAL OVERLAY */}
       {difficultyModal && !matchResult && (
         <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(5, 3, 10, 0.85)', zIndex: 2100, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', padding: '12px 24px', paddingTop: 'calc(var(--safe-top, 0px) + 4px)', paddingBottom: '12px', overflowY: 'auto', backdropFilter: 'blur(8px)' }}>
@@ -11664,7 +11117,6 @@ function App() {
                 </button>
               </div>
             </div>
-
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               {/* Solo Play Mode */}
               <button 
@@ -11696,9 +11148,7 @@ function App() {
                 </div>
                 <span style={{ fontSize: '11px', background: isLightMode ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.1)', padding: '4px 8px', borderRadius: '4px', color: isLightMode ? '#000000' : '#ffffff', fontWeight: 'bold' }}>{t('solo')}</span>
               </button>
-
               <div style={{ margin: '4px 0', borderTop: isLightMode ? '1px solid rgba(0,0,0,0.05)' : '1px solid rgba(255,255,255,0.05)' }} />
-
               <button 
                 className="glass-panel"
                 style={{ 
@@ -11723,7 +11173,6 @@ function App() {
                 </div>
                 <span style={{ fontSize: '11px', background: isLightMode ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.1)', padding: '4px 8px', borderRadius: '4px', color: isLightMode ? '#000000' : '#ffffff', fontWeight: 'bold' }}>{t('queue')}</span>
               </button>
-
               <div style={{ marginTop: '8px', borderTop: isLightMode ? '1px solid rgba(0,0,0,0.1)' : '1px solid rgba(255,255,255,0.1)', paddingTop: '12px' }}>
                 <div style={{ fontSize: '11px', fontWeight: 'bold', color: 'var(--text-muted)', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.05em', textAlign: 'left' }}>{t('challenge_ai_bot')}</div>
                 
@@ -11768,7 +11217,6 @@ function App() {
                   ))}
                 </div>
               </div>
-
               <div style={{ marginTop: '12px', borderTop: isLightMode ? '1px solid rgba(0,0,0,0.1)' : '1px solid rgba(255,255,255,0.1)', paddingTop: '12px' }}>
                 <div style={{ fontSize: '11px', fontWeight: 'bold', color: 'var(--text-muted)', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.05em', textAlign: 'left' }}>{t('play_with_friend')}</div>
                 
@@ -11808,7 +11256,6 @@ function App() {
                       <div style={{ fontSize: '12px', color: 'var(--color-secondary)', fontWeight: 'bold' }}>💎 10 Gems</div>
                     </div>
                   </button>
-
                   {/* Join Private Room */}
                   <div 
                     style={{ 
@@ -11863,7 +11310,6 @@ function App() {
                 </div>
               </div>
             </div>
-
             <button 
               className="btn btn-glass" 
               style={{ padding: '10px', width: '100%', marginTop: '4px', color: 'var(--text-primary)', border: isLightMode ? '1px solid #000000' : undefined }}
@@ -11877,7 +11323,6 @@ function App() {
           </div>
         </div>
       )}
-
       {/* 📖 RULES / HOW TO PLAY MODAL OVERLAY */}
       {isRulesModalOpen && difficultyModal && (() => {
         const getPuzzleRules = (type: PuzzleType) => {
@@ -11992,7 +11437,6 @@ function App() {
                   "💨 Activate the WIND GUST special attack (costs 750🪙 & 150💎) to unleash a 3-second violent sway storm on your opponent's tower!"
                 ]
               };
-
             case PuzzleType.MENTAL_MATH:
               return {
                 title: "Mental Math Challenge",
@@ -12017,9 +11461,7 @@ function App() {
               };
           }
         };
-
         const rules = getPuzzleRules(difficultyModal.puzzleType);
-
         return (
           <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(5, 3, 10, 0.9)', zIndex: 2200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px', backdropFilter: 'blur(10px)' }}>
             <div className="glass-panel animate-fade-in" style={{ width: '100%', maxWidth: '440px', padding: '28px', border: isLightMode ? '1px solid #000000' : '1px solid rgba(255,255,255,0.15)', background: isLightMode ? '#ffffff' : 'var(--bg-glass)', display: 'flex', flexDirection: 'column', gap: '20px', fontFamily: "'Outfit', sans-serif" }}>
@@ -12034,9 +11476,7 @@ function App() {
                   {t((difficultyModal.puzzleType === PuzzleType.EIGHT_BALL_QUIZ ? 'trivia' : difficultyModal.puzzleType.toLowerCase()) + '_desc')}
                 </p>
               </div>
-
               <div style={{ width: '100%', height: '1px', background: 'var(--border-glass)' }} />
-
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {rules.clues.map((clue, idx) => (
                   <div key={idx} style={{ display: 'flex', gap: '8px', fontSize: '12.5px', color: 'var(--text-secondary)', lineHeight: '1.5', textAlign: 'left' }}>
@@ -12045,7 +11485,6 @@ function App() {
                   </div>
                 ))}
               </div>
-
               <button
                 onClick={() => {
                   triggerSound('click');
@@ -12087,7 +11526,6 @@ function App() {
           Back to Active Game
         </div>
       )}
-
       {/* Custom Toast Notification System */}
       {toast && (
         <div 
@@ -12113,7 +11551,6 @@ function App() {
           {toast.type === 'success' ? '✅' : 'ℹ️'} {toast.message}
         </div>
       )}
-
       {/* Custom Shop Unlock Confirm Modal */}
       {shopConfirm && (
         <div style={{
@@ -12243,7 +11680,6 @@ function App() {
           </div>
         </div>
       )}
-
       {/* Selected Report details overlay modal */}
       {selectedReport && (
         <div 
@@ -12301,11 +11737,9 @@ function App() {
             >
               ✕
             </button>
-
             <h3 style={{ fontSize: '18px', fontWeight: '800', fontFamily: 'var(--font-display)', display: 'flex', alignItems: 'center', gap: '8px', color: '#ef4444', borderBottom: '1px solid var(--border-glass)', paddingBottom: '10px', margin: 0 }}>
               🚨 Report Details
             </h3>
-
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', maxHeight: '400px', overflowY: 'auto', paddingRight: '4px' }}>
               
               <div>
@@ -12316,7 +11750,6 @@ function App() {
                   {selectedReport.timestamp ? new Date(selectedReport.timestamp).toLocaleString() : 'N/A'}
                 </span>
               </div>
-
               <div>
                 <span style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 'bold', display: 'block', marginBottom: '2px' }}>
                   🔑 Room ID
@@ -12325,7 +11758,6 @@ function App() {
                   {selectedReport.sessionId || selectedReport.roomId || 'N/A'}
                 </span>
               </div>
-
               <div>
                 <span style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 'bold', display: 'block', marginBottom: '2px' }}>
                   👤 Reporter
@@ -12337,7 +11769,6 @@ function App() {
                   ID: {selectedReport.reporterPlayerId || 'N/A'}
                 </span>
               </div>
-
               <div>
                 <span style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 'bold', display: 'block', marginBottom: '2px' }}>
                   🚨 Reported Player
@@ -12349,7 +11780,6 @@ function App() {
                   ID: {selectedReport.reportedPlayerId || 'N/A'}
                 </span>
               </div>
-
               <div>
                 <span style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 'bold', display: 'block', marginBottom: '2px' }}>
                   📝 Reason/message
@@ -12372,7 +11802,6 @@ function App() {
                   </p>
                 )}
               </div>
-
               <div>
                 <span style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 'bold', display: 'block', marginBottom: '2px' }}>
                   🎮 Game type
@@ -12381,9 +11810,7 @@ function App() {
                   {selectedReport.gameType || 'N/A'}
                 </span>
               </div>
-
             </div>
-
             <button
               onClick={() => { triggerSound('click'); setSelectedReport(null); }}
               className="btn btn-secondary"
@@ -12394,9 +11821,7 @@ function App() {
           </div>
         </div>
       )}
-
     </div>
   );
 }
-
 export default App;
