@@ -1,4 +1,4 @@
-// v2.1.0
+﻿// v2.1.0
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   Gamepad2, User, ShoppingBag, Trophy, Smile, Settings as SettingsIcon, ShieldAlert,
@@ -6650,7 +6650,7 @@ function App() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                 
                 {/* Language Selection Selector */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
                   <div>
                     <h4 style={{ fontSize: '15px', color: 'var(--text-secondary)' }}>{t('language')}</h4>
                     <p style={{ color: 'var(--text-muted)', fontSize: '12px', marginTop: '2px' }}>
@@ -6658,7 +6658,7 @@ function App() {
                     </p>
                   </div>
                   <div>
-                    <div style={{ position: 'relative', width: '220px' }}>
+                    <div style={{ position: 'relative', width: '100%', maxWidth: '220px' }}>
                       {/* Trigger Button */}
                       <div
                         onClick={() => {
@@ -6771,7 +6771,7 @@ function App() {
                 <div style={{ width: '100%', height: '1px', background: 'var(--border-glass)' }} />
 
                 {/* Theme Settings (Light/Dark Mode Toggle) */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
                   <div>
                     <h4 style={{ fontSize: '15px', color: 'var(--text-secondary)' }}>{t('color_theme')}</h4>
                     <p style={{ color: 'var(--text-muted)', fontSize: '12px', marginTop: '2px' }}>
@@ -6782,14 +6782,14 @@ function App() {
                     <button
                       onClick={() => { triggerSound('click'); setIsLightMode(false); }}
                       className={`btn ${!isLightMode ? 'btn-primary' : 'btn-glass'}`}
-                      style={{ fontSize: '13px', padding: '8px 16px', cursor: 'pointer' }}
+                      style={{ fontSize: '12px', padding: '8px 12px', cursor: 'pointer' }}
                     >
                       {t('dark_mode')}
                     </button>
                     <button
                       onClick={() => { triggerSound('click'); setIsLightMode(true); }}
                       className={`btn ${isLightMode ? 'btn-primary' : 'btn-glass'}`}
-                      style={{ fontSize: '13px', padding: '8px 16px', cursor: 'pointer' }}
+                      style={{ fontSize: '12px', padding: '8px 12px', cursor: 'pointer' }}
                     >
                       {t('light_mode')}
                     </button>
@@ -6799,7 +6799,7 @@ function App() {
                 <div style={{ width: '100%', height: '1px', background: 'var(--border-glass)' }} />
 
                 {/* Audio & Sound Controller */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
                   <div>
                     <h4 style={{ fontSize: '15px', color: 'var(--text-secondary)' }}>Audio & Sound Effects</h4>
                     <p style={{ color: 'var(--text-muted)', fontSize: '12px', marginTop: '2px' }}>
@@ -6849,7 +6849,7 @@ function App() {
                         style={{
                           accentColor: 'var(--color-primary)',
                           cursor: 'pointer',
-                          width: '120px'
+                          width: '90px'
                         }}
                       />
                       <span style={{ fontSize: '11px', color: 'var(--text-primary)', fontWeight: 'bold', width: '30px', display: 'inline-block', textAlign: 'right' }}>
@@ -6891,7 +6891,7 @@ function App() {
                 <div style={{ width: '100%', height: '1px', background: 'var(--border-glass)' }} />
 
                 {/* 🙋 Help & Support */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
                   <div>
                     <h4 style={{ fontSize: '15px', color: 'var(--text-secondary)' }}>Help & Support</h4>
                     <p style={{ color: 'var(--text-muted)', fontSize: '12px', marginTop: '2px' }}>
@@ -6913,7 +6913,7 @@ function App() {
                 <div style={{ width: '100%', height: '1px', background: 'var(--border-glass)' }} />
 
                 {/* 📝 Terms & Conditions */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
                   <div>
                     <h4 style={{ fontSize: '15px', color: 'var(--text-secondary)' }}>Terms & Conditions</h4>
                     <p style={{ color: 'var(--text-muted)', fontSize: '12px', marginTop: '2px' }}>
@@ -6935,7 +6935,7 @@ function App() {
                 <div style={{ width: '100%', height: '1px', background: 'var(--border-glass)' }} />
 
                 {/* 🔒 Privacy Policy */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
                   <div>
                     <h4 style={{ fontSize: '15px', color: 'var(--text-secondary)' }}>Privacy Policy</h4>
                     <p style={{ color: 'var(--text-muted)', fontSize: '12px', marginTop: '2px' }}>
@@ -6969,7 +6969,7 @@ function App() {
                     display: 'flex',
                     flexDirection: 'column',
                     gap: '8px',
-                    maxWidth: '400px'
+                    
                   }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
                       <span style={{ color: 'var(--text-muted)' }}>Login Method:</span>
