@@ -874,11 +874,23 @@ function App() {
   const { activeEntranceAnimation } = useGame();
   const [appliedEntranceClass, setAppliedEntranceClass] = useState<string>('');
   const [isAppLoading, setIsAppLoading] = useState<boolean>(true);
+  const [loadingProgress, setLoadingProgress] = useState(0);
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsAppLoading(false), 2500);
+    const timer = setTimeout(() => setIsAppLoading(false), 6000);
     return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    if (!isAppLoading) return;
+    const interval = setInterval(() => {
+      setLoadingProgress(prev => {
+        if (prev >= 100) { clearInterval(interval); return 100; }
+        return prev + Math.ceil(100 / 60);
+      });
+    }, 100);
+    return () => clearInterval(interval);
+  }, [isAppLoading]);
   const prevTabRef = useRef(activeTab);
   const prevActiveAnimRef = useRef(activeEntranceAnimation);
   useEffect(() => {
@@ -3604,7 +3616,7 @@ function App() {
     return (
       <div style={{
         position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
-        background: 'radial-gradient(circle at top left, #0e0720, #040209)',
+        background: '#ffffff',
         display: 'flex', flexDirection: 'column', alignItems: 'center',
         justifyContent: 'center', gap: '24px', zIndex: 99999,
         paddingTop: 'var(--safe-top, 0px)'
@@ -3613,14 +3625,16 @@ function App() {
         <h1 style={{ fontSize: '28px', fontFamily: 'var(--font-display)', background: 'linear-gradient(to right, var(--color-primary), var(--color-secondary))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
           COGNERIX
         </h1>
-        <div style={{ width: '200px', height: '4px', background: 'rgba(255,255,255,0.1)', borderRadius: '2px', overflow: 'hidden' }}>
-          <div style={{ height: '100%', background: 'linear-gradient(to right, var(--color-primary), var(--color-secondary))', borderRadius: '2px', animation: 'loading-bar 2.5s ease-in-out forwards' }} />
+        <div style={{ width: '260px', height: '8px', background: 'rgba(0,0,0,0.06)', borderRadius: '4px', overflow: 'hidden', marginTop: '16px' }}>
+          <div style={{ height: '100%', background: 'linear-gradient(to right, var(--color-primary), var(--color-secondary))', borderRadius: '4px', animation: 'loading-bar 6s ease-in-out forwards' }} />
         </div>
-        <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.4)', letterSpacing: '2px', textTransform: 'uppercase' }}>Loading...</p>
+        <p style={{ fontSize: '12px', color: 'rgba(139,92,246,0.7)', fontWeight: 'bold' }}>
+          {Math.min(loadingProgress, 100)}%
+        </p>
+        <p style={{ fontSize: '12px', color: 'rgba(0,0,0,0.4)', letterSpacing: '2px', textTransform: 'uppercase' }}>Loading...</p>
       </div>
     );
   }
-
   if (!isLoggedIn) {
     return (
       <div 
