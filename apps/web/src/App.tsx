@@ -10093,6 +10093,16 @@ function App() {
                 </span>
               </div>
 
+              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 12px', background: isLightMode ? 'rgba(0,0,0,0.03)' : 'rgba(0,0,0,0.2)', borderRadius: '8px' }}>
+                <span style={{ color: 'var(--text-muted)' }}>Leaderboard Rank</span>
+                <span style={{ color: '#f59e0b', fontWeight: 'bold' }}>
+                  {(() => {
+                    const idx = leaderboard.findIndex(e => e.userId === selectedAdminUser.id);
+                    return idx >= 0 ? `#${idx + 1}` : 'Unranked';
+                  })()}
+                </span>
+              </div>
+
               <div style={{ display: 'flex', gap: '12px' }}>
                 <div style={{ flex: 1, display: 'flex', justifyContent: 'space-between', padding: '8px 12px', background: isLightMode ? 'rgba(234, 179, 8, 0.04)' : 'rgba(234, 179, 8, 0.08)', border: isLightMode ? '1px solid rgba(234, 179, 8, 0.15)' : '1px solid rgba(234, 179, 8, 0.2)', borderRadius: '8px' }}>
                   <span style={{ color: isLightMode ? 'rgba(150, 100, 0, 0.85)' : 'rgba(234, 179, 8, 0.8)' }}>Coins</span>
