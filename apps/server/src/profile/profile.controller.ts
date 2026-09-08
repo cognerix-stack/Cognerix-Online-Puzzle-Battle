@@ -348,13 +348,15 @@ export class ProfileController {
     @Body('userId') userId: string,
     @Body('subject') subject: string,
     @Body('description') description: string,
+    @Body('recaptchaToken') recaptchaToken: string,
   ) {
     return this.profileService.submitSupport({
       name,
       email,
       userId,
       subject,
-      description
+      description,
+      recaptchaToken,
     });
   }
 

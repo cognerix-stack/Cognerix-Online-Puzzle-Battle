@@ -1,4 +1,4 @@
-﻿// v2.1.0
+// v2.1.0
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   Gamepad2, User, ShoppingBag, Trophy, Smile, Settings as SettingsIcon, ShieldAlert,
@@ -1422,6 +1422,7 @@ function App() {
   const [supportSubject, setSupportSubject] = useState<string>('');
   const [supportDescription, setSupportDescription] = useState<string>('');
   const [supportCaptchaChecked, setSupportCaptchaChecked] = useState<boolean>(false);
+  const [recaptchaToken, setRecaptchaToken] = useState<string>('');
   const [isSubmittingSupport, setIsSubmittingSupport] = useState<boolean>(false);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => localStorage.getItem('pv_logged_in') === 'true');
   const [onboardingStep, setOnboardingStep] = useState<'none' | 'language' | 'terms'>(() => {
@@ -1439,6 +1440,16 @@ function App() {
   const [isLiveDuelHubExpanded, setIsLiveDuelHubExpanded] = useState<boolean>(true);
   const googleButtonRef = useRef<HTMLDivElement>(null);
   const { loginUser, logoutUser } = useGame();
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://www.google.com/recaptcha/api.js';
+    script.async = true;
+    document.head.appendChild(script);
+    (window as any).onRecaptchaSuccess = (token: string) => {
+      setRecaptchaToken(token);
+      setSupportCaptchaChecked(true);
+    };
+  }, []);
   useEffect(() => {
     if (isSupportOpen && userProfile) {
       setSupportName(userProfile.username || '');
@@ -9967,7 +9978,8 @@ function App() {
                     email: supportEmail.trim(),
                     userId: userProfile.id,
                     subject: supportSubject.trim(),
-                    description: supportDescription.trim()
+                    description: supportDescription.trim(),
+                    recaptchaToken
                   };
                   const res = await apiRequest('POST', url, bodyPayload, token);
                   if (res.ok) {
@@ -10088,42 +10100,7 @@ function App() {
                   }}
                 />
               </div>
-              {/* Captcha Placeholder Box */}
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                padding: '12px 16px',
-                background: isLightMode ? '#f8fafc' : 'rgba(0, 0, 0, 0.25)',
-                border: isLightMode ? '1px solid #cbd5e1' : '1px solid var(--border-glass)',
-                borderRadius: '8px',
-                marginTop: '4px'
-              }}>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '13px', color: 'var(--text-primary)', cursor: 'pointer', margin: 0 }}>
-                  <input 
-                    type="checkbox" 
-                    checked={supportCaptchaChecked}
-                    onChange={(e) => {
-                      triggerSound('check');
-                      setSupportCaptchaChecked(e.target.checked);
-                    }}
-                    style={{
-                      width: '20px',
-                      height: '20px',
-                      accentColor: 'var(--color-primary)',
-                      cursor: 'pointer'
-                    }}
-                  />
-                  <span>I am human</span>
-                </label>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '2px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '10px', color: 'var(--text-muted)' }}>
-                    <span style={{ fontSize: '14px' }}>✋</span>
-                    <span>hCaptcha</span>
-                  </div>
-                  <span style={{ fontSize: '7px', color: 'var(--text-muted)' }}>Privacy - Terms</span>
-                </div>
-              </div>
+              <div className="g-recaptcha" data-sitekey="6Lfq068tAAAAAMZJylw7-nJvS7w-5VpQxLgVd78_" data-callback="onRecaptchaSuccess"></div>
               {/* Submit Button */}
               <button
                 type="submit"
