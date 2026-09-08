@@ -1751,9 +1751,12 @@ Reported on:                 ${report.timestamp}
     description: string;
     recaptchaToken?: string;
   }) {
-    const verify = await fetch(`https://www.google.com/recaptcha/api/siteverify?secret=6Lfq068tAAAAAJbA1cXLPm1TTIyAPvS16VzVsaeg&response=${data.recaptchaToken}`, { method: 'POST' });
-    const result = await verify.json() as any;
-    if (!result.success) throw new Error('reCAPTCHA verification failed');
+    // Only verify reCAPTCHA if token is provided (web users)
+    if (data.recaptchaToken && data.recaptchaToken.trim() !== '') {
+      const verify = await fetch(`https://www.google.com/recaptcha/api/siteverify?secret=6Lfq068tAAAAAJbA1cXLPm1TTIyAPvS16VzVsaeg&response=${data.recaptchaToken}`, { method: 'POST' });
+      const result = await verify.json() as any;
+      if (!result.success) throw new Error('reCAPTCHA verification failed');
+    }
     if (!data.name || !data.email || !data.userId || !data.subject || !data.description) {
       throw new BadRequestException('All fields (Name, Email, ID, Subject, Description) are required.');
     }
