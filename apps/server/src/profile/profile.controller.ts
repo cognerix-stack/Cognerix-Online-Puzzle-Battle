@@ -1,3 +1,4 @@
+import { JwtGuard } from '../auth/jwt.guard';
 import { Controller, Get, Post, Delete, Param, Body, UseGuards, Request, Query } from '@nestjs/common';
 import { ProfileService } from './profile.service';
 import { AuthGuard } from '../auth/auth.guard';
@@ -5,7 +6,7 @@ import { AdminGuard } from '../auth/admin.guard';
 import { PuzzleType } from '@puzzle-verse/shared';
 
 @Controller('profile')
-@UseGuards(AuthGuard)
+@UseGuards(JwtGuard)
 export class ProfileController {
   constructor(private profileService: ProfileService) {}
 

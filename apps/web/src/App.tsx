@@ -1247,8 +1247,7 @@ function App() {
     setAdminFriendsLoading(true);
     setAdminFriendsList([]);
     try {
-      const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
-      const token = btoa(JSON.stringify(payload));
+      const token = localStorage.getItem('pv_jwt_token') || '';
       const res = await apiRequest('GET', `${BACKEND_HTTP_URL}/profile/friends/admin?userId=${targetUserId}`, undefined, token);
       if (res.ok) {
         const data = res.data;
@@ -1284,8 +1283,7 @@ function App() {
     setAdminHistoryLoading(true);
     setAdminHistorySearched(true);
     try {
-      const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
-      const token = btoa(JSON.stringify(payload));
+      const token = localStorage.getItem('pv_jwt_token') || '';
       const res = await apiRequest('GET', `${BACKEND_HTTP_URL}/profile/history?userId=${encodeURIComponent(playerId.trim())}`, undefined, token);
       if (res.ok) {
         const data = res.data;
@@ -1321,8 +1319,7 @@ function App() {
     setAdminChatHistoryLoading(true);
     setAdminChatHistorySearched(true);
     try {
-      const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
-      const token = btoa(JSON.stringify(payload));
+      const token = localStorage.getItem('pv_jwt_token') || '';
       const res = await apiRequest('GET', `${BACKEND_HTTP_URL}/profile/admin/chat-history?userId=${encodeURIComponent(playerId.trim())}`, undefined, token);
       if (res.ok) {
         const data = res.data;
@@ -1359,8 +1356,7 @@ function App() {
   const deleteAdminReport = async (reportId: string) => {
     if (!window.confirm('Are you sure you want to delete this report?')) return;
     try {
-      const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
-      const token = btoa(JSON.stringify(payload));
+      const token = localStorage.getItem('pv_jwt_token') || '';
       const res = await apiRequest('DELETE', `${BACKEND_HTTP_URL}/profile/admin/reports/${reportId}`, undefined, token);
       if (res.ok) {
         fetchAdminReports();
@@ -1375,8 +1371,7 @@ function App() {
     setAdminReportsLoading(true);
     console.log('[AdminReports] Fetching reports...');
     try {
-      const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
-      const token = btoa(JSON.stringify(payload));
+      const token = localStorage.getItem('pv_jwt_token') || '';
       const res = await apiRequest('GET', `${BACKEND_HTTP_URL}/profile/admin/reports`, undefined, token);
       if (res.ok) {
         const data = res.data;
@@ -1397,8 +1392,7 @@ function App() {
     setAdminRoomLookupLoading(true);
     setAdminRoomLookupSearched(true);
     try {
-      const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
-      const token = btoa(JSON.stringify(payload));
+      const token = localStorage.getItem('pv_jwt_token') || '';
       const res = await apiRequest('GET', `${BACKEND_HTTP_URL}/profile/admin/room-lookup?roomId=${encodeURIComponent(roomId.trim())}`, undefined, token);
       if (res.ok) {
         const data = res.data;
@@ -1484,8 +1478,7 @@ function App() {
     if (isMailboxOpen && isAdmin) {
       const fetchBanned = async () => {
         try {
-          const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
-          const token = btoa(JSON.stringify(payload));
+          const token = localStorage.getItem('pv_jwt_token') || '';
           const res = await apiRequest('GET', `${BACKEND_HTTP_URL}/profile/banned`, undefined, token);
           if (res.ok) {
             const data = res.data;
@@ -1497,8 +1490,7 @@ function App() {
       };
       const fetchUsers = async () => {
         try {
-          const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
-          const token = btoa(JSON.stringify(payload));
+          const token = localStorage.getItem('pv_jwt_token') || '';
           const res = await apiRequest('GET', `${BACKEND_HTTP_URL}/profile/users`, undefined, token);
           if (res.ok) {
             const data = res.data;
@@ -1510,8 +1502,7 @@ function App() {
       };
       const fetchAnnouncementHistory = async () => {
         try {
-          const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
-          const token = btoa(JSON.stringify(payload));
+          const token = localStorage.getItem('pv_jwt_token') || '';
           const res = await apiRequest('GET', `${BACKEND_HTTP_URL}/profile/popup-announcements/all`, undefined, token);
           if (res.ok) {
             const data = res.data;
@@ -1652,14 +1643,14 @@ function App() {
     // Poll server-side mailbox
     const checkMailbox = async () => {
       try {
-        const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
-        const token = btoa(JSON.stringify(payload));
+        const token = localStorage.getItem('pv_jwt_token') || '';
         const res = await apiRequest('GET', `${BACKEND_HTTP_URL}/profile/mailbox`, undefined, token);
         if (res.status === 401) {
           const errData = res.data || {};
           if (errData.message && errData.message.includes('deleted')) {
             showToast("⚠️ Your account has been deleted by an administrator.", 'error');
-            localStorage.removeItem('pv_logged_in');
+            localStorage.removeItem('pv_jwt_token');
+                            localStorage.removeItem('pv_logged_in');
             localStorage.removeItem('pv_terms_accepted');
             setIsLoggedIn(false);
             logoutUser();
@@ -1679,8 +1670,7 @@ function App() {
     };
     const checkPopupAnnouncements = async () => {
       try {
-        const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
-        const token = btoa(JSON.stringify(payload));
+        const token = localStorage.getItem('pv_jwt_token') || '';
         const res = await apiRequest('GET', `${BACKEND_HTTP_URL}/profile/popup-announcements`, undefined, token);
         if (res.ok) {
           const list = res.data;
@@ -1864,6 +1854,7 @@ function App() {
         const data = res.data;
         triggerSound('success');
         localStorage.removeItem('puzzle_verse_profile');
+        if (data.token) localStorage.setItem('pv_jwt_token', data.token);
         localStorage.setItem('pv_auth_user_id', data.userId);
         loginUser(data.userId, data.profile.username, data.profile.email, data.profile);
         localStorage.setItem('pv_logged_in', 'true');
@@ -1903,6 +1894,7 @@ function App() {
       const data = res.data;
       if (res.ok) {
         localStorage.removeItem('puzzle_verse_profile');
+        if (data.token) localStorage.setItem('pv_jwt_token', data.token);
         localStorage.setItem('pv_auth_user_id', data.userId);
         localStorage.setItem('pv_terms_accepted', 'true');
         loginUser(data.userId, data.profile.username, data.profile.email, data.profile);
@@ -1939,8 +1931,7 @@ function App() {
         description: reportReason === 'Other' ? reportDescription.trim() : undefined,
         sessionId: lastRoomIdRef.current || undefined
       };
-      const authPayload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
-      const token = btoa(JSON.stringify(authPayload));
+      const token = localStorage.getItem('pv_jwt_token') || '';
       console.log('[Report] Submitting report to:', `${BACKEND_HTTP_URL}/profile/report`);
       const url = `${BACKEND_HTTP_URL}/profile/report`;
       const res = await apiRequest('POST', url, payload, token);
@@ -2140,8 +2131,7 @@ function App() {
   const sendFriendRequestToServer = async (friendUsername?: string, friendId?: string) => {
     if (!userProfile) return { success: false };
     try {
-      const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
-      const token = btoa(JSON.stringify(payload));
+      const token = localStorage.getItem('pv_jwt_token') || '';
       const url = `${BACKEND_HTTP_URL}/profile/friends/request`;
       const res = await apiRequest('POST', url, { friendUsername, friendId }, token);
       if (res.ok) {
@@ -2172,8 +2162,7 @@ function App() {
     setChatHistory([]);
     setFriendChatInput('');
     try {
-      const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
-      const token = btoa(JSON.stringify(payload));
+      const token = localStorage.getItem('pv_jwt_token') || '';
       await apiRequest('POST', `${BACKEND_HTTP_URL}/profile/friends/chat/clear`, { friendId }, token);
     } catch (e) {
       console.error('[Friends] Clear chat failed on close:', e);
@@ -2599,8 +2588,7 @@ function App() {
     const profileToSync = overrideProfile || userProfile;
     if (!profileToSync || profileToSync.id.startsWith('90')) return;
     try {
-      const payload = { userId: profileToSync.id, username: profileToSync.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
-      const token = btoa(JSON.stringify(payload));
+      const token = localStorage.getItem('pv_jwt_token') || '';
       
       const lastMutationTime = getLastLocalMutationTime ? getLastLocalMutationTime() : 0;
       const wasMutatedRecently = Date.now() - lastMutationTime < 5000;
@@ -2618,7 +2606,8 @@ function App() {
           const errData = res.data || {};
           if (errData.message && errData.message.includes('deleted')) {
             showToast("⚠️ Your account has been deleted by an administrator.", 'error');
-            localStorage.removeItem('pv_logged_in');
+            localStorage.removeItem('pv_jwt_token');
+                            localStorage.removeItem('pv_logged_in');
             localStorage.removeItem('pv_terms_accepted');
             setIsLoggedIn(false);
             logoutUser();
@@ -2629,7 +2618,8 @@ function App() {
           const data = res.data;
           if (data.deleted) {
             showToast("⚠️ Your account has been deleted by an administrator.", 'error');
-            localStorage.removeItem('pv_logged_in');
+            localStorage.removeItem('pv_jwt_token');
+                            localStorage.removeItem('pv_logged_in');
             localStorage.removeItem('pv_terms_accepted');
             setIsLoggedIn(false);
             logoutUser();
@@ -2679,8 +2669,7 @@ function App() {
   const fetchFriendsList = async () => {
     if (!userProfile) return;
     try {
-      const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
-      const token = btoa(JSON.stringify(payload));
+      const token = localStorage.getItem('pv_jwt_token') || '';
       const response = await apiRequest('GET', `${BACKEND_HTTP_URL}/profile/friends`, undefined, token);
       if (response.ok) {
         const data = response.data;
@@ -2699,8 +2688,7 @@ function App() {
     if (!userProfile) return;
     const checkIncomingChallenges = async () => {
       try {
-        const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
-        const token = btoa(JSON.stringify(payload));
+        const token = localStorage.getItem('pv_jwt_token') || '';
         const res = await apiRequest('GET', `${BACKEND_HTTP_URL}/profile/friends/challenges`, undefined, token);
         if (res.ok) {
           const data = res.data;
@@ -2722,8 +2710,7 @@ function App() {
     };
     const checkIncomingFriendRequests = async () => {
       try {
-        const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
-        const token = btoa(JSON.stringify(payload));
+        const token = localStorage.getItem('pv_jwt_token') || '';
         const res = await apiRequest('GET', `${BACKEND_HTTP_URL}/profile/friends/requests`, undefined, token);
         if (res.ok) {
           const data = res.data;
@@ -2747,8 +2734,7 @@ function App() {
     if (matchmakingState !== 'searching' || !privatePin || !userProfile) return;
     const checkSentChallengeStatus = async () => {
       try {
-        const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
-        const token = btoa(JSON.stringify(payload));
+        const token = localStorage.getItem('pv_jwt_token') || '';
         const res = await apiRequest('GET', `${BACKEND_HTTP_URL}/profile/friends/challenge/status?pin=${privatePin}`, undefined, token);
         if (res.ok) {
           const data = res.data;
@@ -2772,8 +2758,7 @@ function App() {
     if (!activeChatFriend || !userProfile) return;
     const fetchChatHistory = async () => {
       try {
-        const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
-        const token = btoa(JSON.stringify(payload));
+        const token = localStorage.getItem('pv_jwt_token') || '';
         const res = await apiRequest('GET', `${BACKEND_HTTP_URL}/profile/friends/chat?friendId=${activeChatFriend.id}`, undefined, token);
         if (res.ok) {
           const data = res.data;
@@ -2826,8 +2811,7 @@ function App() {
     const checkNewMessages = async () => {
       let currentFriends = friendsList;
       try {
-        const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
-        const token = btoa(JSON.stringify(payload));
+        const token = localStorage.getItem('pv_jwt_token') || '';
         
         const fRes = await apiRequest('GET', `${BACKEND_HTTP_URL}/profile/friends`, undefined, token);
         if (fRes.ok) {
@@ -2843,8 +2827,7 @@ function App() {
           continue;
         }
         try {
-          const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
-          const token = btoa(JSON.stringify(payload));
+          const token = localStorage.getItem('pv_jwt_token') || '';
           const res = await apiRequest('GET', `${BACKEND_HTTP_URL}/profile/friends/chat?friendId=${friend.id}`, undefined, token);
           if (res.ok) {
             const data = res.data;
@@ -3298,8 +3281,7 @@ function App() {
     }
     if (privatePin && userProfile) {
       try {
-        const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
-        const token = btoa(JSON.stringify(payload));
+        const token = localStorage.getItem('pv_jwt_token') || '';
         apiRequest('POST', `${BACKEND_HTTP_URL}/profile/friends/challenge/clear`, { senderId: userProfile.id }, token)
           .catch(err => console.warn('[Friends] Failed to clear challenge on cancel:', err));
       } catch (e) {
@@ -6668,6 +6650,7 @@ function App() {
                           message: 'Are you sure you want to sign out? You will be taken back to the login screen.',
                           onConfirm: () => {
                             logoutUser();
+                            localStorage.removeItem('pv_jwt_token');
                             localStorage.removeItem('pv_logged_in');
                             localStorage.removeItem('pv_terms_accepted');
                             setIsLoggedIn(false);
@@ -7037,8 +7020,7 @@ function App() {
                             setGenericConfirm({
                               message: `Remove ${friend.username} from your friends list?`,
                               onConfirm: () => {
-                                const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
-                                const token = btoa(JSON.stringify(payload));
+                                const token = localStorage.getItem('pv_jwt_token') || '';
                                 apiRequest('POST', `${BACKEND_HTTP_URL}/profile/friends/remove`, { friendId: friend.id }, token)
                                   .then((res) => {
                                     if (res.ok) {
@@ -7248,8 +7230,7 @@ function App() {
                     triggerSound('click');
                     
                     try {
-                      const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
-                      const token = btoa(JSON.stringify(payload));
+                      const token = localStorage.getItem('pv_jwt_token') || '';
                       const checkRes = await apiRequest('GET', `${BACKEND_HTTP_URL}/profile/friends/check-block?targetId=${challengeTargetFriend.id}`, undefined, token);
                       if (checkRes.ok) {
                         const check = checkRes.data;
@@ -7272,8 +7253,7 @@ function App() {
                     setActiveTab('home');
                     // Post the challenge to the backend server so the opponent B receives it!
                     try {
-                      const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
-                      const token = btoa(JSON.stringify(payload));
+                      const token = localStorage.getItem('pv_jwt_token') || '';
                       await apiRequest('POST', `${BACKEND_HTTP_URL}/profile/friends/challenge`, {
                         targetId: targetFriendId,
                         puzzleType: game.type,
@@ -7359,8 +7339,7 @@ function App() {
               onClick={async () => {
                 triggerSound('click');
                 try {
-                  const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
-                  const token = btoa(JSON.stringify(payload));
+                  const token = localStorage.getItem('pv_jwt_token') || '';
                   await apiRequest('POST', `${BACKEND_HTTP_URL}/profile/friends/challenge/decline`, { senderId: incomingChallenge.senderId }, token);
                 } catch (e) {
                   console.error('[Friends] Decline challenge failed:', e);
@@ -7376,8 +7355,7 @@ function App() {
               onClick={async () => {
                 triggerSound('click');
                 try {
-                  const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
-                  const token = btoa(JSON.stringify(payload));
+                  const token = localStorage.getItem('pv_jwt_token') || '';
                   
                   // Block challenger
                   await apiRequest('POST', `${BACKEND_HTTP_URL}/profile/friends/block`, { challengerId: incomingChallenge.senderId, durationSec: 300 }, token);
@@ -7406,8 +7384,7 @@ function App() {
                 
                 // Clear challenge
                 try {
-                  const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
-                  const token = btoa(JSON.stringify(payload));
+                  const token = localStorage.getItem('pv_jwt_token') || '';
                   await apiRequest('POST', `${BACKEND_HTTP_URL}/profile/friends/challenge/clear`, { senderId: incomingChallenge.senderId }, token);
                 } catch (e) {
                   console.error('[Friends] Clear challenge failed:', e);
@@ -7462,8 +7439,7 @@ function App() {
                 onClick={async () => {
                   triggerSound('click');
                   try {
-                    const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
-                    const token = btoa(JSON.stringify(payload));
+                    const token = localStorage.getItem('pv_jwt_token') || '';
                     const res = await apiRequest('POST', `${BACKEND_HTTP_URL}/profile/friends/request/decline`, { senderId: request.senderId }, token);
                     if (res.ok) {
                       setFriendRequests(prev => prev.filter(r => r.senderId !== request.senderId));
@@ -7481,8 +7457,7 @@ function App() {
                 onClick={async () => {
                   triggerSound('click');
                   try {
-                    const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
-                    const token = btoa(JSON.stringify(payload));
+                    const token = localStorage.getItem('pv_jwt_token') || '';
                     const res = await apiRequest('POST', `${BACKEND_HTTP_URL}/profile/friends/request/accept`, { senderId: request.senderId }, token);
                     if (res.ok) {
                       const updatedFriends = res.data;
@@ -8034,8 +8009,7 @@ function App() {
                       };
                       // Sync with server backend
                       try {
-                        const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
-                        const token = btoa(JSON.stringify(payload));
+                        const token = localStorage.getItem('pv_jwt_token') || '';
                         const res = await apiRequest('POST', `${BACKEND_HTTP_URL}/profile/mailbox/send`, {
                             targetId: targetId || undefined,
                             mailType: adminMailType,
@@ -8181,8 +8155,7 @@ function App() {
                               message: `Are you sure you want to ban profile/user ID: ${targetId}?`,
                               onConfirm: async () => {
                                 try {
-                                  const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
-                                  const token = btoa(JSON.stringify(payload));
+                                  const token = localStorage.getItem('pv_jwt_token') || '';
                                   const res = await apiRequest('POST', `${BACKEND_HTTP_URL}/profile/ban`, { profileId: targetId, reason: adminBanReason.trim() }, token);
                                   if (res.ok) {
                                     const data = res.data;
@@ -8222,8 +8195,7 @@ function App() {
                             const targetId = adminBanPlayerId.trim();
                             if (!targetId) return;
                             try {
-                              const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
-                              const token = btoa(JSON.stringify(payload));
+                              const token = localStorage.getItem('pv_jwt_token') || '';
                               const res = await apiRequest('POST', `${BACKEND_HTTP_URL}/profile/unban`, { profileId: targetId }, token);
                               if (res.ok) {
                                 showToast(`Successfully unbanned profile ID: ${targetId}`, 'success');
@@ -8630,8 +8602,7 @@ function App() {
                           triggerSound('success');
                           
                           try {
-                            const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
-                            const token = btoa(JSON.stringify(payload));
+                            const token = localStorage.getItem('pv_jwt_token') || '';
                             const res = await apiRequest('POST', `${BACKEND_HTTP_URL}/profile/popup-announcements`, {
                               text,
                               targetUserIds: adminPopupTargets.trim() || undefined
@@ -8702,8 +8673,7 @@ function App() {
                                       message: 'Delete this announcement? It will be removed for all players.',
                                       onConfirm: async () => {
                                         try {
-                                          const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
-                                          const token = btoa(JSON.stringify(payload));
+                                          const token = localStorage.getItem('pv_jwt_token') || '';
                                           const res = await apiRequest('DELETE', `${BACKEND_HTTP_URL}/profile/popup-announcements/${ann.id}`, undefined, token);
                                           if (res.ok) {
                                             setAdminAnnouncementHistory(prev => prev.filter(a => a.id !== ann.id));
@@ -9346,8 +9316,7 @@ function App() {
                               saveProfile(updatedProfile);
                               // Sync with server backend
                               try {
-                                const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
-                                const token = btoa(JSON.stringify(payload));
+                                const token = localStorage.getItem('pv_jwt_token') || '';
                                 await apiRequest('POST', `${BACKEND_HTTP_URL}/profile/mailbox/claim`, { mailId: item.id }, token);
                               } catch (e) {
                                 console.error('[Mailbox] Backend claim failed:', e);
@@ -9379,8 +9348,7 @@ function App() {
                               triggerSound('success');
                               // Sync with server backend
                               try {
-                                const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
-                                const token = btoa(JSON.stringify(payload));
+                                const token = localStorage.getItem('pv_jwt_token') || '';
                                 await apiRequest('POST', `${BACKEND_HTTP_URL}/profile/mailbox/claim`, { mailId: item.id }, token);
                               } catch (e) {
                                 console.error('[Mailbox] Backend claim failed:', e);
@@ -9760,8 +9728,7 @@ function App() {
                     message: `⚠️ Are you sure you want to permanently delete "${selectedAdminUser.username}" (${selectedAdminUser.id})?\n\nThis action cannot be undone.`,
                     onConfirm: async () => {
                       try {
-                        const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
-                        const token = btoa(JSON.stringify(payload));
+                        const token = localStorage.getItem('pv_jwt_token') || '';
                         const res = await apiRequest('POST', `${BACKEND_HTTP_URL}/profile/delete`, { userId: selectedAdminUser.id }, token);
                         if (res.ok) {
                           showToast(`Player "${selectedAdminUser.username}" has been deleted.`, 'success');
@@ -9991,8 +9958,7 @@ function App() {
                 }
                 setIsSubmittingSupport(true);
                 try {
-                  const authPayload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
-                  const token = btoa(JSON.stringify(authPayload));
+                  const token = localStorage.getItem('pv_jwt_token') || '';
                   const url = `${BACKEND_HTTP_URL}/profile/support`;
                   const bodyPayload = {
                     name: supportName.trim(),
@@ -10485,8 +10451,7 @@ function App() {
                 setChatHistory(prev => [...prev, newMsg].slice(-5));
                 // Send message to server
                 try {
-                  const payload = { userId: userProfile.id, username: userProfile.username, exp: Date.now() + 1000 * 60 * 60 * 24 };
-                  const token = btoa(JSON.stringify(payload));
+                  const token = localStorage.getItem('pv_jwt_token') || '';
                   await apiRequest('POST', `${BACKEND_HTTP_URL}/profile/friends/chat/send`, {
                     friendId: activeChatFriend.id,
                     text

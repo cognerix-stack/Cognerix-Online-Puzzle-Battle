@@ -1,3 +1,4 @@
+import * as jwt from 'jsonwebtoken';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Server } from 'colyseus';
@@ -44,7 +45,8 @@ async function bootstrap() {
       const authHeader = req.headers.authorization;
       if (authHeader && authHeader.startsWith('Bearer ')) {
         const token = authHeader.split(' ')[1];
-        const decoded = JSON.parse(Buffer.from(token, 'base64').toString('ascii'));
+        const secret = process.env.JWT_SECRET || 'cognerix_jwt_secret_2026_secure_key';
+        const decoded = jwt.verify(token, secret) as any;
         if (decoded && decoded.username === 'admin') {
           return next();
         }

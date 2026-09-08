@@ -1,3 +1,4 @@
+import * as jwt from 'jsonwebtoken';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { ProfileService } from '../profile/profile.service';
@@ -8,22 +9,26 @@ import { OAuth2Client } from 'google-auth-library';
 export class AuthService {
   constructor(private prisma: PrismaService) {}
 
-  // Simple token signing helper (Base64 JWT-like payload)
-  private createToken(payload: { userId: string; username: string }): string {
-    const raw = JSON.stringify({ ...payload, exp: Date.now() + 1000 * 60 * 60 * 24 }); // 24 hours
-    return Buffer.from(raw).toString('base64');
+  private getSecret(): string {
+    return process.env.JWT_SECRET || 'cognerix_jwt_secret_2026_secure_key';
   }
 
-  // Decode and validate token payload
-  validateToken(token: string): { userId: string; username: string } {
+  // Real JWT token signing helper
+  createToken(payload: { userId: string; username: string; email?: string }): string {
+    return jwt.sign(
+      { userId: payload.userId, username: payload.username, email: payload.email || '' },
+      this.getSecret(),
+      { expiresIn: '7d' }
+    );
+  }
+
+  // Decode and validate JWT token payload
+  validateToken(token: string): { userId: string; username: string; email?: string } {
     try {
-      const decoded = JSON.parse(Buffer.from(token, 'base64').toString('ascii'));
-      if (decoded.exp < Date.now()) {
-        throw new UnauthorizedException('Token expired');
-      }
-      return { userId: decoded.userId, username: decoded.username };
+      const decoded = jwt.verify(token, this.getSecret()) as any;
+      return { userId: decoded.userId, username: decoded.username, email: decoded.email };
     } catch {
-      throw new UnauthorizedException('Invalid authorization token');
+      throw new UnauthorizedException('Invalid or expired authorization token');
     }
   }
 
