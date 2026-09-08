@@ -820,7 +820,7 @@ function App() {
     language, setLanguage, saveProfile, isProfileLoaded, getLastLocalMutationTime
   } = useGame();
   const t = (key: string) => translate(key, language);
-  const isAdmin = userProfile?.email?.toLowerCase() === 'admin.cognerix@gmail.com';
+  const [isAdmin, setIsAdmin] = useState<boolean>(() => localStorage.getItem('pv_is_admin') === 'true');
   useEffect(() => {
     if (Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'android') {
       AdMob.initialize()
@@ -1657,6 +1657,8 @@ function App() {
           if (errData.message && errData.message.includes('deleted')) {
             showToast("⚠️ Your account has been deleted by an administrator.", 'error');
             localStorage.removeItem('pv_jwt_token');
+                            localStorage.removeItem('pv_is_admin');
+                            setIsAdmin(false);
                             localStorage.removeItem('pv_logged_in');
             localStorage.removeItem('pv_terms_accepted');
             setIsLoggedIn(false);
@@ -1862,9 +1864,11 @@ function App() {
         triggerSound('success');
         localStorage.removeItem('puzzle_verse_profile');
         if (data.token) localStorage.setItem('pv_jwt_token', data.token);
+        setIsAdmin(data.isAdmin === true);
+        localStorage.setItem('pv_is_admin', data.isAdmin ? 'true' : 'false');
         localStorage.setItem('pv_auth_user_id', data.userId);
         loginUser(data.userId, data.profile.username, data.profile.email, data.profile);
-        localStorage.setItem('pv_logged_in', 'true');
+    localStorage.setItem('pv_logged_in', 'true');
         setIsLoggedIn(true);
         if (Capacitor.isNativePlatform()) {
           localStorage.setItem('pv_terms_accepted', 'true');
@@ -1902,10 +1906,12 @@ function App() {
       if (res.ok) {
         localStorage.removeItem('puzzle_verse_profile');
         if (data.token) localStorage.setItem('pv_jwt_token', data.token);
+        setIsAdmin(data.isAdmin === true);
+        localStorage.setItem('pv_is_admin', data.isAdmin ? 'true' : 'false');
         localStorage.setItem('pv_auth_user_id', data.userId);
         localStorage.setItem('pv_terms_accepted', 'true');
         loginUser(data.userId, data.profile.username, data.profile.email, data.profile);
-        localStorage.setItem('pv_logged_in', 'true');
+    localStorage.setItem('pv_logged_in', 'true');
         setIsLoggedIn(true);
         setOnboardingStep('none');
       } else {
@@ -2614,6 +2620,8 @@ function App() {
           if (errData.message && errData.message.includes('deleted')) {
             showToast("⚠️ Your account has been deleted by an administrator.", 'error');
             localStorage.removeItem('pv_jwt_token');
+                            localStorage.removeItem('pv_is_admin');
+                            setIsAdmin(false);
                             localStorage.removeItem('pv_logged_in');
             localStorage.removeItem('pv_terms_accepted');
             setIsLoggedIn(false);
@@ -2626,6 +2634,8 @@ function App() {
           if (data.deleted) {
             showToast("⚠️ Your account has been deleted by an administrator.", 'error');
             localStorage.removeItem('pv_jwt_token');
+                            localStorage.removeItem('pv_is_admin');
+                            setIsAdmin(false);
                             localStorage.removeItem('pv_logged_in');
             localStorage.removeItem('pv_terms_accepted');
             setIsLoggedIn(false);
@@ -6658,6 +6668,8 @@ function App() {
                           onConfirm: () => {
                             logoutUser();
                             localStorage.removeItem('pv_jwt_token');
+                            localStorage.removeItem('pv_is_admin');
+                            setIsAdmin(false);
                             localStorage.removeItem('pv_logged_in');
                             localStorage.removeItem('pv_terms_accepted');
                             setIsLoggedIn(false);

@@ -264,6 +264,7 @@ export class AuthService {
             puzzleSpecificStats: {},
           },
         },
+        isAdmin: user.email?.toLowerCase() === 'admin.cognerix@gmail.com',
       };
     } catch (dbErr: any) {
       // Database offline — fall back to memory registry via loadOrCreateProfile pattern
@@ -280,7 +281,8 @@ export class AuthService {
           memProfile.username = 'admin';
         }
         const token = this.createToken({ userId, username: memProfile.username });
-        return { token, userId, profile: memProfile };
+        const isAdmin = memProfile.email?.toLowerCase() === 'admin.cognerix@gmail.com';
+        return { token, userId, profile: memProfile, isAdmin };
       }
 
       // Create a new in-memory profile
@@ -317,7 +319,8 @@ export class AuthService {
       } as any);
 
       const token = this.createToken({ userId, username: defaultProfile.username });
-      return { token, userId, profile: defaultProfile };
+      const isAdmin = defaultProfile.email?.toLowerCase() === 'admin.cognerix@gmail.com';
+      return { token, userId, profile: defaultProfile, isAdmin };
     }
   }
 }
