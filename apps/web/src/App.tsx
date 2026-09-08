@@ -1442,7 +1442,7 @@ function App() {
   const { loginUser, logoutUser } = useGame();
   useEffect(() => {
     const script = document.createElement('script');
-    script.src = 'https://www.google.com/recaptcha/api.js';
+    script.src = 'https://www.google.com/recaptcha/api.js?render=explicit';
     script.async = true;
     document.head.appendChild(script);
     (window as any).onRecaptchaSuccess = (token: string) => {
@@ -1457,6 +1457,21 @@ function App() {
       setSupportSubject('');
       setSupportDescription('');
       setSupportCaptchaChecked(false);
+      setRecaptchaToken('');
+      // Render reCAPTCHA explicitly after modal opens
+      setTimeout(() => {
+        if ((window as any).grecaptcha && document.getElementById('recaptcha-container')) {
+          try {
+            (window as any).grecaptcha.render('recaptcha-container', {
+              sitekey: '6Lfq068tAAAAAGK-ETU78Dmg804CdmqlFKhgOvJ5',
+              callback: (token: string) => {
+                setRecaptchaToken(token);
+                setSupportCaptchaChecked(true);
+              }
+            });
+          } catch(e) {}
+        }
+      }, 500);
     }
   }, [isSupportOpen, userProfile]);
   useEffect(() => {
@@ -10100,7 +10115,7 @@ function App() {
                   }}
                 />
               </div>
-              <div className="g-recaptcha" data-sitekey="6Lfq068tAAAAAMZJylw7-nJvS7w-5VpQxLgVd78_" data-callback="onRecaptchaSuccess"></div>
+              <div id="recaptcha-container" style={{ display: 'flex', justifyContent: 'center', marginTop: '4px' }} />
               {/* Submit Button */}
               <button
                 type="submit"
