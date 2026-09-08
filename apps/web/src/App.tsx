@@ -1423,6 +1423,7 @@ function App() {
   const [supportDescription, setSupportDescription] = useState<string>('');
   const [supportCaptchaChecked, setSupportCaptchaChecked] = useState<boolean>(false);
   const [recaptchaToken, setRecaptchaToken] = useState<string>('');
+  const [mathQuestion, setMathQuestion] = useState({ question: '', answer: 0 });
   const [isSubmittingSupport, setIsSubmittingSupport] = useState<boolean>(false);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => localStorage.getItem('pv_logged_in') === 'true');
   const [onboardingStep, setOnboardingStep] = useState<'none' | 'language' | 'terms'>(() => {
@@ -1458,20 +1459,25 @@ function App() {
       setSupportDescription('');
       setSupportCaptchaChecked(false);
       setRecaptchaToken('');
-      // Render reCAPTCHA explicitly after modal opens
-      setTimeout(() => {
-        if ((window as any).grecaptcha && document.getElementById('recaptcha-container')) {
-          try {
-            (window as any).grecaptcha.render('recaptcha-container', {
-              sitekey: '6Lfq068tAAAAAGK-ETU78Dmg804CdmqlFKhgOvJ5',
-              callback: (token: string) => {
-                setRecaptchaToken(token);
-                setSupportCaptchaChecked(true);
-              }
-            });
-          } catch(e) {}
-        }
-      }, 500);
+      const a = Math.floor(Math.random() * 10) + 1;
+      const b = Math.floor(Math.random() * 10) + 1;
+      setMathQuestion({ question: `${a} + ${b}`, answer: a + b });
+      // Render reCAPTCHA explicitly after modal opens if on web
+      if (!Capacitor.isNativePlatform()) {
+        setTimeout(() => {
+          if ((window as any).grecaptcha && document.getElementById('recaptcha-container')) {
+            try {
+              (window as any).grecaptcha.render('recaptcha-container', {
+                sitekey: '6Lfq068tAAAAAGK-ETU78Dmg804CdmqlFKhgOvJ5',
+                callback: (token: string) => {
+                  setRecaptchaToken(token);
+                  setSupportCaptchaChecked(true);
+                }
+              });
+            } catch(e) {}
+          }
+        }, 500);
+      }
     }
   }, [isSupportOpen, userProfile]);
   useEffect(() => {
@@ -10115,7 +10121,28 @@ function App() {
                   }}
                 />
               </div>
-              <div id="recaptcha-container" style={{ display: 'flex', justifyContent: 'center', marginTop: '4px' }} />
+              {Capacitor.isNativePlatform() ? (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px', background: 'var(--bg-glass)', border: '1px solid var(--border-glass)', borderRadius: '8px' }}>
+                  <span style={{ fontSize: '14px', color: 'var(--text-primary)', fontWeight: 'bold' }}>
+                    {mathQuestion.question} =
+                  </span>
+                  <input
+                    type="number"
+                    placeholder="?"
+                    onChange={(e) => {
+                      if (parseInt(e.target.value) === mathQuestion.answer) {
+                        setSupportCaptchaChecked(true);
+                      } else {
+                        setSupportCaptchaChecked(false);
+                      }
+                    }}
+                    style={{ width: '60px', padding: '6px', borderRadius: '8px', border: '1px solid var(--border-glass)', background: 'var(--bg-glass)', color: 'var(--text-primary)', textAlign: 'center', fontSize: '14px' }}
+                  />
+                  <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Verify you are human</span>
+                </div>
+              ) : (
+                <div id="recaptcha-container" />
+              )}
               {/* Submit Button */}
               <button
                 type="submit"
