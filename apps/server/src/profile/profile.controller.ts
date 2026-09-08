@@ -1,3 +1,4 @@
+import { Throttle } from '@nestjs/throttler';
 import { JwtGuard } from '../auth/jwt.guard';
 import { Controller, Get, Post, Delete, Param, Body, UseGuards, Request, Query } from '@nestjs/common';
 import { ProfileService } from './profile.service';
@@ -138,6 +139,7 @@ export class ProfileController {
     return this.profileService.removeFriend(req.user.userId, friendId);
   }
 
+  @Throttle({ default: { ttl: 60000, limit: 2 } })
   @Post('friends/request')
   async sendFriendRequest(
     @Request() req: any,
@@ -319,6 +321,7 @@ export class ProfileController {
     return this.profileService.getBannedPlayers();
   }
 
+  @Throttle({ default: { ttl: 3600000, limit: 5 } })
   @Post('report')
   async submitReport(
     @Body('reportingProfileId') reportingProfileId: string,
@@ -342,6 +345,7 @@ export class ProfileController {
     });
   }
 
+  @Throttle({ default: { ttl: 86400000, limit: 2 } })
   @Post('support')
   async submitSupport(
     @Body('name') name: string,
