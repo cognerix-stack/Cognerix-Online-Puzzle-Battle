@@ -13,22 +13,32 @@ export class AuthService {
     return process.env.JWT_SECRET || 'cognerix_jwt_secret_2026_secure_key';
   }
 
-  // Real JWT token signing helper
-  createToken(payload: { userId: string; username: string; email?: string }): string {
+  // Real JWT token signing helper with required isAdmin claim
+  createToken(payload: { userId: string; username: string; email?: string; isAdmin: boolean }): string {
     return jwt.sign(
-      { userId: payload.userId, username: payload.username, email: payload.email || '' },
+      {
+        userId: payload.userId,
+        username: payload.username,
+        email: payload.email || '',
+        isAdmin: payload.isAdmin
+      },
       this.getSecret(),
       { expiresIn: '7d' }
     );
   }
 
   // Decode and validate JWT token payload
-  validateToken(token: string): { userId: string; username: string; email?: string } {
+  validateToken(token: string): { userId: string; username: string; email?: string; isAdmin: boolean } {
     try {
       const decoded = jwt.verify(token, this.getSecret()) as any;
-      return { userId: decoded.userId, username: decoded.username, email: decoded.email };
+      return {
+        userId: decoded.userId,
+        username: decoded.username,
+        email: decoded.email,
+        isAdmin: decoded.isAdmin === true
+      };
     } catch {
-      throw new UnauthorizedException('Invalid or expired authorization token');
+      throw new UnauthorizedException('Invalid authorization token');
     }
   }
 
@@ -57,23 +67,21 @@ export class AuthService {
       },
     });
 
-    const token = this.createToken({ userId: user.id, username: user.profile!.username });
-    return { token, profile: user.profile };
+    const token = this.createToken({ userId: user.id, username: user.profile!.username, isAdmin: false });
+    return { token, profile: user.profile, isAdmin: false };
   }
 
   // Handle Firebase Token Verification (stubs)
   async validateFirebaseToken(firebaseToken: string, email?: string, name?: string) {
-    // In production, we would use: const decodedToken = await admin.auth().verifyIdToken(firebaseToken);
-    // Since this is a local sandbox, we will mock the authentication validation:
     if (!firebaseToken) {
       throw new UnauthorizedException('Missing Firebase auth token');
     }
 
-    const firebaseId = `fb_${firebaseToken.slice(-12)}`; // stub ID from token slice
+    const firebaseId = `fb_${firebaseToken.slice(-12)}`;
     const emailAddr = email || `${firebaseId}@cognerix.io`;
     const defaultName = name || `Player_${Math.floor(Math.random() * 9000 + 1000)}`;
+    const isConfiguredAdmin = emailAddr.toLowerCase() === 'admin.cognerix@gmail.com';
 
-    // Find or create the user linked to this Firebase ID
     let user = await this.prisma.user.findUnique({
       where: { firebaseId },
       include: { profile: true },
@@ -101,22 +109,10 @@ export class AuthService {
       });
     }
 
-    const token = this.createToken({ userId: user.id, username: user.profile!.username });
-    return { token, profile: user.profile };
+    const token = this.createToken({ userId: user.id, username: user.profile!.username, email: emailAddr, isAdmin: isConfiguredAdmin });
+    return { token, profile: user.profile, isAdmin: isConfiguredAdmin };
   }
 
-  /**
-   * Verify a real Google ID Token (JWT credential) from Google Identity Services.
-   *
-   * Uses google-auth-library to cryptographically verify the token, then extracts
-   * the user's Google ID (sub), email, and display name from the verified payload.
-   *
-   * NOTE: We store Google's unique "sub" identifier in the Prisma User.firebaseId
-   * column. This is intentional — the firebaseId field already exists as a unique
-   * string column and serves the same purpose (external identity provider ID).
-   * Renaming it would require a database migration. Future developers: if you see
-   * a Google sub ID stored in firebaseId, this is expected behavior.
-   */
   async validateGoogleToken(idToken: string) {
     if (!idToken) {
       throw new UnauthorizedException('Missing Google ID token');
@@ -127,7 +123,6 @@ export class AuthService {
       throw new UnauthorizedException('Google Client ID is not configured on the server');
     }
 
-    // 1. Verify the token cryptographically with Google
     const client = new OAuth2Client(clientId);
     let payload: any;
     try {
@@ -151,15 +146,13 @@ export class AuthService {
 
     console.log('[GOOGLE AUTH] Received:', { googleId: payload.sub, email: payload.email });
 
-    const googleId = payload.sub;        // Google's unique user identifier
+    const googleId = payload.sub;
     const email = payload.email || '';
     const name = payload.name || `Player_${Math.floor(Math.random() * 9000 + 1000)}`;
-    const picture = payload.picture || '';
 
     const isConfiguredAdmin = email.toLowerCase() === 'admin.cognerix@gmail.com';
     console.log(`[AuthService] Google Sign-In verified for: ${name} (${email}), sub: ${googleId}, isAdmin: ${isConfiguredAdmin}`);
 
-    // 2. Try database lookup first — find user by firebaseId (which stores Google sub) or admin email
     try {
       let user = await this.prisma.user.findFirst({
         where: {
@@ -185,7 +178,6 @@ export class AuthService {
           });
         }
       } else {
-        // Create new user + profile in database
         user = await this.prisma.user.create({
           data: {
             firebaseId: googleId,
@@ -200,7 +192,7 @@ export class AuthService {
                 rank: RankName.BRONZE,
                 badges: [],
                 inventory: [],
-                avatar: '👤',
+                avatar: 'ðŸ‘¤',
                 frame: 'none',
                 status: 'Ready to solve the universe.',
                 lobbyEntranceAnimation: '',
@@ -209,16 +201,14 @@ export class AuthService {
           },
           include: { profile: true },
         });
-        console.log(`[AuthService] Created new Google user in database: ${user.profile!.username} (${googleId})`);
       }
 
-      const token = this.createToken({ userId: user.id, username: user.profile!.username });
+      const token = this.createToken({ userId: user.id, username: user.profile!.username, email: user.email, isAdmin: isConfiguredAdmin });
 
-      // Populate memory registry so sync/leaderboard systems can find this user
       ProfileService.setRegistryUser(user.id, {
         id: user.id,
         username: user.profile!.username,
-        avatar: user.profile!.avatar || '👤',
+        avatar: user.profile!.avatar || 'ðŸ‘¤',
         frame: user.profile!.frame || 'none',
         rank: user.profile!.rank || 'BRONZE',
         nameColor: (user.profile as any)?.nameColor || '',
@@ -243,7 +233,7 @@ export class AuthService {
         profile: {
           id: user.id,
           username: user.profile!.username,
-          avatar: user.profile!.avatar || '👤',
+          avatar: user.profile!.avatar || 'ðŸ‘¤',
           frame: user.profile!.frame || 'none',
           rank: user.profile!.rank || 'BRONZE',
           nameColor: (user.profile as any)?.nameColor || '',
@@ -264,28 +254,23 @@ export class AuthService {
             puzzleSpecificStats: {},
           },
         },
-        isAdmin: user.email?.toLowerCase() === 'admin.cognerix@gmail.com',
+        isAdmin: isConfiguredAdmin,
       };
     } catch (dbErr: any) {
-      // Database offline — fall back to memory registry via loadOrCreateProfile pattern
       console.warn('[AuthService] Database unavailable for Google login, falling back to memory:', dbErr.message);
 
-      // Use a deterministic userId from the Google sub so it's consistent across logins
       const userId = isConfiguredAdmin ? '101698362403' : `10${googleId}`;
 
-      // Try memory registry
       const memProfile = ProfileService.getRegistryUser(userId);
       if (memProfile) {
         if (isConfiguredAdmin) {
           memProfile.email = 'admin.cognerix@gmail.com';
           memProfile.username = 'admin';
         }
-        const token = this.createToken({ userId, username: memProfile.username });
-        const isAdmin = memProfile.email?.toLowerCase() === 'admin.cognerix@gmail.com';
-        return { token, userId, profile: memProfile, isAdmin };
+        const token = this.createToken({ userId, username: memProfile.username, email: memProfile.email, isAdmin: isConfiguredAdmin });
+        return { token, userId, profile: memProfile, isAdmin: isConfiguredAdmin };
       }
 
-      // Create a new in-memory profile
       const defaultProfile = {
         id: userId,
         username: isConfiguredAdmin ? 'admin' : name,
@@ -297,7 +282,7 @@ export class AuthService {
         rank: RankName.BRONZE,
         badges: [] as string[],
         inventory: [] as string[],
-        avatar: '👤',
+        avatar: 'ðŸ‘¤',
         frame: 'none',
         status: 'Ready to solve the universe.',
         lobbyEntranceAnimation: '',
@@ -318,9 +303,8 @@ export class AuthService {
         ipAddress: '',
       } as any);
 
-      const token = this.createToken({ userId, username: defaultProfile.username });
-      const isAdmin = defaultProfile.email?.toLowerCase() === 'admin.cognerix@gmail.com';
-      return { token, userId, profile: defaultProfile, isAdmin };
+      const token = this.createToken({ userId, username: defaultProfile.username, email: defaultProfile.email, isAdmin: isConfiguredAdmin });
+      return { token, userId, profile: defaultProfile, isAdmin: isConfiguredAdmin };
     }
   }
 }

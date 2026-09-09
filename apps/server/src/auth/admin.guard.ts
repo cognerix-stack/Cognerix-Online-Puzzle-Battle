@@ -1,5 +1,4 @@
 import { CanActivate, ExecutionContext, Injectable, ForbiddenException } from '@nestjs/common';
-import { ProfileService } from '../profile/profile.service';
 
 @Injectable()
 export class AdminGuard implements CanActivate {
@@ -11,11 +10,8 @@ export class AdminGuard implements CanActivate {
       throw new ForbiddenException('Access denied. Authentication required.');
     }
 
-    // Strict Admin check: Only the user with email 'admin.cognerix@gmail.com' is allowed
-    const registryProfile = ProfileService.getRegistryUser(user.userId);
-    const hasAdminEmail = registryProfile?.email?.toLowerCase() === 'admin.cognerix@gmail.com';
-
-    if (hasAdminEmail) {
+    // Strict Admin check: Only users with verified isAdmin === true claim in JWT
+    if (user.isAdmin === true) {
       return true;
     }
 
