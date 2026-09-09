@@ -345,7 +345,7 @@ export class ProfileController {
     });
   }
 
-  @Throttle({ default: { ttl: 86400000, limit: 2 } })
+  @Throttle({ default: { ttl: 86400000, limit: 1 } })
   @Post('support')
   async submitSupport(
     @Body('name') name: string,
