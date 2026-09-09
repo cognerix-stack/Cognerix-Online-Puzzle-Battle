@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ThrottlerGuard } from '@nestjs/throttler';
+import { ThrottlerGuard, ThrottlerException } from '@nestjs/throttler';
 
 @Injectable()
 export class CustomThrottlerGuard extends ThrottlerGuard {
@@ -19,5 +19,9 @@ export class CustomThrottlerGuard extends ThrottlerGuard {
 
     // Composite key tracks rate limit by both IP address and User ID / Email
     return `${ip}_${userTracker}`;
+  }
+
+  protected async throwThrottlingException(context: any, throttlerLimitDetail: any): Promise<void> {
+    throw new ThrottlerException('Limit reached. You can submit 1 request every 24 hours.');
   }
 }
