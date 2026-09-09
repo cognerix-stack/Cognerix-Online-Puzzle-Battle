@@ -820,7 +820,45 @@ function App() {
     language, setLanguage, saveProfile, isProfileLoaded, getLastLocalMutationTime
   } = useGame();
   const t = (key: string) => translate(key, language);
-  const [isAdmin, setIsAdmin] = useState<boolean>(() => localStorage.getItem('pv_is_admin') === 'true');
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const [isAuthLoading, setIsAuthLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const verifySession = async () => {
+      setIsAuthLoading(true);
+      const jwtToken = localStorage.getItem('pv_jwt_token');
+      if (!jwtToken) {
+        setIsAdmin(false);
+        localStorage.removeItem('pv_is_admin');
+        setIsAuthLoading(false);
+        return;
+      }
+      try {
+        const res = await apiRequest('GET', `${BACKEND_HTTP_URL}/auth/me`, undefined, jwtToken);
+        if (res.ok && res.data) {
+          const isUserAdmin = res.data.isAdmin === true;
+          setIsAdmin(isUserAdmin);
+          if (isUserAdmin) {
+            localStorage.setItem('pv_is_admin', 'true');
+          } else {
+            localStorage.removeItem('pv_is_admin');
+          }
+        } else {
+          setIsAdmin(false);
+          localStorage.removeItem('pv_is_admin');
+          localStorage.removeItem('pv_jwt_token');
+        }
+      } catch (err) {
+        console.error('[SessionVerify] Error:', err);
+        setIsAdmin(false);
+        localStorage.removeItem('pv_is_admin');
+      } finally {
+        setIsAuthLoading(false);
+      }
+    };
+
+    verifySession();
+  }, []);
   useEffect(() => {
     if (Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'android') {
       AdMob.initialize()
@@ -5865,11 +5903,11 @@ function App() {
                                     color: (entry.nameColor?.startsWith('name-fx-') || (isMe && userProfile.nameColor?.startsWith('name-fx-')))
                                       ? undefined 
                                       : (entry.nameColor || (isMe ? userProfile.nameColor : undefined) || (isMe ? 'var(--color-secondary)' : 'var(--text-primary)')),
-                                    cursor: isAdmin ? 'pointer' : 'default',
-                                    textDecoration: isAdmin ? 'underline' : 'none'
+                                    cursor: (!isAuthLoading && isAdmin) ? 'pointer' : 'default',
+                                    textDecoration: (!isAuthLoading && isAdmin) ? 'underline' : 'none'
                                   }}
                                   onClick={() => {
-                                    if (isAdmin) {
+                                    if (!isAuthLoading && isAdmin) {
                                       const found = adminUsersList.find(u => u.id === entry.userId || u.username.toLowerCase() === entry.username.toLowerCase());
                                       if (found) {
                                         setSelectedAdminUser(found);
@@ -6684,7 +6722,7 @@ function App() {
                   </div>
                 </div>
                 {/* 👑 Admin Console: Player History */}
-                {isAdmin && (
+                {!isAuthLoading && isAdmin && (
                   <div style={{ borderTop: '1px dashed rgba(139, 92, 246, 0.2)', paddingTop: '20px', marginTop: '10px' }}>
                     <h4 style={{ fontSize: '15px', color: 'var(--text-secondary)', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                       👑 Admin Control: Player History
@@ -7882,7 +7920,7 @@ function App() {
             <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '16px', paddingRight: '4px' }}>
               
               {/* Admin Compose Section */}
-              {isAdmin && (
+              {!isAuthLoading && isAdmin && (
                 <div style={{
                   background: 'rgba(139, 92, 246, 0.05)',
                   border: '1px solid rgba(139, 92, 246, 0.2)',
