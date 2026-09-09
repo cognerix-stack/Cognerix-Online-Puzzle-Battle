@@ -203,7 +203,7 @@ export class AuthService {
         });
       }
 
-      const token = this.createToken({ userId: user.id, username: user.profile!.username, email: user.email, isAdmin: isConfiguredAdmin });
+      const token = this.createToken({ userId: user.id, username: user.profile!.username, email: user.email ?? undefined, isAdmin: isConfiguredAdmin });
 
       ProfileService.setRegistryUser(user.id, {
         id: user.id,
@@ -221,7 +221,7 @@ export class AuthService {
         lobbyEntranceAnimation: (user.profile as any)?.lobbyEntranceAnimation || '',
         status: 'online',
         lastSeen: Date.now(),
-        email: user.email,
+        email: user.email ?? undefined,
         ipAddress: '',
         score: 0,
         statistics: null,
@@ -245,7 +245,7 @@ export class AuthService {
           inventory: (user.profile as any)?.inventory || [],
           status: (user.profile as any)?.status || 'Ready to solve the universe.',
           lobbyEntranceAnimation: (user.profile as any)?.lobbyEntranceAnimation || '',
-          email: user.email,
+          email: user.email ?? undefined,
           statistics: {
             gamesPlayed: 0,
             gamesWon: 0,
