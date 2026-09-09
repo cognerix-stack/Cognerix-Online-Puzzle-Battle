@@ -1520,7 +1520,7 @@ function App() {
     }
   }, [isSupportOpen, userProfile]);
   useEffect(() => {
-    if (isMailboxOpen && isAdmin) {
+    if (isAdmin) {
       const fetchBanned = async () => {
         try {
           const token = getAuthToken();
