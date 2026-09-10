@@ -19,7 +19,6 @@
     "@codetrix-studio/capacitor-google-auth": "^3.4.0-rc.4",
     "@puzzle-verse/shared": "file:../../packages/shared",
     "colyseus.js": "^0.16.22",
-    "framer-motion": "^12.42.2",
     "lucide-react": "^0.344.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"

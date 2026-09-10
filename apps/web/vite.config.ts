@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite'
+﻿import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
 
@@ -10,7 +10,12 @@ export default defineConfig({
       '@puzzle-verse/shared': path.resolve(__dirname, '../../packages/shared/src/index.ts')
     }
   },
+  esbuild: {
+    drop: ['console', 'debugger']
+  },
   build: {
+    target: 'es2015',
+    cssCodeSplit: true,
     rollupOptions: {
       output: {
         manualChunks: {
@@ -23,4 +28,3 @@ export default defineConfig({
     }
   }
 })
-

@@ -1,4 +1,4 @@
-﻿/* PuzzleVerse Custom Premium Design System */
+/* PuzzleVerse Custom Premium Design System */
 
 :root {
   /* Colors */
@@ -270,7 +270,7 @@ button, .btn {
    ANIMATED NAME STYLES & FX
    ======================================================== */
 
-/* 1. 🔥 Fire Blaze Name FX */
+/* 1. ?? Fire Blaze Name FX */
 @keyframes fireFlicker {
   0% { background-position: 0% 0%; filter: drop-shadow(0 0 6px #f97316) drop-shadow(0 0 10px #dc2626); }
   50% { background-position: 0% 50%; filter: drop-shadow(0 -2px 14px #ef4444) drop-shadow(0 0 18px #fef08a); }
@@ -286,7 +286,7 @@ button, .btn {
   font-weight: 800 !important;
 }
 
-/* 2. ⚡ Lightning Bolt Name FX */
+/* 2. ? Lightning Bolt Name FX */
 @keyframes lightningStrike {
   0% { background-position: 0% 0%; filter: drop-shadow(0 0 6px #38bdf8); }
   20% { filter: drop-shadow(0 0 20px #ffffff) drop-shadow(0 0 30px #38bdf8); }
@@ -305,7 +305,7 @@ button, .btn {
   font-weight: 800 !important;
 }
 
-/* 3. 🌈 Rainbow Spectrum Name FX */
+/* 3. ?? Rainbow Spectrum Name FX */
 @keyframes rainbowShift {
   0% { background-position: 0% 50%; filter: drop-shadow(0 0 6px rgba(239,68,68,0.7)); }
   50% { filter: drop-shadow(0 0 10px rgba(6,182,212,0.8)); }
@@ -321,7 +321,7 @@ button, .btn {
   font-weight: 800 !important;
 }
 
-/* 4. 👑 Royal Gold Shimmer Name FX */
+/* 4. ?? Royal Gold Shimmer Name FX */
 @keyframes goldShimmer {
   0% { background-position: -100% 0%; filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.6)); }
   50% { filter: drop-shadow(0 0 18px rgba(254, 240, 138, 0.9)); }
@@ -337,7 +337,7 @@ button, .btn {
   font-weight: 800 !important;
 }
 
-/* 5. 🌌 Cosmic Void Name FX */
+/* 5. ?? Cosmic Void Name FX */
 @keyframes cosmicPulse {
   0% { background-position: 0% 0%; filter: drop-shadow(0 0 8px #a855f7); }
   50% { background-position: 100% 100%; filter: drop-shadow(0 0 22px #ec4899); }
@@ -353,7 +353,7 @@ button, .btn {
   font-weight: 800 !important;
 }
 
-/* 6. ❄️ Frost Glacial Name FX */
+/* 6. ?? Frost Glacial Name FX */
 @keyframes iceGleam {
   0% { background-position: 0% 0%; filter: drop-shadow(0 0 6px #7dd3fc); }
   100% { background-position: 0% 100%; filter: drop-shadow(0 0 18px #e0f2fe); }
@@ -368,7 +368,7 @@ button, .btn {
   font-weight: 800 !important;
 }
 
-/* 7. 🧪 Cyber Toxic Glitch Name FX */
+/* 7. ?? Cyber Toxic Glitch Name FX */
 @keyframes toxicGlitch {
   0% { background-position: 0% 0%; transform: skewX(0deg); filter: drop-shadow(0 0 8px #22c55e); }
   25% { transform: skewX(-3deg); filter: drop-shadow(0 0 16px #a3e635); }
@@ -386,7 +386,7 @@ button, .btn {
   font-weight: 800 !important;
 }
 
-/* 8. 💖 Synthwave Neon Pink FX */
+/* 8. ?? Synthwave Neon Pink FX */
 @keyframes neonPinkGlow {
   0% { background-position: 0% 0%; filter: drop-shadow(0 0 6px #f43f5e); }
   100% { background-position: 100% 0%; filter: drop-shadow(0 0 22px #f472b6); }
@@ -1124,7 +1124,7 @@ button, .btn {
     object-fit: contain !important;
   }
 
-  /* Game selection modal — reduce width and padding so it doesn't need dark sidebars at 100% zoom */
+  /* Game selection modal � reduce width and padding so it doesn't need dark sidebars at 100% zoom */
   .difficulty-selection-modal {
     max-width: 360px !important;
     padding: 20px 24px !important;
@@ -1215,4 +1215,19 @@ button, .btn {
 @keyframes loading-bar {
   from { width: 0%; }
   to { width: 100%; }
+}
+/* Mobile GPU Acceleration & Performance Layer */
+.gpu-accelerated,
+.modal-backdrop,
+.modal-content,
+.puzzle-card {
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  will-change: transform, opacity;
+}
+
+.modal-content {
+  contain: content;
 }
