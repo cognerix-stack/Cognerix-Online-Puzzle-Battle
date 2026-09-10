@@ -108,6 +108,7 @@ export class ProfileController {
     return this.profileService.getGameHistory(userId);
   }
 
+  @Get('admin/users')
   @Get('users')
   @UseGuards(AdminGuard)
   async getAllUsers() {
