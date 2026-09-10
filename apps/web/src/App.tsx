@@ -26,6 +26,8 @@ import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
 import { AdMob, RewardAdPluginEvents, BannerAdSize, BannerAdPosition } from '@capacitor-community/admob';
 import { Network } from '@capacitor/network';
 import { StorePopup } from './components/StorePopup';
+import { SupportModal } from './components/modals/SupportModal';
+import { ProfileInspectorModal } from './components/modals/ProfileInspectorModal';
 const apiRequest = async (method: 'GET' | 'POST' | 'DELETE', url: string, body?: object, token?: string) => {
   const headers: Record<string, string> = { 'Content-Type': 'application/json' };
   if (token) headers['Authorization'] = `Bearer ${token}`;
@@ -9446,382 +9448,42 @@ function App() {
         </div>
       )}
       {/* 🔍 ADMIN USER DETAILS VIEW BOX MODAL */}
-      {isUserViewBoxOpen && selectedAdminUser && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          background: 'rgba(15, 23, 42, 0.8)',
-          zIndex: 10000,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          backdropFilter: 'blur(10px)',
-          fontFamily: "'Outfit', sans-serif",
-          animation: 'fadeIn 0.25s ease-out'
-        }}>
-          <div className="glass-panel animate-scale-up" style={{
-            width: '100%',
-            maxWidth: '420px',
-            padding: '24px',
-            borderRadius: '24px',
-            border: isLightMode ? '1px solid #e5e7eb' : '1px solid rgba(139, 92, 246, 0.3)',
-            background: isLightMode ? 'linear-gradient(135deg, #ffffff, #f9fafb)' : 'linear-gradient(135deg, rgba(30, 27, 75, 0.95), rgba(15, 12, 40, 0.95))',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '16px',
-            boxShadow: isLightMode ? '0 20px 40px rgba(0, 0, 0, 0.06)' : '0 20px 40px rgba(0, 0, 0, 0.5), 0 0 50px rgba(139, 92, 246, 0.15)',
-            position: 'relative'
-          }}>
-            {/* Header */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: isLightMode ? '1px solid #e5e7eb' : '1px solid rgba(255, 255, 255, 0.1)', paddingBottom: '12px' }}>
-              <h3 style={{ fontSize: '18px', fontWeight: 'bold', color: 'var(--text-primary)', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                👤 Profile Inspector
-              </h3>
-              <button 
-                onClick={() => { triggerSound('click'); setIsUserViewBoxOpen(false); }}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  color: 'var(--text-secondary)',
-                  fontSize: '20px',
-                  cursor: 'pointer',
-                  padding: '4px',
-                  lineHeight: 1,
-                  transition: 'color 0.2s'
-                }}
-                className="close-hover"
-              >
-                ✕
-              </button>
-            </div>
-            {/* Profile Avatar and Frame Display */}
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '12px 0' }}>
-              <div 
-                className={`avatar-frame-showcase ${selectedAdminUser.frame || 'none'}`}
-                style={{
-                  width: '72px',
-                  height: '72px',
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '36px',
-                  background: isLightMode ? 'rgba(0, 0, 0, 0.03)' : 'rgba(255, 255, 255, 0.05)',
-                  border: isLightMode ? '2px solid rgba(0, 0, 0, 0.08)' : '2px solid rgba(255, 255, 255, 0.1)'
-                }}
-              >
-                {selectedAdminUser.avatar || '👤'}
-              </div>
-              <span style={{ 
-                fontSize: '18px', 
-                fontWeight: 'bold', 
-                color: selectedAdminUser.nameColor || 'var(--text-primary)',
-                textShadow: selectedAdminUser.nameColor ? '0 0 10px rgba(255,255,255,0.1)' : 'none'
-              }}>
-                {selectedAdminUser.username}
-              </span>
-            </div>
-            {/* Detailed Properties Grid */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '13px', maxHeight: '400px', overflowY: 'auto', paddingRight: '4px' }}>
-              
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 12px', background: isLightMode ? 'rgba(0,0,0,0.03)' : 'rgba(0,0,0,0.2)', borderRadius: '8px' }}>
-                <span style={{ color: 'var(--text-muted)' }}>Profile ID</span>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', maxWidth: '60%' }}>
-                  <span style={{ color: 'var(--text-primary)', fontFamily: 'monospace', fontWeight: 'bold', fontSize: '11px', wordBreak: 'break-all', textAlign: 'right' }}>
-                    {selectedAdminUser.id}
-                  </span>
-                  <button
-                    onClick={() => copyToClipboard(selectedAdminUser.id, 'id')}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      color: copiedProfileId ? '#10b981' : 'var(--text-secondary)',
-                      cursor: 'pointer',
-                      padding: '2px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      transition: 'color 0.2s'
-                    }}
-                    title="Copy Profile ID"
-                  >
-                    {copiedProfileId ? <Check size={12} /> : <Copy size={12} />}
-                  </button>
-                </div>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 12px', background: isLightMode ? 'rgba(0,0,0,0.03)' : 'rgba(0,0,0,0.2)', borderRadius: '8px' }}>
-                <span style={{ color: 'var(--text-muted)' }}>Login Method</span>
-                <span style={{ 
-                  color: selectedAdminUser.email ? '#3b82f6' : '#10b981', 
-                  fontWeight: 'bold',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '4px'
-                }}>
-                  {selectedAdminUser.email ? '🌐 Google Account' : '👤 Guest Player'}
-                </span>
-              </div>
-              {/* IP Address */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 12px', background: isLightMode ? 'rgba(0,0,0,0.03)' : 'rgba(0,0,0,0.2)', borderRadius: '8px' }}>
-                <span style={{ color: 'var(--text-muted)' }}>IP Address</span>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <span style={{ color: '#f59e0b', fontFamily: 'monospace', fontWeight: 'bold', fontSize: '11px' }}>
-                    {selectedAdminUser.ipAddress || 'N/A'}
-                  </span>
-                  {selectedAdminUser.ipAddress && (
-                    <button
-                      onClick={() => copyToClipboard(selectedAdminUser.ipAddress, 'ip')}
-                      style={{
-                        background: 'none',
-                        border: 'none',
-                        color: copiedIpAddress ? '#10b981' : 'var(--text-secondary)',
-                        cursor: 'pointer',
-                        padding: '2px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        transition: 'color 0.2s'
-                      }}
-                      title="Copy IP Address"
-                    >
-                      {copiedIpAddress ? <Check size={12} /> : <Copy size={12} />}
-                    </button>
-                  )}
-                </div>
-              </div>
-              {/* Location (State & Country) */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 12px', background: isLightMode ? 'rgba(0,0,0,0.03)' : 'rgba(0,0,0,0.2)', borderRadius: '8px' }}>
-                <span style={{ color: 'var(--text-muted)' }}>Location (State & Country)</span>
-                <span style={{ color: 'var(--text-primary)', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  📍 {selectedAdminUser.region || 'Delhi'}, {selectedAdminUser.country || 'India'}
-                </span>
-              </div>
-              {/* Gmail / Email */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 12px', background: isLightMode ? 'rgba(59,130,246,0.04)' : 'rgba(59,130,246,0.08)', border: isLightMode ? '1px solid rgba(59,130,246,0.12)' : '1px solid rgba(59,130,246,0.15)', borderRadius: '8px' }}>
-                <span style={{ color: 'var(--text-muted)' }}>Gmail</span>
-                <span style={{ color: '#3b82f6', fontWeight: 'bold', fontSize: '11px', wordBreak: 'break-all', textAlign: 'right', maxWidth: '60%' }}>
-                  {selectedAdminUser.email || 'N/A'}
-                </span>
-              </div>
-              {/* Last Seen Date & Time */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 12px', background: isLightMode ? 'rgba(0,0,0,0.03)' : 'rgba(0,0,0,0.2)', borderRadius: '8px' }}>
-                <span style={{ color: 'var(--text-muted)' }}>Last Seen</span>
-                <span style={{ color: 'var(--text-primary)', fontWeight: 'bold', fontSize: '11px', textAlign: 'right' }}>
-                  🕒 {selectedAdminUser.lastSeen ? (() => {
-                    const date = new Date(selectedAdminUser.lastSeen);
-                    const dd = String(date.getDate()).padStart(2, '0');
-                    const mm = String(date.getMonth() + 1).padStart(2, '0');
-                    const yyyy = date.getFullYear();
-                    const time = date.toLocaleTimeString();
-                    return `${dd}/${mm}/${yyyy}, ${time}`;
-                  })() : 'N/A'}
-                </span>
-              </div>
-              {/* Active Duration */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 12px', background: isLightMode ? 'rgba(0,0,0,0.03)' : 'rgba(0,0,0,0.2)', borderRadius: '8px' }}>
-                <span style={{ color: 'var(--text-muted)' }}>Active Duration</span>
-                <span style={{ color: 'var(--text-primary)', fontWeight: 'bold', fontSize: '11px', textAlign: 'right' }}>
-                  ⏱️ {(() => {
-                    if (!selectedAdminUser.sessionStart || !selectedAdminUser.lastSeen) return 'N/A';
-                    const durationMs = selectedAdminUser.lastSeen - selectedAdminUser.sessionStart;
-                    if (durationMs < 0) return '0s';
-                    const totalSecs = Math.floor(durationMs / 1000);
-                    const mins = Math.floor(totalSecs / 60);
-                    const hrs = Math.floor(mins / 60);
-                    if (hrs > 0) {
-                      return `${hrs} hr${hrs > 1 ? 's' : ''} ${mins % 60} min${(mins % 60) !== 1 ? 's' : ''}`;
-                    } else if (mins > 0) {
-                      return `${mins} min${mins !== 1 ? 's' : ''} ${totalSecs % 60} sec${(totalSecs % 60) !== 1 ? 's' : ''}`;
-                    } else {
-                      return `${totalSecs} sec${totalSecs !== 1 ? 's' : ''}`;
-                    }
-                  })()}
-                </span>
-              </div>
-              {/* Friends Count (clickable to view list of friends) */}
-              <div 
-                onClick={() => {
-                  triggerSound('click');
-                  fetchAdminFriends(selectedAdminUser.id);
-                  setIsAdminFriendsModalOpen(true);
-                }}
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  padding: '8px 12px',
-                  background: isLightMode ? 'rgba(139, 92, 246, 0.05)' : 'rgba(139, 92, 246, 0.1)',
-                  border: '1px dashed rgba(139, 92, 246, 0.3)',
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                  transition: 'background 0.2s'
-                }}
-                className="badge-hover"
-                title="Click to view all friends"
-              >
-                <span style={{ color: 'var(--text-muted)' }}>Friends</span>
-                <span style={{ color: 'var(--color-primary)', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  👥 {selectedAdminUser.friendsCount !== undefined ? selectedAdminUser.friendsCount : 0} (Click to View)
-                </span>
-              </div>
-              {/* Level & XP Progress */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', padding: '10px 12px', background: isLightMode ? 'rgba(0,0,0,0.03)' : 'rgba(0,0,0,0.2)', borderRadius: '8px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ color: 'var(--text-muted)' }}>Level</span>
-                  <span style={{ color: 'var(--color-primary)', fontWeight: 'bold' }}>
-                    Level {selectedAdminUser.level || 1}
-                  </span>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: 'var(--text-muted)', marginBottom: '2px' }}>
-                  <span>XP Progress</span>
-                  <span>{selectedAdminUser.xp || 0} / {(selectedAdminUser.level || 1) * 100} XP ({Math.floor(((selectedAdminUser.xp || 0) / ((selectedAdminUser.level || 1) * 100)) * 100)}%)</span>
-                </div>
-                <div style={{ width: '100%', height: '6px', background: isLightMode ? '#e2e8f0' : 'rgba(255,255,255,0.05)', borderRadius: '3px', overflow: 'hidden' }}>
-                  <div style={{ 
-                    width: `${Math.max(0, Math.min(100, ((selectedAdminUser.xp || 0) / ((selectedAdminUser.level || 1) * 100)) * 100))}%`, 
-                    height: '100%', 
-                    background: 'linear-gradient(to right, var(--color-primary), var(--color-secondary))' 
-                  }} />
-                </div>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 12px', background: isLightMode ? 'rgba(0,0,0,0.03)' : 'rgba(0,0,0,0.2)', borderRadius: '8px' }}>
-                <span style={{ color: 'var(--text-muted)' }}>Rank Tier</span>
-                <span style={{ color: 'var(--color-primary)', fontWeight: 'bold' }}>
-                  🏆 {selectedAdminUser.rank || 'BRONZE'}
-                </span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 12px', background: isLightMode ? 'rgba(0,0,0,0.03)' : 'rgba(0,0,0,0.2)', borderRadius: '8px' }}>
-                <span style={{ color: 'var(--text-muted)' }}>Points (pts)</span>
-                <span style={{ color: '#10b981', fontWeight: 'bold' }}>
-                  ⭐ {selectedAdminUser.score || 0} pts
-                </span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 12px', background: isLightMode ? 'rgba(0,0,0,0.03)' : 'rgba(0,0,0,0.2)', borderRadius: '8px' }}>
-                <span style={{ color: 'var(--text-muted)' }}>Leaderboard Rank</span>
-                <span style={{ color: '#f59e0b', fontWeight: 'bold' }}>
-                  {(() => {
-                    const idx = leaderboard.findIndex(e => e.userId === selectedAdminUser.id);
-                    return idx >= 0 ? `#${idx + 1}` : 'Unranked';
-                  })()}
-                </span>
-              </div>
-              <div style={{ display: 'flex', gap: '12px' }}>
-                <div style={{ flex: 1, display: 'flex', justifyContent: 'space-between', padding: '8px 12px', background: isLightMode ? 'rgba(234, 179, 8, 0.04)' : 'rgba(234, 179, 8, 0.08)', border: isLightMode ? '1px solid rgba(234, 179, 8, 0.15)' : '1px solid rgba(234, 179, 8, 0.2)', borderRadius: '8px' }}>
-                  <span style={{ color: isLightMode ? 'rgba(150, 100, 0, 0.85)' : 'rgba(234, 179, 8, 0.8)' }}>Coins</span>
-                  <span style={{ color: '#eab308', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '3px' }}>
-                    🪙 {selectedAdminUser.coins || 0}
-                  </span>
-                </div>
-                <div style={{ flex: 1, display: 'flex', justifyContent: 'space-between', padding: '8px 12px', background: isLightMode ? 'rgba(168, 85, 247, 0.04)' : 'rgba(168, 85, 247, 0.08)', border: isLightMode ? '1px solid rgba(168, 85, 247, 0.15)' : '1px solid rgba(168, 85, 247, 0.2)', borderRadius: '8px' }}>
-                  <span style={{ color: isLightMode ? 'rgba(110, 30, 180, 0.85)' : 'rgba(168, 85, 247, 0.8)' }}>Gems</span>
-                  <span style={{ color: '#a855f7', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '3px' }}>
-                    💎 {selectedAdminUser.gems || 0}
-                  </span>
-                </div>
-              </div>
-              {/* 🎮 GAME STATISTICS: Best Times & Time Spent */}
-              {selectedAdminUser.statistics?.puzzleSpecificStats && (
-                <div style={{ marginTop: '6px' }}>
-                  <h4 style={{ fontSize: '12px', fontWeight: 'bold', color: 'var(--text-muted)', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                    🎮 Game Statistics
-                  </h4>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                    {Object.entries(selectedAdminUser.statistics.puzzleSpecificStats as Record<string, any>).map(([gameKey, stats]: [string, any]) => {
-                      const gameName = gameKey.replace(/_/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase());
-                      const played = stats?.played || 0;
-                      if (played === 0) return null;
-                      const bestTime = stats?.bestTime;
-                      const timeSpent = stats?.timeSpent;
-                      return (
-                        <div key={gameKey} style={{
-                          display: 'grid',
-                          gridTemplateColumns: '1fr auto auto',
-                          gap: '8px',
-                          padding: '6px 10px',
-                          background: isLightMode ? 'rgba(0,0,0,0.02)' : 'rgba(255,255,255,0.02)',
-                          borderRadius: '6px',
-                          alignItems: 'center',
-                          fontSize: '11px'
-                        }}>
-                          <span style={{ color: 'var(--text-primary)', fontWeight: '600' }}>{gameName}</span>
-                          <span style={{ color: '#10b981', fontWeight: 'bold', whiteSpace: 'nowrap' }}>
-                            🏆 {bestTime != null ? `${bestTime.toFixed(1)}s` : '—'}
-                          </span>
-                          <span style={{ color: '#8b5cf6', fontWeight: 'bold', whiteSpace: 'nowrap' }}>
-                            ⏱ {timeSpent != null ? (timeSpent >= 60 ? `${Math.floor(timeSpent / 60)}m ${Math.round(timeSpent % 60)}s` : `${Math.round(timeSpent)}s`) : '—'}
-                          </span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-            </div>
-            {/* Footer Actions */}
-            <div style={{ display: 'flex', gap: '10px', marginTop: '8px' }}>
-              <button
-                onClick={() => { triggerSound('click'); setIsUserViewBoxOpen(false); }}
-                style={{
-                  flex: 1,
-                  background: isLightMode ? 'rgba(0, 0, 0, 0.05)' : 'rgba(255, 255, 255, 0.05)',
-                  border: isLightMode ? '1px solid #d1d5db' : '1px solid var(--border-glass)',
-                  color: isLightMode ? '#1f2937' : 'var(--text-primary)',
-                  padding: '10px',
-                  borderRadius: '12px',
-                  cursor: 'pointer',
-                  fontSize: '13px',
-                  fontWeight: 'bold',
-                  transition: 'all 0.2s'
-                }}
-                className="btn-hover-bright"
-              >
-                Close Inspector
-              </button>
-              <button
-                onClick={async () => {
-                  triggerSound('click');
-                  setGenericConfirm({
-                    message: `⚠️ Are you sure you want to permanently delete "${selectedAdminUser.username}" (${selectedAdminUser.id})?\n\nThis action cannot be undone.`,
-                    onConfirm: async () => {
-                      try {
-                        const token = getAuthToken();
-                        const res = await apiRequest('POST', `${BACKEND_HTTP_URL}/profile/delete`, { userId: selectedAdminUser.id }, token);
-                        if (res.ok) {
-                          showToast(`Player "${selectedAdminUser.username}" has been deleted.`, 'success');
-                          setAdminUsersList((prev: any[]) => prev.filter((u: any) => u.id !== selectedAdminUser.id));
-                          setIsUserViewBoxOpen(false);
-                        } else {
-                          showToast('Failed to delete player record.', 'error');
-                        }
-                      } catch (e) {
-                        console.error('[Admin] Delete profile failed:', e);
-                        showToast('Network error while deleting profile.', 'error');
-                      }
-                    }
-                  });
-                }}
-                style={{
-                  background: 'rgba(239, 68, 68, 0.1)',
-                  border: '1px solid rgba(239, 68, 68, 0.3)',
-                  color: '#ef4444',
-                  padding: '10px 16px',
-                  borderRadius: '12px',
-                  cursor: 'pointer',
-                  fontSize: '13px',
-                  fontWeight: 'bold',
-                  transition: 'all 0.2s',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px'
-                }}
-              >
-                🗑️ Delete
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ProfileInspectorModal
+        isUserViewBoxOpen={isUserViewBoxOpen}
+        selectedAdminUser={selectedAdminUser}
+        isLightMode={isLightMode}
+        onClose={() => setIsUserViewBoxOpen(false)}
+        triggerSound={triggerSound}
+        copiedProfileId={copiedProfileId}
+        copiedIpAddress={copiedIpAddress}
+        copyToClipboard={copyToClipboard}
+        fetchAdminFriends={fetchAdminFriends}
+        setIsAdminFriendsModalOpen={setIsAdminFriendsModalOpen}
+        leaderboard={leaderboard}
+        onDeleteProfile={() => {
+          triggerSound('click');
+          setGenericConfirm({
+            message: `⚠️ Are you sure you want to permanently delete "${selectedAdminUser.username}" (${selectedAdminUser.id})?\n\nThis action cannot be undone.`,
+            onConfirm: async () => {
+              try {
+                const token = getAuthToken();
+                const res = await apiRequest('POST', `${BACKEND_HTTP_URL}/profile/delete`, { userId: selectedAdminUser.id }, token);
+                if (res.ok) {
+                  showToast(`Player "${selectedAdminUser.username}" has been deleted.`, 'success');
+                  setAdminUsersList((prev: any[]) => prev.filter((u: any) => u.id !== selectedAdminUser.id));
+                  setIsUserViewBoxOpen(false);
+                } else {
+                  showToast('Failed to delete player record.', 'error');
+                }
+              } catch (e) {
+                console.error('[Admin] Delete profile failed:', e);
+                showToast('Network error while deleting profile.', 'error');
+              }
+            }
+          });
+        }}
+      />
+      
       {/* 👥 ADMIN VIEW FRIENDS MODAL */}
       {isAdminFriendsModalOpen && selectedAdminUser && (
         <div style={{
@@ -9940,260 +9602,63 @@ function App() {
         </div>
       )}
       {/* 🙋 HELP & SUPPORT DIALOG MODAL */}
-      {isSupportOpen && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          background: 'rgba(15, 23, 42, 0.8)',
-          zIndex: 10000,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          backdropFilter: 'blur(10px)',
-          fontFamily: "'Outfit', sans-serif",
-          animation: 'fadeIn 0.25s ease-out'
-        }}>
-          <div className="glass-panel animate-scale-up" style={{
-            width: '100%',
-            maxWidth: '420px',
-            padding: '24px',
-            borderRadius: '24px',
-            border: isLightMode ? '1px solid #e5e7eb' : '1px solid rgba(139, 92, 246, 0.3)',
-            background: isLightMode ? 'linear-gradient(135deg, #ffffff, #f9fafb)' : 'linear-gradient(135deg, rgba(30, 27, 75, 0.95), rgba(15, 12, 40, 0.95))',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '16px',
-            boxShadow: isLightMode ? '0 20px 40px rgba(0, 0, 0, 0.06)' : '0 20px 40px rgba(0, 0, 0, 0.5), 0 0 50px rgba(139, 92, 246, 0.15)',
-            position: 'relative',
-            maxHeight: '90vh',
-            overflowY: 'auto'
-          }}>
-            {/* Close Button */}
-            <button 
-              onClick={() => { triggerSound('click'); setIsSupportOpen(false); }}
-              style={{
-                position: 'absolute',
-                top: '16px',
-                right: '16px',
-                width: '32px',
-                height: '32px',
-                borderRadius: '50%',
-                background: isLightMode ? '#f1f5f9' : 'rgba(255,255,255,0.08)',
-                border: '1px solid var(--border-glass)',
-                color: 'var(--text-secondary)',
-                fontSize: '14px',
-                fontWeight: 'bold',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                outline: 'none'
-              }}
-            >
-              ✕
-            </button>
-            {/* Header */}
-            <div style={{ textAlign: 'center', marginTop: '8px' }}>
-              <h3 style={{ fontSize: '22px', fontWeight: 'bold', color: 'var(--text-primary)', margin: 0 }}>
-                Get in Touch
-              </h3>
-            </div>
-            {/* Form */}
-            <form 
-              onSubmit={async (e) => {
-                e.preventDefault();
-                if (!supportName.trim() || !supportEmail.trim() || !supportSubject.trim() || !supportDescription.trim()) {
-                  showToast("Please fill out all fields.", 'error');
-                  return;
-                }
-                if (!supportCaptchaChecked) {
-                  showToast("Please complete the 'I am human' verification check.", 'error');
-                  return;
-                }
-                setIsSubmittingSupport(true);
-                try {
-                  const token = getAuthToken();
-                  const url = `${BACKEND_HTTP_URL}/profile/support`;
-                  const bodyPayload = {
-                    name: supportName.trim(),
-                    email: supportEmail.trim(),
-                    userId: userProfile.id,
-                    subject: supportSubject.trim(),
-                    description: supportDescription.trim(),
-                    recaptchaToken
-                  };
-                  const res = await apiRequest('POST', url, bodyPayload, token);
-                  if (res.ok) {
-                    triggerSound('success');
-                    showToast("Support Ticket Submitted successfully! We will get back to you soon.", 'success');
-                    setIsSupportOpen(false);
-                  } else {
-                    const errMessage = res.data?.message || 'Server error';
-                    showToast(`Failed to submit support request: ${errMessage}`, 'error');
-                  }
-                } catch (err) {
-                  console.error('Support ticket error:', err);
-                  showToast("Connection error. Support ticket simulation logged.", 'error');
-                } finally {
-                  setIsSubmittingSupport(false);
-                }
-              }}
-              style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}
-            >
-              {/* Your Name */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <label style={{ fontSize: '12px', fontWeight: 'bold', color: 'var(--text-secondary)' }}>Your Name</label>
-                <input 
-                  type="text" 
-                  value={supportName}
-                  onChange={(e) => setSupportName(e.target.value)}
-                  placeholder="Enter your name"
-                  required
-                  style={{
-                    background: isLightMode ? '#f1f5f9' : 'rgba(0, 0, 0, 0.25)',
-                    border: isLightMode ? '1px solid #cbd5e1' : '1px solid var(--border-glass)',
-                    color: 'var(--text-primary)',
-                    padding: '10px 14px',
-                    borderRadius: '10px',
-                    fontSize: '13px',
-                    outline: 'none'
-                  }}
-                />
-              </div>
-              {/* Email Address */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <label style={{ fontSize: '12px', fontWeight: 'bold', color: 'var(--text-secondary)' }}>Email Address</label>
-                <input 
-                  type="email" 
-                  value={supportEmail}
-                  onChange={(e) => setSupportEmail(e.target.value)}
-                  placeholder="Enter your email"
-                  required
-                  style={{
-                    background: isLightMode ? '#f1f5f9' : 'rgba(0, 0, 0, 0.25)',
-                    border: isLightMode ? '1px solid #cbd5e1' : '1px solid var(--border-glass)',
-                    color: 'var(--text-primary)',
-                    padding: '10px 14px',
-                    borderRadius: '10px',
-                    fontSize: '13px',
-                    outline: 'none'
-                  }}
-                />
-              </div>
-              {/* Your ID */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <label style={{ fontSize: '12px', fontWeight: 'bold', color: 'var(--text-secondary)' }}>Your ID</label>
-                <input 
-                  type="text" 
-                  value={userProfile?.id || ''}
-                  readOnly
-                  style={{
-                    background: isLightMode ? '#e2e8f0' : 'rgba(255, 255, 255, 0.05)',
-                    border: isLightMode ? '1px solid #cbd5e1' : '1px solid var(--border-glass)',
-                    color: 'var(--text-muted)',
-                    padding: '10px 14px',
-                    borderRadius: '10px',
-                    fontSize: '13px',
-                    outline: 'none',
-                    cursor: 'not-allowed'
-                  }}
-                />
-              </div>
-              {/* Subject */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <label style={{ fontSize: '12px', fontWeight: 'bold', color: 'var(--text-secondary)' }}>Subject</label>
-                <input 
-                  type="text" 
-                  value={supportSubject}
-                  onChange={(e) => setSupportSubject(e.target.value)}
-                  placeholder="What is this regarding?"
-                  required
-                  style={{
-                    background: isLightMode ? '#f1f5f9' : 'rgba(0, 0, 0, 0.25)',
-                    border: isLightMode ? '1px solid #cbd5e1' : '1px solid var(--border-glass)',
-                    color: 'var(--text-primary)',
-                    padding: '10px 14px',
-                    borderRadius: '10px',
-                    fontSize: '13px',
-                    outline: 'none'
-                  }}
-                />
-              </div>
-              {/* Describe the Issue */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <label style={{ fontSize: '12px', fontWeight: 'bold', color: 'var(--text-secondary)' }}>Describe the Issue</label>
-                <textarea 
-                  value={supportDescription}
-                  onChange={(e) => setSupportDescription(e.target.value)}
-                  placeholder="Tell us what's happening..."
-                  required
-                  rows={4}
-                  style={{
-                    background: isLightMode ? '#f1f5f9' : 'rgba(0, 0, 0, 0.25)',
-                    border: isLightMode ? '1px solid #cbd5e1' : '1px solid var(--border-glass)',
-                    color: 'var(--text-primary)',
-                    padding: '10px 14px',
-                    borderRadius: '10px',
-                    fontSize: '13px',
-                    outline: 'none',
-                    resize: 'none',
-                    fontFamily: 'inherit'
-                  }}
-                />
-              </div>
-              {Capacitor.isNativePlatform() ? (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px', background: 'var(--bg-glass)', border: '1px solid var(--border-glass)', borderRadius: '8px' }}>
-                  <span style={{ fontSize: '14px', color: 'var(--text-primary)', fontWeight: 'bold' }}>
-                    {mathQuestion.question} =
-                  </span>
-                  <input
-                    type="number"
-                    placeholder="?"
-                    onChange={(e) => {
-                      if (parseInt(e.target.value) === mathQuestion.answer) {
-                        setSupportCaptchaChecked(true);
-                      } else {
-                        setSupportCaptchaChecked(false);
-                      }
-                    }}
-                    style={{ width: '60px', padding: '6px', borderRadius: '8px', border: '1px solid var(--border-glass)', background: 'var(--bg-glass)', color: 'var(--text-primary)', textAlign: 'center', fontSize: '14px' }}
-                  />
-                  <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Verify you are human</span>
-                </div>
-              ) : (
-                <div id="recaptcha-container" />
-              )}
-              {/* Submit Button */}
-              <button
-                type="submit"
-                disabled={isSubmittingSupport}
-                style={{
-                  background: 'var(--color-primary)',
-                  color: '#ffffff',
-                  padding: '12px',
-                  borderRadius: '12px',
-                  cursor: isSubmittingSupport ? 'not-allowed' : 'pointer',
-                  fontSize: '14px',
-                  fontWeight: 'bold',
-                  border: 'none',
-                  transition: 'all 0.2s',
-                  marginTop: '6px',
-                  opacity: isSubmittingSupport ? 0.7 : 1
-                }}
-                className="btn-hover-bright"
-              >
-                {isSubmittingSupport ? 'Sending...' : 'Send Message'}
-              </button>
-            </form>
-            <div style={{ textAlign: 'center', fontSize: '11px', color: 'var(--text-muted)', marginTop: '4px' }}>
-              We'll get back to you as soon as possible!
-            </div>
-          </div>
-        </div>
-      )}
+      <SupportModal
+        isSupportOpen={isSupportOpen}
+        isLightMode={isLightMode}
+        onClose={() => setIsSupportOpen(false)}
+        supportName={supportName}
+        setSupportName={setSupportName}
+        supportEmail={supportEmail}
+        setSupportEmail={setSupportEmail}
+        userProfile={userProfile}
+        supportSubject={supportSubject}
+        setSupportSubject={setSupportSubject}
+        supportDescription={supportDescription}
+        setSupportDescription={setSupportDescription}
+        isSubmittingSupport={isSubmittingSupport}
+        handleSupportSubmit={async (e) => {
+          e.preventDefault();
+          if (!supportName.trim() || !supportEmail.trim() || !supportSubject.trim() || !supportDescription.trim()) {
+            showToast("Please fill out all fields.", 'error');
+            return;
+          }
+          if (!supportCaptchaChecked) {
+            showToast("Please complete the 'I am human' verification check.", 'error');
+            return;
+          }
+          setIsSubmittingSupport(true);
+          try {
+            const token = getAuthToken();
+            const url = `${BACKEND_HTTP_URL}/profile/support`;
+            const bodyPayload = {
+              name: supportName.trim(),
+              email: supportEmail.trim(),
+              userId: userProfile.id,
+              subject: supportSubject.trim(),
+              description: supportDescription.trim(),
+              recaptchaToken
+            };
+            const res = await apiRequest('POST', url, bodyPayload, token);
+            if (res.ok) {
+              triggerSound('success');
+              showToast("Support Ticket Submitted successfully! We will get back to you soon.", 'success');
+              setIsSupportOpen(false);
+            } else {
+              const errMessage = res.data?.message || 'Server error';
+              showToast(`Failed to submit support request: ${errMessage}`, 'error');
+            }
+          } catch (err) {
+            console.error('Support ticket error:', err);
+            showToast("Connection error. Support ticket simulation logged.", 'error');
+          } finally {
+            setIsSubmittingSupport(false);
+          }
+        }}
+        mathQuestion={mathQuestion}
+        setSupportCaptchaChecked={setSupportCaptchaChecked}
+        triggerSound={triggerSound}
+      />
+      
       {/* 📣 GAME POPUP ANNOUNCEMENT OVERLAY */}
       {currentDisplayPopup !== null && (
         <div style={{
