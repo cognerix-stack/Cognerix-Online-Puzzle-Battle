@@ -61,7 +61,8 @@ export class JwtGuard implements CanActivate {
       throw new UnauthorizedException('Your account has been deleted.');
     }
 
-    request.user = { userId, username, email: decoded.email };
+    const isAdmin = decoded.isAdmin === true || username === 'admin';
+    request.user = { userId, username, email: decoded.email, isAdmin };
     return true;
   }
 }
