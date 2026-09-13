@@ -1,3 +1,4 @@
+import { getClientIp } from '../common/ip.util';
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ProfileService } from '../profile/profile.service';
@@ -23,7 +24,7 @@ export class AuthGuard implements CanActivate {
     const token = authHeader.split(' ')[1];
     const userPayload = this.authService.validateToken(token);
 
-    const ip = request.headers['x-forwarded-for'] || request.socket.remoteAddress || request.ip;
+    const ip = getClientIp(request);
     if (ip && ProfileService.bannedIps && ProfileService.bannedIps.has(ip) && userPayload.username !== 'admin') {
       throw new UnauthorizedException('Your IP address has been banned.');
     }

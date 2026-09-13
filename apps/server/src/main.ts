@@ -1,3 +1,4 @@
+import { getClientIp } from './common/ip.util';
 import * as jwt from 'jsonwebtoken';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
@@ -32,6 +33,7 @@ async function bootstrap() {
   });
 
   const expressInstance = app.getHttpAdapter().getInstance();
+  expressInstance.set('trust proxy', 1);
   
   // IP Ban Checker Middleware
   expressInstance.use((req: any, res: any, next: any) => {
@@ -54,7 +56,7 @@ async function bootstrap() {
       }
     } catch (e) {}
 
-    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || req.ip;
+    const ip = getClientIp(req);
     if (ip && ProfileService.bannedIps && ProfileService.bannedIps.has(ip)) {
       console.log(`[Moderation] Request blocked from banned IP address: ${ip}`);
       return res.status(403).json({

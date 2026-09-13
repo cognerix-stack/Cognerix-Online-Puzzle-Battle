@@ -1,3 +1,4 @@
+import { getClientIp } from '../../common/ip.util';
 import { Room, Client } from 'colyseus';
 import * as jwt from 'jsonwebtoken';
 import { RoomState, PlayerState } from './GameRoomState';
@@ -499,7 +500,7 @@ export class GameRoom extends Room<RoomState> {
   }
 
   async onAuth(client: Client, options: any, request?: any) {
-    const clientIp = (client.ref as any)?.headers?.["x-forwarded-for"] || (client.ref as any)?.socket?.remoteAddress || (client as any).ip;
+    const clientIp = getClientIp(client);
     if (clientIp && ProfileService.bannedIps && ProfileService.bannedIps.has(clientIp)) {
       console.warn(`[GameRoom] Connection rejected: Banned IP ${clientIp} tried to join`);
       throw new Error("Your IP address has been banned.");
@@ -551,7 +552,7 @@ export class GameRoom extends Room<RoomState> {
     const username = authData.username || options.username || ("Player_" + client.sessionId.substring(0, 4));
     console.log(`[GameRoom] Client joined: SessionID: ${client.sessionId}, Username: ${username}, UserId: ${userId}`);
     
-    const clientIp = (client.ref as any)?.headers?.['x-forwarded-for'] || (client.ref as any)?.socket?.remoteAddress || (client as any).ip;
+    const clientIp = getClientIp(client);
     if (clientIp && ProfileService.bannedIps && ProfileService.bannedIps.has(clientIp)) {
       console.warn(`[GameRoom] Connection rejected: Banned IP ${clientIp} tried to join`);
       throw new Error("Your IP address has been banned.");

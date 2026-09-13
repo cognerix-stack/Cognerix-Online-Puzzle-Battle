@@ -1,3 +1,4 @@
+import { getClientIp } from '../../common/ip.util';
 import { Room, Client } from 'colyseus';
 
 export class LobbyRoom extends Room {
@@ -11,7 +12,7 @@ export class LobbyRoom extends Room {
   onJoin(client: Client, options: any) {
     console.log(`[LobbyRoom] Client joined: ${client.sessionId}`);
     const { ProfileService } = require('../../profile/profile.service');
-    const clientIp = (client.ref as any)?.headers?.['x-forwarded-for'] || (client.ref as any)?.socket?.remoteAddress || (client as any).ip;
+    const clientIp = getClientIp(client);
     if (clientIp && ProfileService.bannedIps && ProfileService.bannedIps.has(clientIp)) {
       console.warn(`[LobbyRoom] Connection rejected: Banned IP ${clientIp} tried to join lobby`);
       throw new Error("Your IP address has been banned.");

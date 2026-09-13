@@ -1,15 +1,11 @@
+import { getClientIp } from '../common/ip.util';
 import { Injectable } from '@nestjs/common';
 import { ThrottlerGuard, ThrottlerException } from '@nestjs/throttler';
 
 @Injectable()
 export class CustomThrottlerGuard extends ThrottlerGuard {
   protected async getTracker(req: Record<string, any>): Promise<string> {
-    const ip =
-      req.headers['x-forwarded-for'] ||
-      req.socket?.remoteAddress ||
-      req.ip ||
-      'unknown_ip';
-
+    const ip = getClientIp(req) || 'unknown_ip';
     const userTracker =
       req.user?.userId ||
       req.body?.userId ||

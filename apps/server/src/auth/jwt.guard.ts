@@ -1,3 +1,4 @@
+import { getClientIp } from '../common/ip.util';
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
 import { ProfileService } from '../profile/profile.service';
@@ -51,7 +52,7 @@ export class JwtGuard implements CanActivate {
     const userId = decoded.userId || decoded.id || 'guest';
     const username = decoded.username || 'guest';
 
-    const ip = request.headers['x-forwarded-for'] || request.socket.remoteAddress || request.ip;
+    const ip = getClientIp(request);
     if (ip && ProfileService.bannedIps && ProfileService.bannedIps.has(ip) && username !== 'admin') {
       throw new UnauthorizedException('Your IP address has been banned.');
     }

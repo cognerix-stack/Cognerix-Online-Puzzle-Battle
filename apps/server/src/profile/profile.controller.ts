@@ -1,3 +1,4 @@
+import { getClientIp } from '../common/ip.util';
 import { Throttle } from '@nestjs/throttler';
 import { JwtGuard } from '../auth/jwt.guard';
 import { Controller, Get, Post, Delete, Param, Body, UseGuards, Request, Query, ForbiddenException } from '@nestjs/common';
@@ -81,7 +82,7 @@ export class ProfileController {
     if (profile?.id && req.user?.userId !== profile.id && req.user?.isAdmin !== true) {
       throw new ForbiddenException('You are not authorized to modify another user profile.');
     }
-    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || req.ip;
+    const ip = getClientIp(req);
     console.log(`[API POST /profile/sync] user: ${profile?.username} (${profile?.id}), IP: ${ip}`);
     return this.profileService.syncProfile({
       ...profile,
