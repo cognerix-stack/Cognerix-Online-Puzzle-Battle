@@ -60,9 +60,11 @@ export class MultiplayerService {
   ): Promise<Room<any>> {
     try {
       console.log(`Connecting to matchmaking queue for ${puzzleType}...`);
+      const token = typeof localStorage !== 'undefined' ? localStorage.getItem('pv_jwt_token') || '' : '';
       const room = await colyseusClient.joinOrCreate('duel_room', {
         userId,
         username,
+        token,
         mode: '1V1',
         puzzleType: puzzleType.toString(),
         nameColor,
@@ -97,9 +99,11 @@ export class MultiplayerService {
     try {
       if (isCreate) {
         console.log(`Creating private room with PIN ${privatePin} for ${puzzleType}...`);
+        const token = typeof localStorage !== 'undefined' ? localStorage.getItem('pv_jwt_token') || '' : '';
         const room = await colyseusClient.create('private_room', {
           userId,
           username,
+          token,
           mode: 'PRIVATE',
           puzzleType: puzzleType ? puzzleType.toString() : undefined,
           privatePin: privatePin,
@@ -113,9 +117,11 @@ export class MultiplayerService {
         return room;
       } else {
         console.log(`Joining private room with PIN ${privatePin}...`);
+        const token = typeof localStorage !== 'undefined' ? localStorage.getItem('pv_jwt_token') || '' : '';
         const room = await colyseusClient.join('private_room', {
           userId,
           username,
+          token,
           mode: 'PRIVATE',
           privatePin: privatePin,
           nameColor,

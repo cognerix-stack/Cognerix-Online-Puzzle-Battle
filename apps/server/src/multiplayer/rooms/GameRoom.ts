@@ -1,4 +1,5 @@
 import { Room, Client } from 'colyseus';
+import * as jwt from 'jsonwebtoken';
 import { RoomState, PlayerState } from './GameRoomState';
 import { ProfileService } from '../../profile/profile.service';
 import { LobbyRoom } from './LobbyRoom';
@@ -497,10 +498,59 @@ export class GameRoom extends Room<RoomState> {
     }, 10000);
   }
 
+  async onAuth(client: Client, options: any, request?: any) {
+    const clientIp = (client.ref as any)?.headers?.["x-forwarded-for"] || (client.ref as any)?.socket?.remoteAddress || (client as any).ip;
+    if (clientIp && ProfileService.bannedIps && ProfileService.bannedIps.has(clientIp)) {
+      console.warn(`[GameRoom] Connection rejected: Banned IP ${clientIp} tried to join`);
+      throw new Error("Your IP address has been banned.");
+    }
+
+    // 1. Verify cryptographic JWT token if provided
+    if (options.token) {
+      try {
+        const secret = process.env.JWT_SECRET || (process.env.NODE_ENV !== "production" ? "cognerix_dev_jwt_secret_local_only" : "");
+        if (!secret) throw new Error("Missing JWT secret");
+        const decoded = jwt.verify(options.token, secret) as any;
+        if (decoded && decoded.userId) {
+          return {
+            userId: decoded.userId,
+            username: decoded.username || options.username || ("Player_" + client.sessionId.substring(0, 4)),
+            isAdmin: decoded.isAdmin === true,
+          };
+        }
+      } catch (err: any) {
+        console.warn("[GameRoom] Invalid token provided by client " + client.sessionId + ":", err.message);
+        throw new Error("Authentication failed: invalid session token.");
+      }
+    }
+
+    // 2. Fallback for guest identifiers
+    if (options.userId && (options.userId.startsWith("20") || options.userId.startsWith("guest_"))) {
+      return {
+        userId: options.userId,
+        username: options.username || ("Guest_" + client.sessionId.substring(0, 4)),
+        isAdmin: false,
+      };
+    }
+
+    // 3. Development fallback for local testing
+    if (process.env.NODE_ENV !== "production" && options.userId) {
+      return {
+        userId: options.userId,
+        username: options.username || ("Player_" + client.sessionId.substring(0, 4)),
+        isAdmin: false,
+      };
+    }
+
+    throw new Error("Authentication required: missing valid player token.");
+  }
+
   onJoin(client: Client, options: any) {
-    console.log(`[GameRoom] Client joined: SessionID: ${client.sessionId}, Username: ${options.username}, UserId: ${options.userId}`);
+    const authData = (client.auth as any) || {};
+    const userId = authData.userId || options.userId || client.sessionId;
+    const username = authData.username || options.username || ("Player_" + client.sessionId.substring(0, 4));
+    console.log(`[GameRoom] Client joined: SessionID: ${client.sessionId}, Username: ${username}, UserId: ${userId}`);
     
-    const userId = options.userId || client.sessionId;
     const clientIp = (client.ref as any)?.headers?.['x-forwarded-for'] || (client.ref as any)?.socket?.remoteAddress || (client as any).ip;
     if (clientIp && ProfileService.bannedIps && ProfileService.bannedIps.has(clientIp)) {
       console.warn(`[GameRoom] Connection rejected: Banned IP ${clientIp} tried to join`);
@@ -519,7 +569,7 @@ export class GameRoom extends Room<RoomState> {
 
     const player = new PlayerState();
     player.id = userId;
-    player.username = options.username || `Player_${client.sessionId.substring(0, 4)}`;
+    player.username = username;
     player.progress = 0;
     player.isReady = false;
     player.hasFinished = false;
