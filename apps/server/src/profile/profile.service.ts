@@ -1753,7 +1753,10 @@ Reported on:                 ${report.timestamp}
   }) {
     // Only verify reCAPTCHA if token is provided (web users)
     if (data.recaptchaToken && data.recaptchaToken.trim() !== '') {
-      const secretKey = process.env.RECAPTCHA_SECRET_KEY || '6Lfq068tAAAAAJbA1cXLPm1TTIyAPvS16VzVsaeg';
+      const secretKey = process.env.RECAPTCHA_SECRET_KEY;
+      if (!secretKey) {
+        throw new Error('RECAPTCHA_SECRET_KEY environment variable is not set');
+      }
       const verify = await fetch(`https://www.google.com/recaptcha/api/siteverify?secret=${encodeURIComponent(secretKey)}&response=${encodeURIComponent(data.recaptchaToken)}`, { method: 'POST' });
       const result = await verify.json() as any;
       if (!result.success) throw new Error('reCAPTCHA verification failed');
