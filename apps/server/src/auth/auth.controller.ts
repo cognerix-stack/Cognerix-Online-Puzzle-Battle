@@ -22,14 +22,6 @@ export class AuthController {
     return this.authService.loginGuest(username);
   }
 
-  @Post('firebase')
-  async loginFirebase(
-    @Body('token') token: string,
-    @Body('email') email?: string,
-    @Body('name') name?: string,
-  ) {
-    return this.authService.validateFirebaseToken(token, email, name);
-  }
 
   @Get('google-client-id')
   getGoogleClientId() {

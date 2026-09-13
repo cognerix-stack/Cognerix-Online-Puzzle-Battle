@@ -75,47 +75,6 @@ export class AuthService {
     return { token, profile: user.profile, isAdmin: false };
   }
 
-  // Handle Firebase Token Verification (stubs)
-  async validateFirebaseToken(firebaseToken: string, email?: string, name?: string) {
-    if (!firebaseToken) {
-      throw new UnauthorizedException('Missing Firebase auth token');
-    }
-
-    const firebaseId = `fb_${firebaseToken.slice(-12)}`;
-    const emailAddr = email || `${firebaseId}@cognerix.io`;
-    const defaultName = name || `Player_${Math.floor(Math.random() * 9000 + 1000)}`;
-    const isConfiguredAdmin = emailAddr.toLowerCase() === 'admin.cognerix@gmail.com';
-
-    let user = await this.prisma.user.findUnique({
-      where: { firebaseId },
-      include: { profile: true },
-    });
-
-    if (!user) {
-      user = await this.prisma.user.create({
-        data: {
-          firebaseId,
-          email: emailAddr,
-          profile: {
-            create: {
-              username: defaultName,
-              level: 1,
-              xp: 0,
-              coins: 100,
-              gems: 10,
-              rank: RankName.BRONZE,
-              badges: [],
-              inventory: [],
-            },
-          },
-        },
-        include: { profile: true },
-      });
-    }
-
-    const token = this.createToken({ userId: user.id, username: user.profile!.username, email: emailAddr, isAdmin: isConfiguredAdmin });
-    return { token, profile: user.profile, isAdmin: isConfiguredAdmin };
-  }
 
   async validateGoogleToken(idToken: string) {
     if (!idToken) {
