@@ -10,7 +10,11 @@ export class AuthService {
   constructor(private prisma: PrismaService) {}
 
   private getSecret(): string {
-    return process.env.JWT_SECRET || 'cognerix_jwt_secret_2026_secure_key';
+    const secret = process.env.JWT_SECRET;
+    if (!secret && process.env.NODE_ENV === 'production') {
+      throw new Error('[SECURITY FATAL] JWT_SECRET environment variable is missing in production!');
+    }
+    return secret || 'cognerix_dev_jwt_secret_local_only';
   }
 
   // Real JWT token signing helper with required isAdmin claim

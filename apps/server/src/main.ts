@@ -45,7 +45,8 @@ async function bootstrap() {
       const authHeader = req.headers.authorization;
       if (authHeader && authHeader.startsWith('Bearer ')) {
         const token = authHeader.split(' ')[1];
-        const secret = process.env.JWT_SECRET || 'cognerix_jwt_secret_2026_secure_key';
+        const secret = process.env.JWT_SECRET || (process.env.NODE_ENV !== 'production' ? 'cognerix_dev_jwt_secret_local_only' : '');
+        if (!secret) throw new Error('Missing secret');
         const decoded = jwt.verify(token, secret) as any;
         if (decoded && decoded.username === 'admin') {
           return next();

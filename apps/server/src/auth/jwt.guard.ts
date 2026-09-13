@@ -28,7 +28,10 @@ export class JwtGuard implements CanActivate {
 
     let decoded: any = null;
     try {
-      const secret = process.env.JWT_SECRET || 'cognerix_jwt_secret_2026_secure_key';
+      const secret = process.env.JWT_SECRET || (process.env.NODE_ENV !== 'production' ? 'cognerix_dev_jwt_secret_local_only' : '');
+      if (!secret) {
+        throw new UnauthorizedException('Server security error: missing JWT secret');
+      }
       decoded = jwt.verify(token, secret);
     } catch (err: any) {
       try {
