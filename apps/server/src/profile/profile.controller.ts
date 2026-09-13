@@ -60,8 +60,8 @@ export class ProfileController {
   async buyStoreItem(
     @Request() req: any,
     @Body('itemId') itemId: string,
-    @Body('costCoins') costCoins: number,
-    @Body('costGems') costGems: number,
+    @Body('costCoins') costCoins?: number,
+    @Body('costGems') costGems?: number,
   ) {
     return this.profileService.buyStoreItem(req.user.userId, itemId, costCoins, costGems);
   }

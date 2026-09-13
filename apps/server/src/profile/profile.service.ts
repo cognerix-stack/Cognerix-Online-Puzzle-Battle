@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException, BadRequestException, OnModuleInit } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { RankName, PuzzleType } from '@puzzle-verse/shared';
+import { STORE_CATALOG } from './store-items.catalog';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as nodemailer from 'nodemailer';
@@ -309,34 +310,38 @@ export class ProfileService implements OnModuleInit {
   }
 
   // Buy a store customizer item
-  async buyStoreItem(userId: string, itemId: string, costCoins: number, costGems: number) {
+  // Buy a store customizer item with authoritative catalog pricing
+  async buyStoreItem(userId: string, itemId: string, costCoins?: number, costGems?: number) {
+    const catalogItem = STORE_CATALOG[itemId];
+    if (!catalogItem) {
+      throw new BadRequestException(`Unknown store item ID: ${itemId}`);
+    }
+
     const profile = await this.getProfile(userId);
 
     if (profile.inventory.includes(itemId)) {
-      throw new Error('You already own this item');
+      throw new BadRequestException('You already own this item');
     }
 
-    if (profile.coins < costCoins) {
-      throw new Error('Insufficient coins');
+    if (profile.coins < catalogItem.costCoins) {
+      throw new BadRequestException('Insufficient coins');
     }
 
-    if (profile.gems < costGems) {
-      throw new Error('Insufficient gems');
+    if (profile.gems < catalogItem.costGems) {
+      throw new BadRequestException('Insufficient gems');
     }
 
     return this.prisma.profile.update({
       where: { userId },
       data: {
-        coins: profile.coins - costCoins,
-        gems: profile.gems - costGems,
+        coins: profile.coins - catalogItem.costCoins,
+        gems: profile.gems - catalogItem.costGems,
         inventory: {
           set: [...profile.inventory, itemId],
         },
       },
     });
   }
-
-  // Equip a cosmetic customizer item
   async equipCosmetic(userId: string, itemId: string, type: 'NAME_COLOR' | 'BADGE' | 'LOBBY_ANIMATION', value: string) {
     const profile = await this.getProfile(userId);
 
@@ -621,8 +626,8 @@ export class ProfileService implements OnModuleInit {
         frame: profile.frame || 'none',
         rank: profile.rank || 'BRONZE',
         nameColor: profile.nameColor || '',
-        coins: profile.coins !== undefined ? profile.coins : 0,
-        gems: profile.gems !== undefined ? profile.gems : 0,
+        coins: profile.coins !== undefined ? Math.max(0, Math.min(profile.coins, 9999999)) : 0,
+        gems: profile.gems !== undefined ? Math.max(0, Math.min(profile.gems, 999999)) : 0,
         level: profile.level !== undefined ? profile.level : 1,
         xp: profile.xp !== undefined ? profile.xp : 0,
         score: profile.score !== undefined ? profile.score : 0,
@@ -648,8 +653,8 @@ export class ProfileService implements OnModuleInit {
             frame: profile.frame,
             rank: profile.rank,
             nameColor: profile.nameColor || '',
-            coins: profile.coins !== undefined ? profile.coins : undefined,
-            gems: profile.gems !== undefined ? profile.gems : undefined,
+            coins: profile.coins !== undefined ? Math.max(0, Math.min(profile.coins, 9999999)) : undefined,
+            gems: profile.gems !== undefined ? Math.max(0, Math.min(profile.gems, 999999)) : undefined,
             level: profile.level !== undefined ? profile.level : undefined,
             xp: profile.xp !== undefined ? profile.xp : undefined,
             status: profile.status !== undefined ? profile.status : undefined,
