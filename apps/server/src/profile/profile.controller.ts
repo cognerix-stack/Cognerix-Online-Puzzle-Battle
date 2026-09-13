@@ -1,6 +1,6 @@
 import { Throttle } from '@nestjs/throttler';
 import { JwtGuard } from '../auth/jwt.guard';
-import { Controller, Get, Post, Delete, Param, Body, UseGuards, Request, Query } from '@nestjs/common';
+import { Controller, Get, Post, Delete, Param, Body, UseGuards, Request, Query, ForbiddenException } from '@nestjs/common';
 import { ProfileService } from './profile.service';
 import { AuthGuard } from '../auth/auth.guard';
 import { AdminGuard } from '../auth/admin.guard';
@@ -78,6 +78,9 @@ export class ProfileController {
 
   @Post('sync')
   async syncProfile(@Body() profile: any, @Request() req: any) {
+    if (profile?.id && req.user?.userId !== profile.id && req.user?.isAdmin !== true) {
+      throw new ForbiddenException('You are not authorized to modify another user profile.');
+    }
     const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || req.ip;
     console.log(`[API POST /profile/sync] user: ${profile?.username} (${profile?.id}), IP: ${ip}`);
     return this.profileService.syncProfile({
@@ -88,16 +91,23 @@ export class ProfileController {
 
   @Post('load-or-create')
   async loadOrCreateProfile(
+    @Request() req: any,
     @Body('userId') userId: string,
     @Body('username') username: string,
     @Body('email') email: string,
   ) {
+    if (userId && req.user?.userId !== userId && req.user?.isAdmin !== true) {
+      throw new ForbiddenException('You are not authorized to access another user profile.');
+    }
     console.log(`[API POST /profile/load-or-create] Request for userId: ${userId}, username: ${username}, email: ${email}`);
     return this.profileService.loadOrCreateProfile(userId, username, email);
   }
 
   @Post('delete')
-  async deleteProfile(@Body('userId') userId: string) {
+  async deleteProfile(@Request() req: any, @Body('userId') userId: string) {
+    if (req.user?.userId !== userId && req.user?.isAdmin !== true) {
+      throw new ForbiddenException('You are not authorized to delete another user profile.');
+    }
     console.log(`[API POST /profile/delete] Request to delete userId: ${userId}`);
     return this.profileService.deleteProfile(userId);
   }
